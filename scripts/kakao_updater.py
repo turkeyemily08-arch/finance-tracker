@@ -1,16 +1,17 @@
 """
 카카오톡 '나에게 보내기' 메시지를 읽어 가계부에 자동 추가하는 스크립트.
-매일 오전 9시 Windows 작업 스케줄러로 실행됩니다.
+매일 오전 9시 Windows 작업 스케줄러로 실행됩니다. (무료 - 외부 API 불필요)
 """
 
 import os
 import sys
 import json
 import time
-import base64
-import subprocess
 import re
 import uuid
+import base64
+import subprocess
+import ctypes
 from datetime import datetime, date
 from pathlib import Path
 
@@ -21,7 +22,7 @@ import requests
 # ── 설정 로드 ──────────────────────────────────────────────
 SCRIPT_DIR = Path(__file__).parent
 CONFIG_PATH = SCRIPT_DIR / "config.json"
-LOG_PATH = SCRIPT_DIR / "updater.log"
+LOG_PATH    = SCRIPT_DIR / "updater.log"
 
 def load_config():
     with open(CONFIG_PATH, encoding="utf-8") as f:
@@ -39,73 +40,55 @@ def log(msg):
         f.write(line + "\n")
 
 # ── 카카오톡 메시지 읽기 ───────────────────────────────────
-def find_kakao_window():
-    """카카오톡 창을 찾아서 활성화"""
-    import ctypes
-    import ctypes.wintypes
-
-    EnumWindows = ctypes.windll.user32.EnumWindows
-    EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int, ctypes.c_int)
-    GetWindowText = ctypes.windll.user32.GetWindowTextW
-    GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
-    IsWindowVisible = ctypes.windll.user32.IsWindowVisible
-
+def find_kakao_hwnd():
     handles = []
     def callback(hwnd, _):
-        if IsWindowVisible(hwnd):
-            length = GetWindowTextLength(hwnd)
+        if ctypes.windll.user32.IsWindowVisible(hwnd):
+            length = ctypes.windll.user32.GetWindowTextLengthW(hwnd)
             buf = ctypes.create_unicode_buffer(length + 1)
-            GetWindowText(hwnd, buf, length + 1)
+            ctypes.windll.user32.GetWindowTextW(hwnd, buf, length + 1)
             if "카카오톡" in buf.value or "KakaoTalk" in buf.value:
                 handles.append(hwnd)
         return True
-
-    EnumWindows(EnumWindowsProc(callback), 0)
+    EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int, ctypes.c_int)
+    ctypes.windll.user32.EnumWindows(EnumWindowsProc(callback), 0)
     return handles[0] if handles else None
 
 def open_kakao_if_needed():
-    """카카오톡이 실행 중이 아니면 실행"""
-    hwnd = find_kakao_window()
+    hwnd = find_kakao_hwnd()
     if not hwnd:
         log("카카오톡 실행 중...")
-        kakao_paths = [
+        paths = [
             r"C:\Program Files (x86)\Kakao\KakaoTalk\KakaoTalk.exe",
             r"C:\Program Files\Kakao\KakaoTalk\KakaoTalk.exe",
             os.path.expanduser(r"~\AppData\Local\Kakao\KakaoTalk\KakaoTalk.exe"),
         ]
-        for p in kakao_paths:
+        for p in paths:
             if os.path.exists(p):
                 subprocess.Popen([p])
-                time.sleep(5)
+                time.sleep(6)
                 break
     else:
-        # 창 활성화
-        import ctypes
-        ctypes.windll.user32.ShowWindow(hwnd, 9)  # SW_RESTORE
+        ctypes.windll.user32.ShowWindow(hwnd, 9)
         ctypes.windll.user32.SetForegroundWindow(hwnd)
         time.sleep(1)
 
 def read_kakao_chat():
-    """카카오톡 나에게 보내기 채팅 내용 읽기"""
+    """카카오톡 나에게 보내기 채팅 내용 클립보드로 읽기"""
     try:
         open_kakao_if_needed()
         time.sleep(2)
-
-        # 카카오톡 창 찾기
-        hwnd = find_kakao_window()
+        hwnd = find_kakao_hwnd()
         if not hwnd:
             log("카카오톡 창을 찾을 수 없습니다.")
             return None
 
-        import ctypes
         ctypes.windll.user32.SetForegroundWindow(hwnd)
         time.sleep(0.5)
 
-        # 검색창 열기 (Ctrl+F)
+        # 검색 (Ctrl+F) → "나에게 보내기" 검색 → Enter
         pyautogui.hotkey("ctrl", "f")
         time.sleep(0.8)
-
-        # 검색어 입력 (나에게 보내기 = 자신의 이름)
         pyperclip.copy("나에게 보내기")
         pyautogui.hotkey("ctrl", "v")
         time.sleep(0.8)
@@ -114,97 +97,189 @@ def read_kakao_chat():
         pyautogui.press("escape")
         time.sleep(0.5)
 
-        # 채팅방 내용 전체 선택 후 복사
+        # 채팅창 전체 선택 후 복사
         pyautogui.hotkey("ctrl", "a")
         time.sleep(0.3)
         pyautogui.hotkey("ctrl", "c")
         time.sleep(0.3)
 
         text = pyperclip.paste()
-        if not text:
-            log("채팅 내용을 읽지 못했습니다.")
-            return None
-
-        log(f"카카오톡 메시지 {len(text)}자 읽기 완료")
+        log(f"카카오톡 {len(text)}자 읽기 완료")
         return text
-
     except Exception as e:
         log(f"카카오톡 읽기 오류: {e}")
         return None
 
-# ── Claude API로 파싱 ─────────────────────────────────────
-PARSE_PROMPT = """
-아래는 카카오톡 '나에게 보내기' 채팅 내용입니다.
-오늘 날짜: {today}
-마지막 처리 날짜: {last_processed}
+# ── 규칙 기반 파싱 (무료) ─────────────────────────────────
 
-규칙:
-1. 마지막 처리 이후의 새 메시지만 추출하세요.
-2. 금액이 포함된 메시지를 거래로 인식하세요.
-3. 재원(source) 판단 기준:
-   - "공과금" 명시 → 공과금
-   - "복지포인트" 명시 → 복지포인트
-   - 마트(이마트/홈플러스/롯데마트/코스트코/마트) → 공과금
-   - 그 외 → 용돈
-4. 카테고리 자동 판단:
-   - 공과금 재원: 마트→"마트/장보기", 쿠팡+공과금→"쿠팡 공과금", 전기/가스/수도→"전기/가스/수도", 관리비→"관리비"
-   - 용돈 재원: 식당/음식점→"식비/외식", 카페/커피→"카페/음료", 미용실/뷰티→"미용/뷰티", 교통→"교통비", 병원/약국→"의료/건강", 영화/문화→"문화/여가", 의류→"의류/쇼핑", 쿠팡(기타)→내용보고추정
-   - 복지포인트 재원: 병원/약→"의료/건강(포인트)", 쇼핑→"쇼핑(포인트)", 그 외→"기타(포인트)"
-5. "수입" 또는 "정산" 명시 시 type="income"
-6. "/" 뒤는 메모로 처리
+# 마트 키워드 → 공과금/마트/장보기
+MART_KEYWORDS = ["이마트", "홈플러스", "롯데마트", "코스트코", "마트", "하나로마트", "농협마트", "메가마트"]
 
-다음 JSON 배열만 출력하세요 (다른 텍스트 없이):
-[
-  {{
-    "date": "YYYY-MM-DD",
-    "type": "expense 또는 income",
-    "source": "공과금/용돈/복지포인트/급여/정산",
-    "category": "카테고리명",
-    "description": "내용",
-    "amount": 숫자,
-    "memo": "메모 (없으면 빈 문자열)"
-  }}
+# 카테고리 키워드 매핑 (용돈 재원)
+YONGDON_CATEGORY_RULES = [
+    (["스타벅스","카페","커피","이디야","투썸","빽다방","메가커피","컴포즈"], "카페/음료"),
+    (["식당","밥","점심","저녁","아침","외식","음식","국밥","치킨","피자","햄버거","파스타","초밥","고기","삼겹","갈비","냉면","분식","떡볶이","김밥","편의점"], "식비/외식"),
+    (["미용실","헤어","네일","왁싱","뷰티","미용"], "미용/뷰티"),
+    (["버스","지하철","택시","카카오택시","교통","기차","ktx","고속버스"], "교통비"),
+    (["병원","의원","약국","약","진료","치과","한의원","의료"], "의료/건강"),
+    (["영화","cgv","롯데시네마","메가박스","공연","콘서트","전시","뮤지컬","문화"], "문화/여가"),
+    (["옷","의류","쇼핑","패션","무신사","자라","h&m","유니클로","신발"], "의류/쇼핑"),
 ]
 
-새 거래가 없으면 빈 배열 []을 출력하세요.
+# 카테고리 키워드 매핑 (공과금 재원)
+GONGGWA_CATEGORY_RULES = [
+    (["전기","전기세","전기요금","한전"], "전기/가스/수도"),
+    (["가스","도시가스","가스요금"], "전기/가스/수도"),
+    (["수도","수도요금","상수도"], "전기/가스/수도"),
+    (["관리비","아파트관리"], "관리비"),
+]
 
-채팅 내용:
-{chat_text}
-"""
+def detect_source_and_category(text_lower, has_gonggwa_tag, has_bokji_tag):
+    """재원과 카테고리 자동 판단"""
+    if has_bokji_tag:
+        for keywords, cat in [
+            (["병원","의원","약국","약","의료"], "의료/건강(포인트)"),
+            (["쇼핑","마트","올리브","다이소"], "쇼핑(포인트)"),
+            (["영화","공연","문화"], "문화/여가(포인트)"),
+        ]:
+            if any(k in text_lower for k in keywords):
+                return "복지포인트", cat
+        return "복지포인트", "기타(포인트)"
 
-def parse_with_claude(chat_text, cfg, last_processed):
-    """Claude API로 메시지 파싱"""
-    import anthropic
+    # 마트 → 공과금/마트/장보기
+    if any(k in text_lower for k in MART_KEYWORDS):
+        return "공과금", "마트/장보기"
 
-    client = anthropic.Anthropic(api_key=cfg["anthropic_api_key"])
-    today = date.today().isoformat()
+    # 쿠팡 + 공과금 태그
+    if "쿠팡" in text_lower:
+        if has_gonggwa_tag:
+            return "공과금", "쿠팡 공과금"
+        return "용돈", "의류/쇼핑"  # 기본값, 사용자가 수정 가능
 
-    prompt = PARSE_PROMPT.format(
-        today=today,
-        last_processed=last_processed or "없음 (전체 처리)",
-        chat_text=chat_text[-8000:],  # 최근 8000자만
-    )
+    # 공과금 태그 있는 경우
+    if has_gonggwa_tag:
+        for keywords, cat in GONGGWA_CATEGORY_RULES:
+            if any(k in text_lower for k in keywords):
+                return "공과금", cat
+        return "공과금", "기타 공과금"
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=2000,
-        messages=[{"role": "user", "content": prompt}],
-    )
+    # 용돈: 키워드 매핑
+    for keywords, cat in YONGDON_CATEGORY_RULES:
+        if any(k in text_lower for k in keywords):
+            return "용돈", cat
 
-    raw = response.content[0].text.strip()
-    # JSON 배열 추출
-    match = re.search(r'\[.*\]', raw, re.DOTALL)
-    if not match:
-        log("파싱 결과에서 JSON을 찾을 수 없습니다.")
-        return []
+    return "용돈", "기타 용돈"
 
-    parsed = json.loads(match.group())
-    log(f"Claude 파싱 완료: {len(parsed)}건")
-    return parsed
+def parse_messages(chat_text, last_processed):
+    """카카오톡 채팅 텍스트에서 거래 내역 파싱"""
+    # 카카오톡 메시지 패턴: [이름] [오전/오후 H:MM] 내용
+    # 날짜 구분선: ---- YYYY년 MM월 DD일 ----
+    transactions = []
+
+    # 날짜 파싱
+    current_date = date.today()
+    date_pattern = re.compile(r'(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일')
+    # 금액 패턴: 숫자+원, 쉼표 포함
+    amount_pattern = re.compile(r'(\d{1,3}(?:,\d{3})*|\d+)\s*원')
+
+    # last_processed 이후 메시지만 처리
+    last_dt = None
+    if last_processed:
+        try:
+            last_dt = datetime.fromisoformat(last_processed)
+        except Exception:
+            pass
+
+    lines = chat_text.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+
+        # 날짜 구분선 파싱
+        dm = date_pattern.search(line)
+        if dm:
+            current_date = date(int(dm.group(1)), int(dm.group(2)), int(dm.group(3)))
+            i += 1
+            continue
+
+        # 메시지 라인: [이름] [오전/오후 H:MM] 내용
+        msg_match = re.match(r'\[.+?\]\s*\[(?:오전|오후)\s*\d{1,2}:\d{2}\]\s*(.+)', line)
+        if not msg_match:
+            i += 1
+            continue
+
+        content = msg_match.group(1).strip()
+
+        # last_processed 체크 (날짜 기준)
+        if last_dt and current_date < last_dt.date():
+            i += 1
+            continue
+
+        # 금액 추출
+        amt_match = amount_pattern.search(content)
+        if not amt_match:
+            i += 1
+            continue
+
+        amount_str = amt_match.group(1).replace(",", "")
+        amount = int(amount_str)
+        if amount < 100:  # 100원 미만은 무시
+            i += 1
+            continue
+
+        # 태그 확인
+        content_lower = content.lower()
+        has_gonggwa = "공과금" in content
+        has_bokji   = "복지포인트" in content
+        is_income   = any(k in content for k in ["수입", "정산", "급여", "받음", "입금"])
+
+        # 메모 추출 (/ 뒤)
+        memo = ""
+        if "/" in content:
+            parts = content.split("/", 1)
+            memo = parts[1].strip()
+            content = parts[0].strip()
+
+        # 설명: 금액/태그 제거
+        description = content
+        description = amount_pattern.sub("", description).strip()
+        for tag in ["공과금", "복지포인트", "수입", "정산", "급여"]:
+            description = description.replace(tag, "").strip()
+        description = re.sub(r'\s+', ' ', description).strip(" -,")
+        if not description:
+            description = "기타"
+
+        # 재원/카테고리 판단
+        if is_income:
+            if "정산" in content:
+                source, category = "정산", "공과금 정산"
+            elif "급여" in content:
+                source, category = "급여", "급여"
+            else:
+                source, category = "급여", "기타 수입"
+            tx_type = "income"
+        else:
+            source, category = detect_source_and_category(content_lower, has_gonggwa, has_bokji)
+            tx_type = "expense"
+
+        transactions.append({
+            "id": str(uuid.uuid4()),
+            "date": current_date.isoformat(),
+            "type": tx_type,
+            "source": source,
+            "category": category,
+            "description": description,
+            "amount": amount,
+            "memo": memo,
+        })
+
+        i += 1
+
+    log(f"파싱 완료: {len(transactions)}건")
+    return transactions
 
 # ── GitHub 업데이트 ───────────────────────────────────────
 def get_github_file(cfg, path):
-    """GitHub에서 파일 내용과 SHA 가져오기"""
     url = f"https://api.github.com/repos/{cfg['github_owner']}/{cfg['github_repo']}/contents/{path}"
     headers = {"Authorization": f"token {cfg['github_token']}"}
     r = requests.get(url, headers=headers)
@@ -214,12 +289,13 @@ def get_github_file(cfg, path):
     return json.loads(content), data["sha"]
 
 def update_github_file(cfg, path, content, sha, message):
-    """GitHub 파일 업데이트"""
     url = f"https://api.github.com/repos/{cfg['github_owner']}/{cfg['github_repo']}/contents/{path}"
     headers = {"Authorization": f"token {cfg['github_token']}", "Content-Type": "application/json"}
     body = {
         "message": message,
-        "content": base64.b64encode(json.dumps(content, ensure_ascii=False, indent=2).encode()).decode(),
+        "content": base64.b64encode(
+            json.dumps(content, ensure_ascii=False, indent=2).encode()
+        ).decode(),
         "sha": sha,
     }
     r = requests.put(url, headers=headers, json=body)
@@ -227,24 +303,18 @@ def update_github_file(cfg, path, content, sha, message):
     log("GitHub 업데이트 완료")
 
 def add_transactions_to_github(new_txs, cfg):
-    """새 거래를 GitHub transactions.json에 추가"""
     data, sha = get_github_file(cfg, cfg["github_data_path"])
-
-    existing_ids = {t["id"] for t in data["transactions"]}
     added = 0
     for tx in new_txs:
-        tx["id"] = str(uuid.uuid4())
-        if tx.get("description") and tx["id"] not in existing_ids:
-            data["transactions"].append(tx)
-            added += 1
-
+        data["transactions"].append(tx)
+        added += 1
     if added == 0:
         log("추가할 새 거래 없음")
         return 0
-
     data["settings"]["lastUpdated"] = date.today().isoformat()
     today_str = date.today().strftime("%Y.%m.%d")
-    update_github_file(cfg, cfg["github_data_path"], data, sha, f"자동 업데이트: {today_str} ({added}건)")
+    update_github_file(cfg, cfg["github_data_path"], data, sha,
+                       f"자동 업데이트: {today_str} ({added}건)")
     return added
 
 # ── 메인 ──────────────────────────────────────────────────
@@ -254,19 +324,15 @@ def main():
 
     cfg = load_config()
 
-    if cfg.get("anthropic_api_key") == "여기에_Claude_API_키_입력":
-        log("오류: config.json에 Anthropic API 키를 입력해주세요.")
-        sys.exit(1)
-
     # 1. 카카오톡 메시지 읽기
     chat_text = read_kakao_chat()
     if not chat_text:
         log("카카오톡 메시지를 읽지 못했습니다. 종료.")
         sys.exit(1)
 
-    # 2. Claude로 파싱
+    # 2. 규칙 기반 파싱 (무료)
     last_processed = cfg.get("last_processed", "")
-    new_txs = parse_with_claude(chat_text, cfg, last_processed)
+    new_txs = parse_messages(chat_text, last_processed)
 
     if not new_txs:
         log("새로운 거래 내역 없음")
