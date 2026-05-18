@@ -1,9 +1,169 @@
 {
   "settings": {
     "allowance": 150000,
-    "lastUpdated": "2026-05-18"
+    "lastUpdated": "2026-05-18 (3-5월 데이터 추가)"
   },
   "transactions": [
+    {
+      "id": "tx-20260301-001",
+      "date": "2026-03-01",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "paymentMethod": "계좌이체",
+      "amount": 200000,
+      "memo": "할머니 용돈"
+    },
+    {
+      "id": "tx-20260301-002",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "미용/뷰티",
+      "paymentMethod": "",
+      "amount": 499000,
+      "memo": "눈썹문신, 안마, 네일, 약국 등"
+    },
+    {
+      "id": "tx-20260301-003",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "paymentMethod": "",
+      "amount": 338279,
+      "memo": "알리, 쿠팡, 헤트라스 등"
+    },
+    {
+      "id": "tx-20260301-004",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "식비",
+      "paymentMethod": "",
+      "amount": 450190,
+      "memo": "구내식당, 원가야밀면, 화리화리, 카페, 마트 등"
+    },
+    {
+      "id": "tx-20260301-005",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "교통비",
+      "paymentMethod": "",
+      "amount": 202750,
+      "memo": "주유 2회, 시외버스, 티머니 등"
+    },
+    {
+      "id": "tx-20260301-006",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "구독서비스",
+      "paymentMethod": "계좌이체",
+      "amount": 135679,
+      "memo": "통신비, 보험료 등"
+    },
+    {
+      "id": "tx-20260301-007",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "생활용품",
+      "paymentMethod": "",
+      "amount": 44935,
+      "memo": "가구 설치비(정영애), 다이소 등"
+    },
+    {
+      "id": "tx-20260301-008",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "기타 용돈",
+      "paymentMethod": "계좌이체",
+      "amount": 100000,
+      "memo": "공주페이"
+    },
+    {
+      "id": "tx-20260301-009",
+      "date": "2026-03-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "기타 용돈",
+      "paymentMethod": "계좌이체",
+      "amount": 32600,
+      "memo": "계좌이체"
+    },
+    {
+      "id": "tx-20260307-001",
+      "date": "2026-03-07",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "paymentMethod": "계좌이체",
+      "amount": 556270,
+      "memo": "연말정산 환급"
+    },
+    {
+      "id": "tx-20260310-001",
+      "date": "2026-03-10",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "paymentMethod": "계좌이체",
+      "amount": 406860,
+      "memo": "실업급여"
+    },
+    {
+      "id": "tx-20260315-001",
+      "date": "2026-03-15",
+      "type": "income",
+      "source": "급여",
+      "category": "급여",
+      "paymentMethod": "계좌이체",
+      "amount": 3746682,
+      "memo": "퇴직금"
+    },
+    {
+      "id": "tx-20260322-001",
+      "date": "2026-03-22",
+      "type": "expense",
+      "source": "용돈",
+      "category": "여행/숙박",
+      "paymentMethod": "계좌이체",
+      "amount": 105172,
+      "memo": "여기어때 숙박"
+    },
+    {
+      "id": "tx-20260331-001",
+      "date": "2026-03-31",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "paymentMethod": "계좌이체",
+      "amount": 59033,
+      "memo": "아빠 용돈, 외환 이자 등"
+    },
+    {
+      "id": "tx-20260401-001",
+      "date": "2026-04-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "식비",
+      "paymentMethod": "",
+      "amount": 95000,
+      "memo": "구내식당"
+    },
+    {
+      "id": "tx-20260425-001",
+      "date": "2026-04-25",
+      "type": "income",
+      "source": "급여",
+      "category": "급여",
+      "paymentMethod": "계좌이체",
+      "amount": 3190000,
+      "memo": "월급"
+    },
     {
       "id": "tx-20260501-001",
       "date": "2026-05-01",
@@ -58,11 +218,11 @@
       "id": "tx-20260502-002",
       "date": "2026-05-02",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "생활용품",
       "paymentMethod": "삼성카드",
       "amount": 20000,
-      "memo": "다이소 (5/5 일부환불 포함)"
+      "memo": "다이소 | 정산필요"
     },
     {
       "id": "tx-20260502-003",
@@ -118,31 +278,31 @@
       "id": "tx-20260504-002",
       "date": "2026-05-04",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "외식",
       "paymentMethod": "삼성카드",
       "amount": 59000,
-      "memo": "더진지 (5/5 일부환불 포함)"
+      "memo": "더진지 | 정산필요"
     },
     {
       "id": "tx-20260505-001",
       "date": "2026-05-05",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "자기계발/학회",
       "paymentMethod": "계좌이체",
       "amount": 60000,
-      "memo": "한국디지털콘텐츠 (학회비)"
+      "memo": "한국디지털콘텐츠 (학회비) | 정산필요"
     },
     {
       "id": "tx-20260505-002",
       "date": "2026-05-05",
       "type": "income",
       "source": "정산",
-      "category": "환불/취소",
+      "category": "공과금 정산",
       "paymentMethod": "계좌이체",
       "amount": 97000,
-      "memo": "더진지+다이소 환불"
+      "memo": "이민구 이체 (더진지+다이소 공과금 정산)"
     },
     {
       "id": "tx-20260505-003",
@@ -219,10 +379,10 @@
       "date": "2026-05-07",
       "type": "income",
       "source": "정산",
-      "category": "기타 수입",
+      "category": "공과금 정산",
       "paymentMethod": "계좌이체",
       "amount": 60000,
-      "memo": "구창민 이체 (학회 디지털콘텐츠 납부금 정산)"
+      "memo": "구창민 이체 (학회비 공과금 정산)"
     },
     {
       "id": "tx-20260508-001",
