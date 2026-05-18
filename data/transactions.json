@@ -139,7 +139,7 @@
       "date": "2026-05-05",
       "type": "income",
       "source": "정산",
-      "category": "기타 수입",
+      "category": "환불/취소",
       "paymentMethod": "계좌이체",
       "amount": 97000,
       "memo": "더진지+다이소 환불"
@@ -149,7 +149,7 @@
       "date": "2026-05-05",
       "type": "income",
       "source": "정산",
-      "category": "기타 수입",
+      "category": "환불/취소",
       "paymentMethod": "계좌이체",
       "amount": 152480,
       "memo": "이마트트레이더스 취소 환불"
