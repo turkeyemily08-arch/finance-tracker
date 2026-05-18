@@ -270,7 +270,7 @@
       "date": "2026-05-09",
       "type": "expense",
       "source": "용돈",
-      "category": "외식",
+      "category": "식비/외식",
       "amount": 12500,
       "memo": "스타필드 식사"
     },
@@ -342,7 +342,7 @@
       "date": "2026-05-17",
       "type": "expense",
       "source": "공과금",
-      "category": "장보기",
+      "category": "마트/장보기",
       "amount": 12990,
       "memo": "홈플러스 | 정산필요"
     },
