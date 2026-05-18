@@ -16,17 +16,8 @@ function useTransactions() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const local = localStorage.getItem(LS_KEY);
-    if (local) {
-      try {
-        const parsed = JSON.parse(local);
-        setTransactions(parsed.transactions || []);
-        setSettings(parsed.settings || {});
-        setLoaded(true);
-        return;
-      } catch {}
-    }
-    fetch(DATA_URL)
+    // 항상 서버 최신 데이터를 우선 로드 (localStorage는 오프라인 fallback용)
+    fetch(DATA_URL + '?t=' + Date.now())
       .then((r) => r.json())
       .then((data) => {
         setTransactions(data.transactions || []);
@@ -34,7 +25,18 @@ function useTransactions() {
         setLoaded(true);
         localStorage.setItem(LS_KEY, JSON.stringify(data));
       })
-      .catch(() => setLoaded(true));
+      .catch(() => {
+        // 서버 실패 시 localStorage fallback
+        const local = localStorage.getItem(LS_KEY);
+        if (local) {
+          try {
+            const parsed = JSON.parse(local);
+            setTransactions(parsed.transactions || []);
+            setSettings(parsed.settings || {});
+          } catch {}
+        }
+        setLoaded(true);
+      });
   }, []);
 
   const persist = useCallback((txs, s = settings) => {
