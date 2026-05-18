@@ -10,6 +10,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "장보기",
+      "paymentMethod": "삼성카드",
       "amount": 152480,
       "memo": "이마트트레이더스 (5/5 취소환불 완료)"
     },
@@ -19,6 +20,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "온누리/상품권",
+      "paymentMethod": "계좌이체",
       "amount": 90000,
       "memo": "온누리상품권 충전 | 정산필요"
     },
@@ -28,6 +30,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "외식",
+      "paymentMethod": "신한카드",
       "amount": 2851,
       "memo": "스타필드시티 위례점"
     },
@@ -37,6 +40,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "외식",
+      "paymentMethod": "신한카드",
       "amount": 27800,
       "memo": "스타필드"
     },
@@ -46,6 +50,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "장보기",
+      "paymentMethod": "신한카드",
       "amount": 11900,
       "memo": "홈플러스 야탑점 | 정산필요"
     },
@@ -55,6 +60,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "생활용품",
+      "paymentMethod": "삼성카드",
       "amount": 20000,
       "memo": "다이소 (5/5 일부환불 포함)"
     },
@@ -64,6 +70,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "외식",
+      "paymentMethod": "삼성카드",
       "amount": 1700,
       "memo": "청년축산 야탑지점"
     },
@@ -73,6 +80,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "의류/쇼핑",
+      "paymentMethod": "삼성카드",
       "amount": 17070,
       "memo": "뉴코아아울렛 야탑점"
     },
@@ -82,6 +90,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "간식/편의점",
+      "paymentMethod": "삼성카드",
       "amount": 10000,
       "memo": "찐빵 모란시장"
     },
@@ -91,6 +100,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "카페/음료",
+      "paymentMethod": "토스카드",
       "amount": 2400,
       "memo": "메가커피"
     },
@@ -100,6 +110,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "간식/편의점",
+      "paymentMethod": "신한카드",
       "amount": 15650,
       "memo": "CU 리솜포레스트점"
     },
@@ -109,6 +120,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "외식",
+      "paymentMethod": "삼성카드",
       "amount": 59000,
       "memo": "더진지 (5/5 일부환불 포함)"
     },
@@ -118,6 +130,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "자기계발/학회",
+      "paymentMethod": "계좌이체",
       "amount": 60000,
       "memo": "한국디지털콘텐츠 (학회비)"
     },
@@ -127,6 +140,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 97000,
       "memo": "더진지+다이소 환불"
     },
@@ -136,6 +150,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 152480,
       "memo": "이마트트레이더스 취소 환불"
     },
@@ -145,6 +160,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 1088,
       "memo": "ETF 분배금"
     },
@@ -154,6 +170,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 992,
       "memo": "ETF 분배금"
     },
@@ -163,6 +180,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 10,
       "memo": "탄소중립실천 포인트"
     },
@@ -172,6 +190,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
+      "paymentMethod": "신한카드",
       "amount": 14700,
       "memo": "티머니go | 정산필요"
     },
@@ -181,6 +200,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
+      "paymentMethod": "신한카드",
       "amount": 900,
       "memo": "티머니go 부분취소 후 최종결제 | 정산필요"
     },
@@ -190,6 +210,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "보험료",
+      "paymentMethod": "계좌이체",
       "amount": 30415,
       "memo": "한화손해보험 | 정산필요"
     },
@@ -199,6 +220,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 60000,
       "memo": "구창민 이체 (학회 디지털콘텐츠 납부금 정산)"
     },
@@ -208,6 +230,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "생활용품",
+      "paymentMethod": "",
       "amount": 5000,
       "memo": "다이소"
     },
@@ -217,6 +240,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
+      "paymentMethod": "신한카드",
       "amount": 14700,
       "memo": "티머니go | 정산필요"
     },
@@ -226,6 +250,7 @@
       "type": "expense",
       "source": "복지포인트",
       "category": "쇼핑(포인트)",
+      "paymentMethod": "복지카드",
       "amount": 79760,
       "memo": "무신사 | 정산필요 (복지포인트, 6/15 정산예정)"
     },
@@ -235,6 +260,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "외식",
+      "paymentMethod": "DPLYR카드",
       "amount": 4000,
       "memo": "스타필드 DPLYR (커플카드)"
     },
@@ -244,6 +270,7 @@
       "type": "expense",
       "source": "복지포인트",
       "category": "쇼핑(포인트)",
+      "paymentMethod": "복지카드",
       "amount": 72880,
       "memo": "무인양품 | 정산필요 (복지포인트, 6/15 정산예정)"
     },
@@ -253,6 +280,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "외식",
+      "paymentMethod": "신한카드",
       "amount": 20860,
       "memo": "스타필드 식사"
     },
@@ -262,6 +290,7 @@
       "type": "expense",
       "source": "복지포인트",
       "category": "쇼핑(포인트)",
+      "paymentMethod": "복지카드",
       "amount": 7000,
       "memo": "스타필드 | 정산필요 (복지포인트, 6/15 정산예정)"
     },
@@ -271,6 +300,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "외식",
+      "paymentMethod": "신한카드",
       "amount": 12500,
       "memo": "스타필드 식사"
     },
@@ -280,6 +310,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "경조사",
+      "paymentMethod": "계좌이체",
       "amount": 35000,
       "memo": "김민지 이체 (경조사) | 정산필요"
     },
@@ -289,6 +320,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
+      "paymentMethod": "신한카드",
       "amount": 8100,
       "memo": "교통카드 | 정산필요"
     },
@@ -298,6 +330,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "경조사",
+      "paymentMethod": "계좌이체",
       "amount": 50000,
       "memo": "이지영 축의금 | 정산필요"
     },
@@ -307,6 +340,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
+      "paymentMethod": "신한카드",
       "amount": 14700,
       "memo": "티머니go | 정산필요"
     },
@@ -316,6 +350,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "카페/음료",
+      "paymentMethod": "계좌이체",
       "amount": 3900,
       "memo": "성수정 이체 (사내카페 충남카페)"
     },
@@ -325,6 +360,7 @@
       "type": "income",
       "source": "정산",
       "category": "공과금 정산",
+      "paymentMethod": "계좌이체",
       "amount": 50000,
       "memo": "이민구 이체 (회사샘 축의금 대납 정산)"
     },
@@ -334,6 +370,7 @@
       "type": "income",
       "source": "정산",
       "category": "기타 수입",
+      "paymentMethod": "계좌이체",
       "amount": 200000,
       "memo": "이민구 이체 (유니폼 195,000원 선결제 정산, 용돈에서 매달 조금씩 상환 예정 — 6월부터 시작)"
     },
@@ -343,6 +380,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "장보기",
+      "paymentMethod": "신한카드",
       "amount": 12990,
       "memo": "홈플러스 | 정산필요"
     },
@@ -352,6 +390,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "문화/여가",
+      "paymentMethod": "",
       "amount": 7999,
       "memo": "메가박스"
     }
