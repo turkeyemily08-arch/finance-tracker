@@ -9,18 +9,34 @@
     <meta http-equiv="Expires" content="0" />
     <title>finance-tracker</title>
     <script>
-      // 배포할 때마다 version.json이 갱신됨
-      // 저장된 버전과 다르면 새 URL로 이동 → 카카오 등 인앱브라우저 캐시 우회
+      // ① Service Worker 등록 (한 번 설치되면 이후 모든 방문에서 HTML을 항상 새로 가져옴)
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('sw.js')
+            .then(function (reg) {
+              // 새 SW가 활성화되면 페이지 새로고침 → 최신 콘텐츠 보장
+              reg.addEventListener('updatefound', function () {
+                var newWorker = reg.installing;
+                newWorker.addEventListener('statechange', function () {
+                  if (newWorker.state === 'activated') {
+                    window.location.reload();
+                  }
+                });
+              });
+            })
+            .catch(function () {});
+        });
+      }
+
+      // ② 버전 체크 (SW 미지원 환경용 백업)
       (function () {
-        if (/[?&]v=/.test(location.search)) return; // 이미 리다이렉트된 경우 중단
+        if (/[?&]v=/.test(location.search)) return;
         fetch('data/version.json?t=' + Date.now(), { cache: 'no-store' })
           .then(function (r) { return r.json(); })
           .then(function (d) {
-            var KEY = '_fv';
-            var prev = localStorage.getItem(KEY);
-            localStorage.setItem(KEY, d.v);
+            var prev = localStorage.getItem('_fv');
+            localStorage.setItem('_fv', d.v);
             if (prev && prev !== d.v) {
-              // 새 버전 감지 → 캐시 없는 새 URL로 강제 이동
               location.replace(location.pathname + '?v=' + d.v);
             }
           })
