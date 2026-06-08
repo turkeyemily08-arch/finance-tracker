@@ -167,6 +167,246 @@
       "memo": "월급"
     },
     {
+      "id": "tx-20260401-002",
+      "date": "2026-04-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "paymentMethod": "신한카드",
+      "amount": 27000,
+      "memo": "치킨"
+    },
+    {
+      "id": "tx-20260403-001",
+      "date": "2026-04-03",
+      "type": "expense",
+      "source": "공과금",
+      "category": "자동차/주유",
+      "paymentMethod": "신한카드",
+      "amount": 70000,
+      "memo": "주유비"
+    },
+    {
+      "id": "tx-20260404-001",
+      "date": "2026-04-04",
+      "type": "expense",
+      "source": "공과금",
+      "category": "장보기",
+      "paymentMethod": "신한카드",
+      "amount": 58470,
+      "memo": "장보기"
+    },
+    {
+      "id": "tx-20260404-002",
+      "date": "2026-04-04",
+      "type": "expense",
+      "source": "용돈",
+      "category": "간식/편의점",
+      "paymentMethod": "신한카드",
+      "amount": 10000,
+      "memo": "아이스크림"
+    },
+    {
+      "id": "tx-20260404-003",
+      "date": "2026-04-04",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "paymentMethod": "신한카드",
+      "amount": 5200,
+      "memo": "펠트커피"
+    },
+    {
+      "id": "tx-20260404-004",
+      "date": "2026-04-04",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "paymentMethod": "신한카드",
+      "amount": 3400,
+      "memo": "커피"
+    },
+    {
+      "id": "tx-20260405-001",
+      "date": "2026-04-05",
+      "type": "expense",
+      "source": "공과금",
+      "category": "장보기",
+      "paymentMethod": "신한카드",
+      "amount": 60756,
+      "memo": "장보기"
+    },
+    {
+      "id": "tx-20260406-001",
+      "date": "2026-04-06",
+      "type": "expense",
+      "source": "공과금",
+      "category": "온누리/상품권",
+      "paymentMethod": "현금",
+      "amount": 360000,
+      "memo": "성남사랑상품권 충전"
+    },
+    {
+      "id": "tx-20260406-002",
+      "date": "2026-04-06",
+      "type": "expense",
+      "source": "공과금",
+      "category": "보험료",
+      "paymentMethod": "신한카드",
+      "amount": 30415,
+      "memo": "한화손해보험"
+    },
+    {
+      "id": "tx-20260410-001",
+      "date": "2026-04-10",
+      "type": "expense",
+      "source": "공과금",
+      "category": "경조사",
+      "paymentMethod": "신한카드",
+      "amount": 50000,
+      "memo": "윤지수샘 축의금"
+    },
+    {
+      "id": "tx-20260410-002",
+      "date": "2026-04-10",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "paymentMethod": "신한카드",
+      "amount": 13600,
+      "memo": "고속버스"
+    },
+    {
+      "id": "tx-20260410-003",
+      "date": "2026-04-10",
+      "type": "expense",
+      "source": "용돈",
+      "category": "구독서비스",
+      "paymentMethod": "신한카드",
+      "amount": 13300,
+      "memo": "클로드"
+    },
+    {
+      "id": "tx-20260410-004",
+      "date": "2026-04-10",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "paymentMethod": "신한카드",
+      "amount": 29400,
+      "memo": "고속버스"
+    },
+    {
+      "id": "tx-20260410-005",
+      "date": "2026-04-10",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "paymentMethod": "신한카드",
+      "amount": 13000,
+      "memo": "교통비"
+    },
+    {
+      "id": "tx-20260411-001",
+      "date": "2026-04-11",
+      "type": "expense",
+      "source": "공과금",
+      "category": "쿠팡",
+      "paymentMethod": "신한카드",
+      "amount": 34000,
+      "memo": "쿠팡 장보기"
+    },
+    {
+      "id": "tx-20260412-001",
+      "date": "2026-04-12",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "paymentMethod": "신한카드",
+      "amount": 5800,
+      "memo": "메가커피"
+    },
+    {
+      "id": "tx-20260413-001",
+      "date": "2026-04-13",
+      "type": "expense",
+      "source": "공과금",
+      "category": "기타 공과금",
+      "paymentMethod": "신한카드",
+      "amount": 27140,
+      "memo": "통신비"
+    },
+    {
+      "id": "tx-20260415-001",
+      "date": "2026-04-15",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "paymentMethod": "신한카드",
+      "amount": 54000,
+      "memo": "잠옷"
+    },
+    {
+      "id": "tx-20260418-001",
+      "date": "2026-04-18",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "paymentMethod": "신한카드",
+      "amount": 5800,
+      "memo": "메가커피"
+    },
+    {
+      "id": "tx-20260419-001",
+      "date": "2026-04-19",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "paymentMethod": "신한카드",
+      "amount": 2900,
+      "memo": "메가커피"
+    },
+    {
+      "id": "tx-20260420-001",
+      "date": "2026-04-20",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "paymentMethod": "신한카드",
+      "amount": 39400,
+      "memo": "고속버스"
+    },
+    {
+      "id": "tx-20260426-001",
+      "date": "2026-04-26",
+      "type": "expense",
+      "source": "공과금",
+      "category": "기타 공과금",
+      "paymentMethod": "신한카드",
+      "amount": 3200,
+      "memo": "유튜브"
+    },
+    {
+      "id": "tx-20260426-002",
+      "date": "2026-04-26",
+      "type": "expense",
+      "source": "공과금",
+      "category": "기타 공과금",
+      "paymentMethod": "신한카드",
+      "amount": 40150,
+      "memo": "통신비"
+    },
+    {
+      "id": "tx-20260429-001",
+      "date": "2026-04-29",
+      "type": "expense",
+      "source": "용돈",
+      "category": "미용/뷰티",
+      "paymentMethod": "신한카드",
+      "amount": 16630,
+      "memo": "화장품 쿠션"
+    },
+    {
       "id": "tx-20260501-001",
       "date": "2026-05-01",
       "type": "expense",
