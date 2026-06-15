@@ -56,7 +56,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
     <div className="tx-card">
       <div className="tx-header">
         <span className="tx-title">거래 내역</span>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="tx-controls">
           <input
             type="text"
             value={search}
@@ -98,7 +98,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
         </div>
       )}
 
-      <div style={{ overflowX: 'auto' }}>
+      <div className="tx-scroll">
         <table className="tx-table">
           <thead>
             <tr>
