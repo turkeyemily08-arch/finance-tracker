@@ -26,7 +26,7 @@ export default function AllowancePanel({ transactions, year, month, stats }) {
   }));
 
   const usedPct = Math.min((stats.용돈지출 / ALLOWANCE) * 100, 100);
-  const barColor = usedPct > 100 ? '#D86060' : usedPct > 90 ? '#D86060' : usedPct > 70 ? '#D89844' : '#48B880';
+  const barColor = usedPct > 90 ? '#F088AC' : usedPct > 70 ? '#F0B060' : '#5FC0A0';
   const isNegative = stats.용돈잔액 < 0;
 
   return (
@@ -41,17 +41,17 @@ export default function AllowancePanel({ transactions, year, month, stats }) {
       </div>
       <div className="allowance-nums">
         <span>사용 {formatKRW(stats.용돈지출)}</span>
-        <span style={{ color: isNegative ? '#D86060' : undefined }}>
+        <span style={{ color: isNegative ? '#E0708C' : undefined }}>
           {isNegative
             ? `마이너스 ${formatKRW(-stats.용돈잔액)}`
             : `잔액 ${formatKRW(stats.용돈잔액)}`}
         </span>
       </div>
 
-      <div className="chart-title" style={{ fontSize: 13, marginBottom: 4 }}>
+      <div className="chart-title" style={{ fontSize: 14, marginBottom: 4 }}>
         일별 용돈 잔액
-        <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 400, marginLeft: 8 }}>
-          ── 이번달 &nbsp;
+        <span style={{ fontSize: 12, color: '#9CA3AF', fontWeight: 400, marginLeft: 8 }}>
+          <span style={{ color: '#6FB0E0' }}>──</span> 이번달 &nbsp;
           <span style={{ color: '#C0C0C0' }}>- - 전달</span>
         </span>
       </div>
