@@ -230,7 +230,7 @@ export default function App() {
             </div>
             <div className="stat-card">
               <div className="stat-label">공과금 지출</div>
-              <div className="stat-value" style={{ color: '#60A5FA', fontSize: 16 }}>
+              <div className="stat-value" style={{ color: '#4F7FBF', fontSize: 16 }}>
                 {stats.공과금지출.toLocaleString()}
               </div>
               <div className="stat-sub">정산 대기 {stats.미정산 > 0 ? stats.미정산.toLocaleString() + '원' : '없음'}</div>
@@ -246,9 +246,9 @@ export default function App() {
           <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px' }}>
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
-              { label: '공과금', value: stats.공과금지출, color: '#60A5FA' },
-              { label: '용돈', value: stats.용돈지출, color: '#F87171' },
-              { label: '복지포인트', value: stats.복지포인트지출, color: '#C084FC' },
+              { label: '공과금', value: stats.공과금지출, color: '#4F7FBF' },
+              { label: '용돈', value: stats.용돈지출, color: '#E05C5C' },
+              { label: '복지포인트', value: stats.복지포인트지출, color: '#8B6FC4' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />
