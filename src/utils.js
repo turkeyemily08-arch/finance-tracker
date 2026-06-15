@@ -37,6 +37,9 @@ export const calcMonthStats = (transactions) => {
   const 급여 = transactions
     .filter((t) => t.source === '급여')
     .reduce((s, t) => s + t.amount, 0);
+  const 교통비지출 = transactions
+    .filter((t) => t.type === 'expense' && t.category === '교통비')
+    .reduce((s, t) => s + t.amount, 0);
 
   return {
     income,
@@ -45,6 +48,7 @@ export const calcMonthStats = (transactions) => {
     정산수입,
     용돈지출,
     복지포인트지출,
+    교통비지출,
     급여,
     미정산: 공과금지출 - 정산수입,
     용돈잔액: ALLOWANCE - 용돈지출,

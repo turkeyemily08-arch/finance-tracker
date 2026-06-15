@@ -364,6 +364,7 @@ export default function App() {
               { label: '공과금', value: stats.공과금지출, color: '#6FB0E0' },
               { label: '용돈', value: stats.용돈지출, color: '#F088AC' },
               { label: '복지포인트', value: stats.복지포인트지출, color: '#B088D8' },
+              { label: '교통비', value: stats.교통비지출, color: '#6CB4E0' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />

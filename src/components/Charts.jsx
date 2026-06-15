@@ -89,7 +89,19 @@ function CategorySourceChart({ transactions }) {
           />
           <Bar dataKey="공과금" stackId="a" fill="#6FB0E0" radius={[0,0,0,0]} maxBarSize={32} />
           <Bar dataKey="용돈" stackId="a" fill="#F088AC" radius={[0,0,0,0]} maxBarSize={32} />
-          <Bar dataKey="복지포인트" stackId="a" fill="#B088D8" radius={[4,4,0,0]} maxBarSize={32} />
+          <Bar dataKey="복지포인트" stackId="a" fill="#B088D8" radius={[4,4,0,0]} maxBarSize={32}>
+            <LabelList
+              content={(props) => {
+                const { x, y, width, total } = props;
+                if (!total || total < 10000) return null;
+                return (
+                  <text x={x + width / 2} y={y - 4} fill="#6B7280" fontSize={10} textAnchor="middle">
+                    {`${Math.round(total / 10000)}만`}
+                  </text>
+                );
+              }}
+            />
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -123,10 +135,10 @@ function MonthlyTrendChart({ transactions }) {
           <Bar dataKey="수입" fill="#5FC0A0" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="지출" fill="#F088AC" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="저축" fill="#F0A060" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="저축" fill="#B088D8" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="지출" fill="#F088AC" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
         </BarChart>
