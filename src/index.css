@@ -7,7 +7,7 @@ body {
   font-size: 15px;
 }
 
-#root { max-width: 900px; margin: 0 auto; padding: 16px; }
+#root { max-width: 1200px; margin: 0 auto; padding: 8px 12px; }
 
 .card {
   background: #fff;
@@ -107,7 +107,7 @@ body {
 .tx-scroll {
   overflow: auto;
   min-height: 420px;
-  max-height: 620px;
+  max-height: 900px;
 }
 .tx-table { width: 100%; border-collapse: collapse; }
 .tx-table thead th {
