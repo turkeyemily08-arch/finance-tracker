@@ -124,6 +124,41 @@ async function saveToGithub(transactions, settings) {
   return { ok: true };
 }
 
+function copySettlementMessage(transactions, year, month) {
+  const items = transactions
+    .filter((t) => (t.memo || '').includes('정산필요'))
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  if (items.length === 0) {
+    alert('이번 달 정산필요 항목이 없습니다.');
+    return;
+  }
+
+  const total = items.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const lines = items.map((t) => {
+    const d = t.date.slice(5).replace('-', '/');
+    const sign = t.type === 'expense' ? '' : '(환급) ';
+    return `  ${d} ${sign}${t.description} ${t.amount.toLocaleString()}원`;
+  });
+
+  const msg = [
+    `[정산 요청] ${year}년 ${month}월`,
+    '─────────────────',
+    ...lines,
+    '─────────────────',
+    `합계 ${total.toLocaleString()}원`,
+  ].join('\n');
+
+  navigator.clipboard.writeText(msg).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = msg;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+
 function downloadBackup(transactions, settings) {
   const now = new Date().toISOString().slice(0, 10);
   const data = JSON.stringify({ settings, transactions }, null, 2);
@@ -187,10 +222,17 @@ export default function App() {
         <div className="app-title">My Finance Tracker</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           {saveMsg && (
-            <span style={{ fontSize: 12, color: saveMsg.startsWith('✅') ? '#10B981' : '#E06666' }}>
+            <span style={{ fontSize: 12, color: saveMsg.startsWith('✅') ? '#4E9E7A' : '#C46868' }}>
               {saveMsg}
             </span>
           )}
+          <button
+            className="header-btn kakao-btn"
+            onClick={() => copySettlementMessage(monthTx, year, month)}
+            title="정산필요 항목을 카카오톡 메시지로 복사"
+          >
+            📋 정산요청
+          </button>
           <button className="header-btn backup-btn" onClick={handleBackup} title="JSON 파일로 백업">
             ⬇ 백업
           </button>
@@ -229,7 +271,7 @@ export default function App() {
               return (
                 <div className="stat-card" key={card}>
                   <div className="stat-label">{card} 실적</div>
-                  <div className="stat-value" style={{ color: achieved ? '#3A9E6E' : '#4F7FBF', fontSize: 15 }}>
+                  <div className="stat-value" style={{ color: achieved ? '#4E9E7A' : '#7BADD4', fontSize: 15 }}>
                     {achieved ? '✅ 달성' : `${Math.round(spent / 10000)}만원`}
                   </div>
                   <div className="stat-sub">
@@ -249,9 +291,9 @@ export default function App() {
           <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px' }}>
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
-              { label: '공과금', value: stats.공과금지출, color: '#4F7FBF' },
-              { label: '용돈', value: stats.용돈지출, color: '#E05C5C' },
-              { label: '복지포인트', value: stats.복지포인트지출, color: '#8B6FC4' },
+              { label: '공과금', value: stats.공과금지출, color: '#7BADD4' },
+              { label: '용돈', value: stats.용돈지출, color: '#D88080' },
+              { label: '복지포인트', value: stats.복지포인트지출, color: '#A894D8' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />

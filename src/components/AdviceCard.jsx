@@ -8,7 +8,7 @@ export default function AdviceCard({ stats, transactions, year, month }) {
     <div className="advice-card">
       <div className="advice-header">
         <div className="advice-title">
-          <span style={{ color: '#2563EB' }}>✦</span> Claude 소비 조언
+          <span style={{ color: '#7BADD4' }}>✦</span> Claude 소비 조언
         </div>
         <div className="advice-date">{dateStr} 기준</div>
       </div>

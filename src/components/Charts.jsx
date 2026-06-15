@@ -78,13 +78,13 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="수입" fill="#3A9E6E" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="수입" fill="#B0D8B8" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="지출" fill="#E05C5C" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="지출" fill="#F0ACAC" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="저축" fill="#5B73C4" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="저축" fill="#B0BCE8" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
         </BarChart>

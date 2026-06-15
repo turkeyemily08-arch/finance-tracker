@@ -15,7 +15,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function AllowancePanel({ transactions, year, month, stats }) {
   const data = calcDailyAllowanceBalance(transactions, year, month);
   const usedPct = Math.min((stats.용돈지출 / ALLOWANCE) * 100, 100);
-  const barColor = usedPct > 90 ? '#E06666' : usedPct > 70 ? '#FF9900' : '#10B981';
+  const barColor = usedPct > 90 ? '#E8A0A0' : usedPct > 70 ? '#F0D0A0' : '#A8D8B8';
 
   return (
     <div className="allowance-panel">
@@ -51,8 +51,8 @@ export default function AllowancePanel({ transactions, year, month, stats }) {
           <Tooltip content={<CustomTooltip />} />
           <ReferenceLine y={0} stroke="#E5E7EB" strokeDasharray="3 3" />
           <Line
-            type="monotone" dataKey="balance" stroke="#2563EB"
-            strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#2563EB' }}
+            type="monotone" dataKey="balance" stroke="#7BADD4"
+            strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#7BADD4' }}
           />
         </LineChart>
       </ResponsiveContainer>
