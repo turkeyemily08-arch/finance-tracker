@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../constants';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
 
 const DEFAULT = {
   date: new Date().toISOString().slice(0, 10),
   type: 'expense',
   source: '용돈',
   category: '식비/외식',
+  paymentMethod: '',
   description: '',
   amount: '',
   memo: '',
@@ -82,6 +83,15 @@ export default function TransactionModal({ onClose, onSave, initial }) {
                 {categoryOptions.map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
+          </div>
+
+          <div className="form-row">
+            <label className="form-label">결제수단</label>
+            <select className="form-select" value={form.paymentMethod || ''}
+              onChange={(e) => set('paymentMethod', e.target.value)}>
+              <option value="">선택 안함</option>
+              {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
+            </select>
           </div>
 
           <div className="form-row">

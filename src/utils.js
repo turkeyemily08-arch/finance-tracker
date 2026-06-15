@@ -17,7 +17,7 @@ export const filterByMonth = (transactions, year, month) => {
 
 export const calcMonthStats = (transactions) => {
   const income = transactions
-    .filter((t) => t.type === 'income')
+    .filter((t) => t.type === 'income' && t.source !== '정산')
     .reduce((s, t) => s + t.amount, 0);
   const expense = transactions
     .filter((t) => t.type === 'expense')
@@ -70,9 +70,46 @@ export const calcDailyAllowanceBalance = (transactions, year, month) => {
       .filter((t) => t.date === dateStr)
       .reduce((s, t) => s + t.amount, 0);
     balance -= dayExpense;
-    result.push({ day: `${d}일`, balance: Math.max(balance, 0) });
+    result.push({ day: `${d}일`, balance });
   }
   return result;
+};
+
+export const calcPrevMonthAllowanceBalance = (transactions, year, month) => {
+  const prevYear = month === 1 ? year - 1 : year;
+  const prevMonth = month === 1 ? 12 : month - 1;
+  const monthTx = filterByMonth(transactions, prevYear, prevMonth)
+    .filter((t) => t.type === 'expense' && t.source === '용돈')
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const daysInMonth = new Date(prevYear, prevMonth, 0).getDate();
+  const result = [];
+  let balance = ALLOWANCE;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const dayExpense = monthTx
+      .filter((t) => t.date === dateStr)
+      .reduce((s, t) => s + t.amount, 0);
+    balance -= dayExpense;
+    result.push({ day: d, balance });
+  }
+  return result;
+};
+
+export const calcCategorySourceBreakdown = (transactions) => {
+  const map = {};
+  transactions
+    .filter((t) => t.type === 'expense')
+    .forEach((t) => {
+      if (!map[t.category]) map[t.category] = { 공과금: 0, 용돈: 0, 복지포인트: 0 };
+      const src = ['공과금', '용돈', '복지포인트'].includes(t.source) ? t.source : '기타';
+      if (src !== '기타') map[t.category][src] += t.amount;
+    });
+  return Object.entries(map)
+    .map(([name, s]) => ({ name, 공과금: s.공과금, 용돈: s.용돈, 복지포인트: s.복지포인트, total: s.공과금 + s.용돈 + s.복지포인트 }))
+    .filter((d) => d.total > 0)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
 };
 
 export const calcMonthlyTrend = (transactions) => {
@@ -80,8 +117,8 @@ export const calcMonthlyTrend = (transactions) => {
   transactions.forEach((t) => {
     const key = getMonthKey(t.date);
     if (!map[key]) map[key] = { month: key, income: 0, expense: 0 };
-    if (t.type === 'income') map[key].income += t.amount;
-    else map[key].expense += t.amount;
+    if (t.type === 'income' && t.source !== '정산') map[key].income += t.amount;
+    else if (t.type === 'expense') map[key].expense += t.amount;
   });
   return Object.values(map)
     .sort((a, b) => a.month.localeCompare(b.month))
@@ -105,25 +142,38 @@ export const calcCategoryBreakdown = (transactions, type = 'expense') => {
     .sort((a, b) => b.value - a.value);
 };
 
+export const calcPaymentMethodBreakdown = (transactions) => {
+  const map = {};
+  transactions
+    .filter((t) => t.type === 'expense' && t.paymentMethod)
+    .forEach((t) => {
+      const m = t.paymentMethod || '기타';
+      map[m] = (map[m] || 0) + t.amount;
+    });
+  return Object.entries(map)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+};
+
 export const generateAdvice = (stats, transactions) => {
   const advice = [];
 
   if (stats.용돈잔액 < 0) {
     advice.push({
       icon: '⚠️',
-      color: '#E06666',
+      color: '#D88080',
       text: `용돈 예산 ${formatKRW(ALLOWANCE)}을 ${formatKRW(-stats.용돈잔액)} 초과했습니다. 다음 달 지출 패턴을 점검해보세요.`,
     });
   } else if (stats.용돈잔액 < 30000) {
     advice.push({
       icon: '💡',
-      color: '#FF9900',
+      color: '#C8963A',
       text: `이번 달 용돈 잔액이 ${formatKRW(stats.용돈잔액)} 남았습니다. 월말까지 아껴쓰세요.`,
     });
   } else {
     advice.push({
       icon: '✅',
-      color: '#6AA84F',
+      color: '#4E9E7A',
       text: `용돈 예산 관리 양호! 이번 달 ${formatKRW(stats.용돈잔액)} 남았습니다.`,
     });
   }
@@ -131,7 +181,7 @@ export const generateAdvice = (stats, transactions) => {
   if (stats.미정산 > 0) {
     advice.push({
       icon: '📋',
-      color: '#4F86C6',
+      color: '#6898C4',
       text: `공과금 ${formatKRW(stats.공과금지출)} 지출 중 ${formatKRW(stats.미정산)}이 아직 정산되지 않았습니다.`,
     });
   }
@@ -141,7 +191,7 @@ export const generateAdvice = (stats, transactions) => {
     const top = topCats[0];
     advice.push({
       icon: '📊',
-      color: '#8E7CC3',
+      color: '#9070C4',
       text: `이번 달 최대 지출 카테고리는 '${top.name}' (${formatKRW(top.value)})입니다.`,
     });
   }
@@ -152,7 +202,7 @@ export const generateAdvice = (stats, transactions) => {
   if (martCount >= 3) {
     advice.push({
       icon: '🛒',
-      color: '#45818E',
+      color: '#5898A0',
       text: `이번 달 마트 방문 ${martCount}회. 장볼 때 목록 작성 후 한 번에 구매하면 충동구매를 줄일 수 있습니다.`,
     });
   }
