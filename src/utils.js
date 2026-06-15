@@ -105,6 +105,19 @@ export const calcCategoryBreakdown = (transactions, type = 'expense') => {
     .sort((a, b) => b.value - a.value);
 };
 
+export const calcPaymentMethodBreakdown = (transactions) => {
+  const map = {};
+  transactions
+    .filter((t) => t.type === 'expense' && t.paymentMethod)
+    .forEach((t) => {
+      const m = t.paymentMethod || '기타';
+      map[m] = (map[m] || 0) + t.amount;
+    });
+  return Object.entries(map)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+};
+
 export const generateAdvice = (stats, transactions) => {
   const advice = [];
 

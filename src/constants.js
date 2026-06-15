@@ -60,3 +60,21 @@ export const SOURCE_COLORS = {
   급여:       '#3A9E6E',
   정산:       '#4BAAB5',
 };
+
+export const PAYMENT_METHODS = [
+  '신한카드', '삼성카드', 'DPLYR카드', '복지카드', '토스카드',
+  '온누리상품권', '여민전', '계좌이체', '현금', '기타',
+];
+
+export const PAYMENT_METHOD_COLORS = {
+  '신한카드':     '#4F7FBF',
+  '삼성카드':     '#5B73C4',
+  'DPLYR카드':    '#8B6FC4',
+  '복지카드':     '#4A9B6F',
+  '토스카드':     '#4BAAB5',
+  '온누리상품권': '#C8873A',
+  '여민전':       '#E05C5C',
+  '계좌이체':     '#94A3B8',
+  '현금':         '#3A9E6E',
+  '기타':         '#9CA3AF',
+};

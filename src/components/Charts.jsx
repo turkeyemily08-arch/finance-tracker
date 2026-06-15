@@ -2,8 +2,8 @@ import {
   PieChart, Pie, Cell, Tooltip as PieTooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip as BarTooltip, Legend, LabelList,
 } from 'recharts';
-import { calcCategoryBreakdown, calcMonthlyTrend, formatKRW } from '../utils';
-import { CATEGORY_COLORS } from '../constants';
+import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentMethodBreakdown, formatKRW } from '../utils';
+import { CATEGORY_COLORS, PAYMENT_METHOD_COLORS } from '../constants';
 
 const RADIAN = Math.PI / 180;
 const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
@@ -20,7 +20,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
   );
 };
 
-function DonutChart({ data, title }) {
+function DonutChart({ data, title, colorMap = CATEGORY_COLORS }) {
   return (
     <div className="chart-card">
       <div className="chart-title">{title}</div>
@@ -33,7 +33,7 @@ function DonutChart({ data, title }) {
             dataKey="value"
           >
             {data.map((entry, i) => (
-              <Cell key={i} fill={CATEGORY_COLORS[entry.name] || '#CBD5E1'} />
+              <Cell key={i} fill={colorMap[entry.name] || '#CBD5E1'} />
             ))}
           </Pie>
           <PieTooltip
@@ -45,7 +45,7 @@ function DonutChart({ data, title }) {
       <div className="legend">
         {data.map((entry, i) => (
           <div className="legend-item" key={i}>
-            <div className="legend-dot" style={{ background: CATEGORY_COLORS[entry.name] || '#CBD5E1' }} />
+            <div className="legend-dot" style={{ background: colorMap[entry.name] || '#CBD5E1' }} />
             {entry.name}
           </div>
         ))}
@@ -95,15 +95,13 @@ function MonthlyTrendChart({ transactions }) {
 
 export default function Charts({ monthTx, allTx }) {
   const expenseData = calcCategoryBreakdown(monthTx, 'expense').filter(d => d.value > 0);
-  const incomeData = calcCategoryBreakdown(
-    monthTx.filter(t => t.source !== '정산'), 'income'
-  ).filter(d => d.value > 0);
+  const paymentData = calcPaymentMethodBreakdown(monthTx).filter(d => d.value > 0);
 
   return (
     <>
       <div className="grid-2">
-        <DonutChart data={expenseData} title="지출 카테고리별 비율" />
-        <DonutChart data={incomeData} title="수입 카테고리별 비율" />
+        <DonutChart data={expenseData} title="지출 카테고리별 비율" colorMap={CATEGORY_COLORS} />
+        <DonutChart data={paymentData} title="결제수단별 지출" colorMap={PAYMENT_METHOD_COLORS} />
       </div>
       <MonthlyTrendChart transactions={allTx} />
     </>

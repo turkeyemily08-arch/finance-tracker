@@ -221,20 +221,23 @@ export default function App() {
         />
         <div className="gap-16" style={{ gap: 12 }}>
           <div className="grid-3" style={{ gap: 10 }}>
-            <div className="stat-card">
-              <div className="stat-label">저축률</div>
-              <div className="stat-value" style={{ color: '#10B981' }}>
-                {stats.income > 0 ? `${Math.max(0, Math.round(((stats.income - stats.expense) / stats.income) * 100))}%` : '0%'}
-              </div>
-              <div className="stat-sub">수입 대비</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">공과금 지출</div>
-              <div className="stat-value" style={{ color: '#4F7FBF', fontSize: 16 }}>
-                {stats.공과금지출.toLocaleString()}
-              </div>
-              <div className="stat-sub">정산 대기 {stats.미정산 > 0 ? stats.미정산.toLocaleString() + '원' : '없음'}</div>
-            </div>
+            {['신한카드', '삼성카드'].map((card) => {
+              const spent = monthTx
+                .filter((t) => t.type === 'expense' && t.paymentMethod === card)
+                .reduce((s, t) => s + t.amount, 0);
+              const achieved = spent >= 300000;
+              return (
+                <div className="stat-card" key={card}>
+                  <div className="stat-label">{card} 실적</div>
+                  <div className="stat-value" style={{ color: achieved ? '#3A9E6E' : '#4F7FBF', fontSize: 15 }}>
+                    {achieved ? '✅ 달성' : `${Math.round(spent / 10000)}만원`}
+                  </div>
+                  <div className="stat-sub">
+                    {achieved ? `${spent.toLocaleString()}원` : `${(300000 - spent).toLocaleString()}원 남음`}
+                  </div>
+                </div>
+              );
+            })}
             <div className="stat-card">
               <div className="stat-label">거래 건수</div>
               <div className="stat-value">{monthTx.length}</div>
