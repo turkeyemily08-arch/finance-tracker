@@ -17,7 +17,7 @@ export const filterByMonth = (transactions, year, month) => {
 
 export const calcMonthStats = (transactions) => {
   const income = transactions
-    .filter((t) => t.type === 'income')
+    .filter((t) => t.type === 'income' && t.source !== '정산')
     .reduce((s, t) => s + t.amount, 0);
   const expense = transactions
     .filter((t) => t.type === 'expense')
@@ -80,8 +80,8 @@ export const calcMonthlyTrend = (transactions) => {
   transactions.forEach((t) => {
     const key = getMonthKey(t.date);
     if (!map[key]) map[key] = { month: key, income: 0, expense: 0 };
-    if (t.type === 'income') map[key].income += t.amount;
-    else map[key].expense += t.amount;
+    if (t.type === 'income' && t.source !== '정산') map[key].income += t.amount;
+    else if (t.type === 'expense') map[key].expense += t.amount;
   });
   return Object.values(map)
     .sort((a, b) => a.month.localeCompare(b.month))

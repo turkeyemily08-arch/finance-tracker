@@ -1,6 +1,6 @@
 import {
   PieChart, Pie, Cell, Tooltip as PieTooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, Tooltip as BarTooltip, Legend,
+  BarChart, Bar, XAxis, YAxis, Tooltip as BarTooltip, Legend, LabelList,
 } from 'recharts';
 import { calcCategoryBreakdown, calcMonthlyTrend, formatKRW } from '../utils';
 import { CATEGORY_COLORS } from '../constants';
@@ -54,13 +54,23 @@ function DonutChart({ data, title }) {
   );
 }
 
+const renderBarLabel = (props) => {
+  const { x, y, width, value } = props;
+  if (!value || value < 50000) return null;
+  return (
+    <text x={x + width / 2} y={y - 4} fill="#6B7280" fontSize={9} textAnchor="middle">
+      {`${Math.round(value / 10000)}만`}
+    </text>
+  );
+};
+
 function MonthlyTrendChart({ transactions }) {
   const data = calcMonthlyTrend(transactions);
   return (
     <div className="chart-card">
       <div className="chart-title">월별 수입/지출 추이</div>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={data} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} margin={{ top: 20, right: 8, left: -20, bottom: 0 }}>
           <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#9CA3AF' }} tickLine={false} axisLine={false} />
           <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} tickFormatter={(v) => `${(v/10000).toFixed(0)}만`} tickLine={false} axisLine={false} />
           <BarTooltip
@@ -68,9 +78,15 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="수입" fill="#10B981" radius={[4,4,0,0]} maxBarSize={30} />
-          <Bar dataKey="지출" fill="#E06666" radius={[4,4,0,0]} maxBarSize={30} />
-          <Bar dataKey="저축" fill="#FFB400" radius={[4,4,0,0]} maxBarSize={30} />
+          <Bar dataKey="수입" fill="#10B981" radius={[4,4,0,0]} maxBarSize={30}>
+            <LabelList content={renderBarLabel} />
+          </Bar>
+          <Bar dataKey="지출" fill="#F87171" radius={[4,4,0,0]} maxBarSize={30}>
+            <LabelList content={renderBarLabel} />
+          </Bar>
+          <Bar dataKey="저축" fill="#A78BFA" radius={[4,4,0,0]} maxBarSize={30}>
+            <LabelList content={renderBarLabel} />
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -79,7 +95,9 @@ function MonthlyTrendChart({ transactions }) {
 
 export default function Charts({ monthTx, allTx }) {
   const expenseData = calcCategoryBreakdown(monthTx, 'expense').filter(d => d.value > 0);
-  const incomeData = calcCategoryBreakdown(monthTx, 'income').filter(d => d.value > 0);
+  const incomeData = calcCategoryBreakdown(
+    monthTx.filter(t => t.source !== '정산'), 'income'
+  ).filter(d => d.value > 0);
 
   return (
     <>

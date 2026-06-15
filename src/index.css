@@ -174,3 +174,13 @@ body {
   font-size: 14px; padding: 2px 6px; border-radius: 4px;
 }
 .delete-btn:hover { color: #E06666; background: #FEF2F2; }
+
+.header-btn {
+  padding: 6px 14px; border-radius: 8px; border: none;
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.backup-btn { background: #F3F4F6; color: #374151; }
+.backup-btn:hover { background: #E5E7EB; }
+.save-btn { background: #2563EB; color: #fff; }
+.save-btn:hover { background: #1D4ED8; }
+.save-btn:disabled { background: #93C5FD; cursor: not-allowed; }
