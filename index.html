@@ -4,46 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/finance-tracker/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <title>finance-tracker</title>
-    <script>
-      // ① Service Worker 등록 (한 번 설치되면 이후 모든 방문에서 HTML을 항상 새로 가져옴)
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          navigator.serviceWorker.register('sw.js')
-            .then(function (reg) {
-              // 새 SW가 활성화되면 페이지 새로고침 → 최신 콘텐츠 보장
-              reg.addEventListener('updatefound', function () {
-                var newWorker = reg.installing;
-                newWorker.addEventListener('statechange', function () {
-                  if (newWorker.state === 'activated') {
-                    window.location.reload();
-                  }
-                });
-              });
-            })
-            .catch(function () {});
-        });
-      }
-
-      // ② 버전 체크 (SW 미지원 환경용 백업)
-      (function () {
-        if (/[?&]v=/.test(location.search)) return;
-        fetch('data/version.json?t=' + Date.now(), { cache: 'no-store' })
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var prev = localStorage.getItem('_fv');
-            localStorage.setItem('_fv', d.v);
-            if (prev && prev !== d.v) {
-              location.replace(location.pathname + '?v=' + d.v);
-            }
-          })
-          .catch(function () {});
-      })();
-    </script>
-    <script type="module" crossorigin src="/finance-tracker/assets/index-CwMcaMdH.js"></script>
+    <script type="module" crossorigin src="/finance-tracker/assets/index-Cd3j3TN8.js"></script>
     <link rel="stylesheet" crossorigin href="/finance-tracker/assets/index-C_n36qot.css">
   </head>
   <body>
