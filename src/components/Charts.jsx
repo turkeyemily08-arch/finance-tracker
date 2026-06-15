@@ -2,8 +2,8 @@ import {
   PieChart, Pie, Cell, Tooltip as PieTooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip as BarTooltip, Legend, LabelList,
 } from 'recharts';
-import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentMethodBreakdown, formatKRW } from '../utils';
-import { CATEGORY_COLORS, PAYMENT_METHOD_COLORS } from '../constants';
+import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentMethodBreakdown, calcCategorySourceBreakdown, formatKRW } from '../utils';
+import { PAYMENT_METHOD_COLORS } from '../constants';
 
 const RADIAN = Math.PI / 180;
 const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
@@ -20,7 +20,7 @@ const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent
   );
 };
 
-function DonutChart({ data, title, colorMap = CATEGORY_COLORS }) {
+function DonutChart({ data, title, colorMap = {} }) {
   return (
     <div className="chart-card">
       <div className="chart-title">{title}</div>
@@ -54,6 +54,48 @@ function DonutChart({ data, title, colorMap = CATEGORY_COLORS }) {
   );
 }
 
+function CategorySourceChart({ transactions }) {
+  const data = calcCategorySourceBreakdown(transactions);
+  return (
+    <div className="chart-card">
+      <div className="chart-title">
+        지출 카테고리별 재원
+        <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 400, marginLeft: 8 }}>
+          <span style={{ color: '#5FA8D6' }}>■</span> 공과금 &nbsp;
+          <span style={{ color: '#D86060' }}>■</span> 용돈 &nbsp;
+          <span style={{ color: '#9070CC' }}>■</span> 복지포인트
+        </span>
+      </div>
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 48 }}>
+          <XAxis
+            dataKey="name"
+            tick={{ fontSize: 10, fill: '#9CA3AF' }}
+            tickLine={false}
+            axisLine={false}
+            angle={-35}
+            textAnchor="end"
+            interval={0}
+          />
+          <YAxis
+            tick={{ fontSize: 10, fill: '#9CA3AF' }}
+            tickFormatter={(v) => `${(v / 10000).toFixed(0)}만`}
+            tickLine={false}
+            axisLine={false}
+          />
+          <BarTooltip
+            formatter={(val, name) => [formatKRW(val), name]}
+            contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
+          />
+          <Bar dataKey="공과금" stackId="a" fill="#5FA8D6" radius={[0,0,0,0]} maxBarSize={32} />
+          <Bar dataKey="용돈" stackId="a" fill="#D86060" radius={[0,0,0,0]} maxBarSize={32} />
+          <Bar dataKey="복지포인트" stackId="a" fill="#9070CC" radius={[4,4,0,0]} maxBarSize={32} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 const renderBarLabel = (props) => {
   const { x, y, width, value } = props;
   if (!value || value < 50000) return null;
@@ -78,13 +120,13 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="수입" fill="#B0D8B8" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="수입" fill="#48B880" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="지출" fill="#F0ACAC" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="지출" fill="#D86060" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="저축" fill="#B0BCE8" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="저축" fill="#6080CC" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
         </BarChart>
@@ -94,13 +136,12 @@ function MonthlyTrendChart({ transactions }) {
 }
 
 export default function Charts({ monthTx, allTx }) {
-  const expenseData = calcCategoryBreakdown(monthTx, 'expense').filter(d => d.value > 0);
   const paymentData = calcPaymentMethodBreakdown(monthTx).filter(d => d.value > 0);
 
   return (
     <>
       <div className="grid-2">
-        <DonutChart data={expenseData} title="지출 카테고리별 비율" colorMap={CATEGORY_COLORS} />
+        <CategorySourceChart transactions={monthTx} />
         <DonutChart data={paymentData} title="결제수단별 지출" colorMap={PAYMENT_METHOD_COLORS} />
       </div>
       <MonthlyTrendChart transactions={allTx} />

@@ -70,9 +70,46 @@ export const calcDailyAllowanceBalance = (transactions, year, month) => {
       .filter((t) => t.date === dateStr)
       .reduce((s, t) => s + t.amount, 0);
     balance -= dayExpense;
-    result.push({ day: `${d}일`, balance: Math.max(balance, 0) });
+    result.push({ day: `${d}일`, balance });
   }
   return result;
+};
+
+export const calcPrevMonthAllowanceBalance = (transactions, year, month) => {
+  const prevYear = month === 1 ? year - 1 : year;
+  const prevMonth = month === 1 ? 12 : month - 1;
+  const monthTx = filterByMonth(transactions, prevYear, prevMonth)
+    .filter((t) => t.type === 'expense' && t.source === '용돈')
+    .sort((a, b) => a.date.localeCompare(b.date));
+
+  const daysInMonth = new Date(prevYear, prevMonth, 0).getDate();
+  const result = [];
+  let balance = ALLOWANCE;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const dayExpense = monthTx
+      .filter((t) => t.date === dateStr)
+      .reduce((s, t) => s + t.amount, 0);
+    balance -= dayExpense;
+    result.push({ day: d, balance });
+  }
+  return result;
+};
+
+export const calcCategorySourceBreakdown = (transactions) => {
+  const map = {};
+  transactions
+    .filter((t) => t.type === 'expense')
+    .forEach((t) => {
+      if (!map[t.category]) map[t.category] = { 공과금: 0, 용돈: 0, 복지포인트: 0 };
+      const src = ['공과금', '용돈', '복지포인트'].includes(t.source) ? t.source : '기타';
+      if (src !== '기타') map[t.category][src] += t.amount;
+    });
+  return Object.entries(map)
+    .map(([name, s]) => ({ name, 공과금: s.공과금, 용돈: s.용돈, 복지포인트: s.복지포인트, total: s.공과금 + s.용돈 + s.복지포인트 }))
+    .filter((d) => d.total > 0)
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
 };
 
 export const calcMonthlyTrend = (transactions) => {
