@@ -88,7 +88,13 @@ function useTransactions() {
     });
   }, [persist]);
 
-  return { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction };
+  const replaceAll = useCallback((txs, s) => {
+    setTransactions(txs);
+    if (s) setSettings(s);
+    persist(txs, s || settings);
+  }, [persist, settings]);
+
+  return { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction, replaceAll };
 }
 
 async function getGithubToken(silent = false) {
@@ -195,8 +201,9 @@ export default function App() {
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState('');
+  const restoreInputRef = useRef(null);
 
-  const { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction } =
+  const { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction, replaceAll } =
     useTransactions();
 
   // Refs to always have the latest values inside async callbacks
@@ -275,6 +282,30 @@ export default function App() {
 
   const handleBackup = () => downloadBackup(transactions, settings);
 
+  const handleRestoreFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = '';
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!Array.isArray(data.transactions)) throw new Error('올바른 백업 파일이 아닙니다.');
+        if (!window.confirm(`백업 파일의 거래 ${data.transactions.length}건으로 복원하시겠습니까?\n현재 데이터는 덮어써집니다.`)) return;
+        replaceAll(data.transactions, data.settings || settings);
+        setSaving(true);
+        setSaveMsg('');
+        const result = await saveToGithub(data.transactions, data.settings || settings);
+        setSaving(false);
+        if (result.ok) showMsg('✅ 복원 완료! 약 1분 후 반영됩니다.', 5000);
+        else showMsg(`⚠️ 로컬 복원 완료 (GitHub 저장 실패: ${result.msg})`, 6000);
+      } catch (err) {
+        alert('복원 실패: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+
   if (!loaded) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#6B7280' }}>
@@ -306,6 +337,10 @@ export default function App() {
           <button className="header-btn backup-btn" onClick={handleBackup} title="JSON 파일로 백업">
             ⬇ 백업
           </button>
+          <button className="header-btn backup-btn" onClick={() => restoreInputRef.current?.click()} title="백업 파일로 복원">
+            ⬆ 복원
+          </button>
+          <input ref={restoreInputRef} type="file" accept=".json" style={{ display: 'none' }} onChange={handleRestoreFile} />
           <button
             className="header-btn save-btn"
             onClick={handleSave}
