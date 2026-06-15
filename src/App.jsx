@@ -324,7 +324,7 @@ export default function App() {
               return (
                 <div className="stat-card" key={card}>
                   <div className="stat-label">{card} 실적</div>
-                  <div className="stat-value" style={{ color: achieved ? '#2A9870' : '#5FA8D6', fontSize: 15 }}>
+                  <div className="stat-value" style={{ color: achieved ? '#5BADA0' : '#7098CC', fontSize: 15 }}>
                     {achieved ? '✅ 달성' : `${Math.round(spent / 10000)}만원`}
                   </div>
                   <div className="stat-sub">
@@ -344,9 +344,9 @@ export default function App() {
           <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px' }}>
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
-              { label: '공과금', value: stats.공과금지출, color: '#5FA8D6' },
-              { label: '용돈', value: stats.용돈지출, color: '#D86060' },
-              { label: '복지포인트', value: stats.복지포인트지출, color: '#9070CC' },
+              { label: '공과금', value: stats.공과금지출, color: '#A8CDEB' },
+              { label: '용돈', value: stats.용돈지출, color: '#F4A7C0' },
+              { label: '복지포인트', value: stats.복지포인트지출, color: '#CBB6E6' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />

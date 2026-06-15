@@ -56,8 +56,8 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                 key={f}
                 className={filter === f ? 'active' : ''}
                 onClick={() => setFilter(f)}
-                style={f === '정산필요' && filter !== f ? { color: '#C46868', borderColor: '#C46868' } :
-                       f === '정산필요' && filter === f ? { background: '#C46868', borderColor: '#C46868', color: '#fff' } : {}}
+                style={f === '정산필요' && filter !== f ? { color: '#E08090', borderColor: '#F4A7C0' } :
+                       f === '정산필요' && filter === f ? { background: '#E08090', borderColor: '#E08090', color: '#fff' } : {}}
               >
                 {f}
               </button>

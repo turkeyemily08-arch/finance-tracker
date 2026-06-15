@@ -30,7 +30,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 20px;
 }
-.app-title { font-size: 22px; font-weight: 700; color: #4878C4; }
+.app-title { font-size: 22px; font-weight: 700; color: #D488B0; }
 .month-nav { display: flex; align-items: center; gap: 12px; }
 .month-nav button {
   background: #F3F4F6; border: none; border-radius: 8px;
@@ -75,7 +75,7 @@ body {
 .allowance-bar-wrap { background: #F3F4F6; border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 8px; }
 .allowance-bar { height: 100%; border-radius: 8px; transition: width 0.5s; }
 .allowance-nums { display: flex; justify-content: space-between; font-size: 12px; color: #6B7280; margin-bottom: 16px; }
-.allowance-nums span:first-child { color: #D86060; font-weight: 600; }
+.allowance-nums span:first-child { color: #E08090; font-weight: 600; }
 
 .chart-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: #374151; }
@@ -101,7 +101,7 @@ body {
   padding: 5px 14px; border-radius: 20px; border: 1px solid #E5E7EB;
   background: #fff; font-size: 12px; cursor: pointer; transition: all 0.15s;
 }
-.tx-filters button.active { background: #5FA8D6; color: #fff; border-color: #5FA8D6; }
+.tx-filters button.active { background: #F4A7C0; color: #fff; border-color: #F4A7C0; }
 .tx-table { width: 100%; border-collapse: collapse; }
 .tx-table th {
   text-align: left; padding: 8px 6px; font-size: 12px; color: #9CA3AF;
@@ -119,8 +119,8 @@ body {
   display: inline-block; padding: 2px 8px; border-radius: 12px;
   font-size: 11px; background: #F3F4F6; color: #374151; white-space: nowrap;
 }
-.amount-expense { color: #D86060; font-weight: 600; }
-.amount-income { color: #2A9870; font-weight: 600; }
+.amount-expense { color: #E08090; font-weight: 600; }
+.amount-income { color: #5BADA0; font-weight: 600; }
 
 .memo-input {
   border: none; background: transparent; font-size: 12px; color: #6B7280;
@@ -132,10 +132,10 @@ body {
 
 .add-btn {
   display: flex; align-items: center; gap: 6px;
-  padding: 7px 14px; background: #5FA8D6; color: #fff;
+  padding: 7px 14px; background: #F4A7C0; color: #fff;
   border: none; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: 500;
 }
-.add-btn:hover { background: #4898C6; }
+.add-btn:hover { background: #EE90AE; }
 
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.4);
@@ -152,7 +152,7 @@ body {
   width: 100%; padding: 10px 12px; border: 1px solid #E5E7EB;
   border-radius: 10px; font-size: 14px; outline: none; background: #fff;
 }
-.form-input:focus, .form-select:focus { border-color: #5FA8D6; }
+.form-input:focus, .form-select:focus { border-color: #F4A7C0; }
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
 .btn-cancel {
@@ -161,9 +161,9 @@ body {
 }
 .btn-save {
   flex: 2; padding: 11px; border: none; border-radius: 10px;
-  background: #5FA8D6; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600;
+  background: #F4A7C0; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600;
 }
-.btn-save:hover { background: #4898C6; }
+.btn-save:hover { background: #EE90AE; }
 
 .app-footer {
   text-align: center; font-size: 11px; color: #9CA3AF; margin-top: 32px; padding: 16px;
@@ -173,7 +173,7 @@ body {
   background: none; border: none; cursor: pointer; color: #D1D5DB;
   font-size: 14px; padding: 2px 6px; border-radius: 4px;
 }
-.delete-btn:hover { color: #D86060; background: #FEF4F4; }
+.delete-btn:hover { color: #E08090; background: #FEF0F4; }
 
 .header-btn {
   padding: 6px 14px; border-radius: 8px; border: none;
@@ -183,6 +183,6 @@ body {
 .backup-btn:hover { background: #E5E7EB; }
 .kakao-btn { background: #FEF4C4; color: #8C7020; }
 .kakao-btn:hover { background: #FDE88C; }
-.save-btn { background: #5FA8D6; color: #fff; }
-.save-btn:hover { background: #4898C6; }
-.save-btn:disabled { background: #A0C8E0; cursor: not-allowed; }
+.save-btn { background: #F4A7C0; color: #fff; }
+.save-btn:hover { background: #EE90AE; }
+.save-btn:disabled { background: #F0D0DC; cursor: not-allowed; }
