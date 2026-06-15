@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import SummaryCards from './components/SummaryCards';
 import AllowancePanel from './components/AllowancePanel';
 import Charts from './components/Charts';
@@ -13,6 +13,7 @@ const FILE_PATH = 'public/data/transactions.json';
 const DATA_URL = import.meta.env.BASE_URL + 'data/transactions.json';
 const LS_KEY = 'finance_tracker_data';
 const LS_TOKEN_KEY = 'gh_pat';
+const AUTO_SAVE_DELAY = 10000; // 10 seconds debounce
 
 function useTransactions() {
   const [transactions, setTransactions] = useState([]);
@@ -73,9 +74,10 @@ function useTransactions() {
   return { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction };
 }
 
-async function getGithubToken() {
+async function getGithubToken(silent = false) {
   let token = localStorage.getItem(LS_TOKEN_KEY);
   if (!token) {
+    if (silent) return null;
     token = window.prompt(
       'GitHub Personal Access Token을 입력하세요.\n(Settings → Developer settings → Personal access tokens → Fine-grained tokens)\n권한: Contents = Read and write'
     );
@@ -84,13 +86,12 @@ async function getGithubToken() {
   return token ? token.trim() : null;
 }
 
-async function saveToGithub(transactions, settings) {
-  const token = await getGithubToken();
-  if (!token) return { ok: false, msg: '토큰 없음' };
+async function saveToGithub(transactions, settings, silent = false) {
+  const token = await getGithubToken(silent);
+  if (!token) return { ok: false, msg: silent ? 'no-token' : '토큰 없음' };
 
   const apiBase = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
 
-  // 현재 파일 SHA 가져오기
   const metaRes = await fetch(apiBase + '?ref=main', {
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
   });
@@ -113,7 +114,7 @@ async function saveToGithub(transactions, settings) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: `데이터 저장 (${now})`,
+      message: silent ? `자동 저장 (${now})` : `데이터 저장 (${now})`,
       content: encoded,
       sha: meta.sha,
       branch: 'main',
@@ -181,6 +182,55 @@ export default function App() {
   const { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction } =
     useTransactions();
 
+  // Refs to always have the latest values inside async callbacks
+  const txRef = useRef(transactions);
+  const settingsRef = useRef(settings);
+  const savingRef = useRef(saving);
+  const autoSaveTimer = useRef(null);
+  const initialLoad = useRef(true);
+
+  useEffect(() => { txRef.current = transactions; }, [transactions]);
+  useEffect(() => { settingsRef.current = settings; }, [settings]);
+  useEffect(() => { savingRef.current = saving; }, [saving]);
+
+  const showMsg = useCallback((msg, duration = 4000) => {
+    setSaveMsg(msg);
+    setTimeout(() => setSaveMsg(''), duration);
+  }, []);
+
+  // Debounced auto-save — fires 10s after the last change, only if token is stored
+  const scheduleAutoSave = useCallback(() => {
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    setSaveMsg('● 저장 대기 중…');
+    autoSaveTimer.current = setTimeout(async () => {
+      if (savingRef.current) return;
+      const hasToken = !!localStorage.getItem(LS_TOKEN_KEY);
+      if (!hasToken) {
+        setSaveMsg('');
+        return;
+      }
+      setSaving(true);
+      setSaveMsg('');
+      const result = await saveToGithub(txRef.current, settingsRef.current, true);
+      setSaving(false);
+      if (result.ok) {
+        showMsg('✅ 자동 저장 완료');
+      } else if (result.msg !== 'no-token') {
+        showMsg(`❌ 자동 저장 실패: ${result.msg}`);
+      }
+    }, AUTO_SAVE_DELAY);
+  }, [showMsg]);
+
+  // Watch for transaction changes after initial load
+  useEffect(() => {
+    if (!loaded) return;
+    if (initialLoad.current) {
+      initialLoad.current = false;
+      return;
+    }
+    scheduleAutoSave();
+  }, [transactions, loaded, scheduleAutoSave]);
+
   const monthTx = filterByMonth(transactions, year, month);
   const stats = calcMonthStats(monthTx);
 
@@ -194,16 +244,16 @@ export default function App() {
   };
 
   const handleSave = async () => {
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
     setSaving(true);
     setSaveMsg('');
     const result = await saveToGithub(transactions, settings);
     setSaving(false);
     if (result.ok) {
-      setSaveMsg('✅ 저장 완료! 약 1분 후 반영됩니다.');
+      showMsg('✅ 저장 완료! 약 1분 후 반영됩니다.', 5000);
     } else {
-      setSaveMsg(`❌ ${result.msg}`);
+      showMsg(`❌ ${result.msg}`, 5000);
     }
-    setTimeout(() => setSaveMsg(''), 5000);
   };
 
   const handleBackup = () => downloadBackup(transactions, settings);
@@ -216,13 +266,16 @@ export default function App() {
     );
   }
 
+  const isPending = saveMsg === '● 저장 대기 중…';
+  const saveMsgColor = saveMsg.startsWith('✅') ? '#4E9E7A' : saveMsg.startsWith('❌') ? '#C46868' : '#9CA3AF';
+
   return (
     <div className="gap-16">
       <div className="app-header">
         <div className="app-title">My Finance Tracker</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           {saveMsg && (
-            <span style={{ fontSize: 12, color: saveMsg.startsWith('✅') ? '#4E9E7A' : '#C46868' }}>
+            <span style={{ fontSize: 12, color: saveMsgColor }}>
               {saveMsg}
             </span>
           )}
@@ -242,7 +295,7 @@ export default function App() {
             disabled={saving}
             title="GitHub에 저장 (자동 배포)"
           >
-            {saving ? '저장 중…' : '☁ 저장'}
+            {saving ? '저장 중…' : isPending ? '☁ 지금 저장' : '☁ 저장'}
           </button>
           <div className="month-nav">
             <button onClick={prevMonth}>←</button>
