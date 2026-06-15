@@ -41,6 +41,16 @@ function useTransactions() {
       if (ls) localData = JSON.parse(ls);
     } catch { localData = null; }
 
+    // 복원 직후 새로고침 시 원격 데이터와 합쳐지는 것을 방지
+    const forceLocal = localStorage.getItem('finance_force_local');
+    if (forceLocal && localData) {
+      localStorage.removeItem('finance_force_local');
+      setTransactions(localData.transactions || []);
+      setSettings(localData.settings || {});
+      setLoaded(true);
+      return;
+    }
+
     fetch(DATA_URL + '?t=' + Date.now())
       .then((r) => r.json())
       .then((remote) => {
@@ -292,13 +302,14 @@ export default function App() {
         const data = JSON.parse(ev.target.result);
         if (!Array.isArray(data.transactions)) throw new Error('올바른 백업 파일이 아닙니다.');
         if (!window.confirm(`백업 파일의 거래 ${data.transactions.length}건으로 복원하시겠습니까?\n현재 데이터는 덮어써집니다.`)) return;
+        localStorage.setItem('finance_force_local', '1');
         replaceAll(data.transactions, data.settings || settings);
         setSaving(true);
         setSaveMsg('');
         const result = await saveToGithub(data.transactions, data.settings || settings);
         setSaving(false);
         if (result.ok) showMsg('✅ 복원 완료! 약 1분 후 반영됩니다.', 5000);
-        else showMsg(`⚠️ 로컬 복원 완료 (GitHub 저장 실패: ${result.msg})`, 6000);
+        else showMsg(`⚠️ 로컬 복원 완료 — 새로고침 전에 반드시 ☁ 저장을 눌러주세요!`, 8000);
       } catch (err) {
         alert('복원 실패: ' + err.message);
       }
