@@ -15,28 +15,45 @@ const LS_KEY = 'finance_tracker_data';
 const LS_TOKEN_KEY = 'gh_pat';
 const AUTO_SAVE_DELAY = 10000; // 10 seconds debounce
 
+// 원격(GitHub)과 브라우저(localStorage) 데이터를 id 기준으로 합칩니다.
+// 한쪽에만 있는 거래는 절대 버리지 않고, 충돌 시 로컬(내가 마지막에 만진 값)을 우선합니다.
+// → 깃에 아직 동기화 안 된 로컬 입력분이 배포 때 덮어써져 사라지는 일을 방지.
+function mergeData(remote, local) {
+  const remoteTx = (remote && remote.transactions) || [];
+  const localTx = (local && local.transactions) || [];
+  const byId = new Map();
+  remoteTx.forEach((t) => byId.set(t.id, t));   // 원격을 먼저 깔고
+  localTx.forEach((t) => byId.set(t.id, t));    // 로컬로 덮음(+ 로컬 전용 거래 보존)
+  const transactions = Array.from(byId.values()).sort((a, b) => a.date.localeCompare(b.date));
+  const settings = (local && local.settings) || (remote && remote.settings) || {};
+  return { settings, transactions };
+}
+
 function useTransactions() {
   const [transactions, setTransactions] = useState([]);
   const [settings, setSettings] = useState({ allowance: 150000, lastUpdated: '' });
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    let localData = null;
+    try {
+      const ls = localStorage.getItem(LS_KEY);
+      if (ls) localData = JSON.parse(ls);
+    } catch { localData = null; }
+
     fetch(DATA_URL + '?t=' + Date.now())
       .then((r) => r.json())
-      .then((data) => {
-        setTransactions(data.transactions || []);
-        setSettings(data.settings || {});
+      .then((remote) => {
+        const merged = mergeData(remote, localData);
+        setTransactions(merged.transactions);
+        setSettings(merged.settings);
         setLoaded(true);
-        localStorage.setItem(LS_KEY, JSON.stringify(data));
+        localStorage.setItem(LS_KEY, JSON.stringify(merged));
       })
       .catch(() => {
-        const local = localStorage.getItem(LS_KEY);
-        if (local) {
-          try {
-            const parsed = JSON.parse(local);
-            setTransactions(parsed.transactions || []);
-            setSettings(parsed.settings || {});
-          } catch {}
+        if (localData) {
+          setTransactions(localData.transactions || []);
+          setSettings(localData.settings || {});
         }
         setLoaded(true);
       });
@@ -267,7 +284,7 @@ export default function App() {
   }
 
   const isPending = saveMsg === '● 저장 대기 중…';
-  const saveMsgColor = saveMsg.startsWith('✅') ? '#4E9E7A' : saveMsg.startsWith('❌') ? '#C46868' : '#9CA3AF';
+  const saveMsgColor = saveMsg.startsWith('✅') ? '#5BADA0' : saveMsg.startsWith('❌') ? '#E08090' : '#9CA3AF';
 
   return (
     <div className="gap-16">
@@ -324,7 +341,7 @@ export default function App() {
               return (
                 <div className="stat-card" key={card}>
                   <div className="stat-label">{card} 실적</div>
-                  <div className="stat-value" style={{ color: achieved ? '#5BADA0' : '#7098CC', fontSize: 15 }}>
+                  <div className="stat-value" style={{ color: achieved ? '#5FC0A0' : '#6FB0E0', fontSize: 16 }}>
                     {achieved ? '✅ 달성' : `${Math.round(spent / 10000)}만원`}
                   </div>
                   <div className="stat-sub">
@@ -344,9 +361,9 @@ export default function App() {
           <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px' }}>
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
-              { label: '공과금', value: stats.공과금지출, color: '#A8CDEB' },
-              { label: '용돈', value: stats.용돈지출, color: '#F4A7C0' },
-              { label: '복지포인트', value: stats.복지포인트지출, color: '#CBB6E6' },
+              { label: '공과금', value: stats.공과금지출, color: '#6FB0E0' },
+              { label: '용돈', value: stats.용돈지출, color: '#F088AC' },
+              { label: '복지포인트', value: stats.복지포인트지출, color: '#B088D8' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />

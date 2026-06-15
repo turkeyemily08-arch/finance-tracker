@@ -61,9 +61,9 @@ function CategorySourceChart({ transactions }) {
       <div className="chart-title">
         지출 카테고리별 재원
         <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 400, marginLeft: 8 }}>
-          <span style={{ color: '#A8CDEB' }}>■</span> 공과금 &nbsp;
-          <span style={{ color: '#F4A7C0' }}>■</span> 용돈 &nbsp;
-          <span style={{ color: '#CBB6E6' }}>■</span> 복지포인트
+          <span style={{ color: '#6FB0E0' }}>■</span> 공과금 &nbsp;
+          <span style={{ color: '#F088AC' }}>■</span> 용돈 &nbsp;
+          <span style={{ color: '#B088D8' }}>■</span> 복지포인트
         </span>
       </div>
       <ResponsiveContainer width="100%" height={220}>
@@ -87,9 +87,9 @@ function CategorySourceChart({ transactions }) {
             formatter={(val, name) => [formatKRW(val), name]}
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
-          <Bar dataKey="공과금" stackId="a" fill="#A8CDEB" radius={[0,0,0,0]} maxBarSize={32} />
-          <Bar dataKey="용돈" stackId="a" fill="#F4A7C0" radius={[0,0,0,0]} maxBarSize={32} />
-          <Bar dataKey="복지포인트" stackId="a" fill="#CBB6E6" radius={[4,4,0,0]} maxBarSize={32} />
+          <Bar dataKey="공과금" stackId="a" fill="#6FB0E0" radius={[0,0,0,0]} maxBarSize={32} />
+          <Bar dataKey="용돈" stackId="a" fill="#F088AC" radius={[0,0,0,0]} maxBarSize={32} />
+          <Bar dataKey="복지포인트" stackId="a" fill="#B088D8" radius={[4,4,0,0]} maxBarSize={32} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -120,13 +120,13 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
-          <Bar dataKey="수입" fill="#A9DAC4" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="수입" fill="#5FC0A0" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="지출" fill="#F4A7C0" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="지출" fill="#F088AC" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
-          <Bar dataKey="저축" fill="#CBB6E6" radius={[4,4,0,0]} maxBarSize={30}>
+          <Bar dataKey="저축" fill="#B088D8" radius={[4,4,0,0]} maxBarSize={30}>
             <LabelList content={renderBarLabel} />
           </Bar>
         </BarChart>

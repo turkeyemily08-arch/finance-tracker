@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS, SOURCE_OPTIONS } from '../constants';
 
 const DEFAULT = {
   date: new Date().toISOString().slice(0, 10),
@@ -22,10 +22,7 @@ export default function TransactionModal({ onClose, onSave, initial }) {
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const sourceOptions =
-    form.type === 'expense'
-      ? ['공과금', '용돈', '복지포인트']
-      : ['급여', '정산', '복지포인트'];
+  const sourceOptions = SOURCE_OPTIONS[form.type] || [];
 
   const categoryOptions =
     form.type === 'income'
