@@ -7,7 +7,7 @@ body {
   font-size: 14px;
 }
 
-#root { max-width: 900px; margin: 0 auto; padding: 16px; }
+#root { max-width: 960px; margin: 0 auto; padding: 16px 8px; }
 
 .card {
   background: #fff;

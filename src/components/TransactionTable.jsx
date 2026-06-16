@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { formatDate, formatKRW } from '../utils';
-import { SOURCE_COLORS } from '../constants';
+import { SOURCE_COLORS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
 import TransactionModal from './TransactionModal';
+
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+const weekday = (dateStr) => {
+  const d = new Date(dateStr + 'T00:00:00');
+  return isNaN(d) ? '' : WD[d.getDay()];
+};
 
 export default function TransactionTable({ transactions, onUpdate, onDelete, onAdd }) {
   const [filter, setFilter] = useState('전체');
   const [search, setSearch] = useState('');
-  const [editTx, setEditTx] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
+  const [dateEditId, setDateEditId] = useState(null);
 
   const filters = ['전체', '수입', '지출', '공과금', '용돈', '복지포인트', '정산필요'];
   const filtered = transactions.filter((t) => {
@@ -32,6 +38,25 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
   const q = search.trim();
   const searchExpense = filtered.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
   const searchIncome = filtered.filter((t) => t.type === 'income' && t.source !== '정산').reduce((s, t) => s + t.amount, 0);
+
+  // 인라인 편집용 옵션 (기존 값이 목록에 없으면 보존해서 맨 앞에 추가)
+  const sourceOptions = (tx) => {
+    let opts = tx.type === 'income' ? ['급여', '정산', '복지포인트'] : ['공과금', '용돈', '복지포인트'];
+    if (tx.source && !opts.includes(tx.source)) opts = [tx.source, ...opts];
+    return opts;
+  };
+  const categoryOptions = (tx) => {
+    let opts = tx.type === 'income' ? INCOME_CATEGORIES : (EXPENSE_CATEGORIES[tx.source] || []);
+    if (tx.category && !opts.includes(tx.category)) opts = [tx.category, ...opts];
+    return opts;
+  };
+  const paymentOptions = (tx) => {
+    let opts = [...PAYMENT_METHODS];
+    if (tx.paymentMethod && !opts.includes(tx.paymentMethod)) opts = [tx.paymentMethod, ...opts];
+    return opts;
+  };
+
+  const selectReset = { border: 'none', outline: 'none', cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none' };
 
   return (
     <div className="tx-card">
@@ -97,33 +122,98 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
               <th>재원</th>
               <th>카테고리</th>
               <th>결제</th>
-              <th>메모</th>
               <th>내용</th>
-              <th style={{ textAlign: 'right' }}>금액</th>
+              <th>메모</th>
+              <th>금액</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {sorted.map((tx) => (
-              <tr key={tx.id} onDoubleClick={() => setEditTx(tx)} style={{ cursor: 'pointer' }}>
-                <td style={{ color: '#6B7280', whiteSpace: 'nowrap' }}>{formatDate(tx.date)}</td>
+              <tr key={tx.id}>
+                {/* 날짜 + (요일) — 클릭하면 날짜 선택 */}
+                <td style={{ color: '#6B7280', whiteSpace: 'nowrap' }}>
+                  {dateEditId === tx.id ? (
+                    <input
+                      type="date"
+                      autoFocus
+                      value={tx.date}
+                      onChange={(e) => onUpdate({ ...tx, date: e.target.value })}
+                      onBlur={() => setDateEditId(null)}
+                      style={{ ...selectReset, background: '#EFF6FF', borderRadius: 4, fontSize: 12, color: '#1F2937', padding: '2px 4px' }}
+                    />
+                  ) : (
+                    <span
+                      onClick={() => setDateEditId(tx.id)}
+                      style={{ cursor: 'pointer', padding: '2px 4px', borderRadius: 4 }}
+                      title="클릭하면 날짜 변경"
+                    >
+                      {formatDate(tx.date)} <span style={{ color: '#9CA3AF', fontSize: 11 }}>({weekday(tx.date)})</span>
+                    </span>
+                  )}
+                </td>
+
+                {/* 재원 드롭다운 (배지 모양 유지) */}
                 <td>
-                  <span
-                    className="source-badge"
+                  <select
+                    value={tx.source}
+                    onChange={(e) => {
+                      const ns = e.target.value;
+                      const cats = tx.type === 'income' ? INCOME_CATEGORIES : (EXPENSE_CATEGORIES[ns] || []);
+                      const nc = cats.includes(tx.category) ? tx.category : (cats[0] || tx.category);
+                      onUpdate({ ...tx, source: ns, category: nc });
+                    }}
                     style={{
-                      background: SOURCE_COLORS[tx.source] + '22',
-                      color: SOURCE_COLORS[tx.source],
+                      ...selectReset, borderRadius: 12, padding: '2px 8px', fontSize: 11, fontWeight: 600,
+                      background: (SOURCE_COLORS[tx.source] || '#9CA3AF') + '22',
+                      color: SOURCE_COLORS[tx.source] || '#6B7280',
                     }}
                   >
-                    {tx.source}
-                  </span>
+                    {sourceOptions(tx).map((s) => <option key={s} value={s} style={{ color: '#1F2937', fontWeight: 400 }}>{s}</option>)}
+                  </select>
                 </td>
-                <td><span className="cat-badge">{tx.category}</span></td>
+
+                {/* 카테고리 드롭다운 (배지 모양 유지) */}
+                <td>
+                  <select
+                    value={tx.category}
+                    onChange={(e) => onUpdate({ ...tx, category: e.target.value })}
+                    style={{
+                      ...selectReset, borderRadius: 12, padding: '2px 8px', fontSize: 11,
+                      background: '#F3F4F6', color: '#374151', maxWidth: 130,
+                    }}
+                  >
+                    {categoryOptions(tx).map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </td>
+
+                {/* 결제수단 드롭다운 (회색 알약 모양 유지) */}
                 <td style={{ whiteSpace: 'nowrap' }}>
-                  {tx.paymentMethod
-                    ? <span style={{ fontSize: 11, padding: '2px 6px', borderRadius: 4, background: '#F3F4F6', color: '#374151' }}>{tx.paymentMethod}</span>
-                    : <span style={{ color: '#D1D5DB', fontSize: 11 }}>−</span>}
+                  <select
+                    value={tx.paymentMethod || ''}
+                    onChange={(e) => onUpdate({ ...tx, paymentMethod: e.target.value })}
+                    style={{
+                      ...selectReset, borderRadius: 4, padding: '2px 6px', fontSize: 11,
+                      background: '#F3F4F6', color: tx.paymentMethod ? '#374151' : '#9CA3AF',
+                    }}
+                  >
+                    <option value="">−</option>
+                    {paymentOptions(tx).map((m) => <option key={m} value={m}>{m}</option>)}
+                  </select>
                 </td>
+
+                {/* 내용(description) — 바로 수정, 글자색 진하게 */}
+                <td style={{ minWidth: 110 }}>
+                  <input
+                    className="memo-input"
+                    style={{ color: '#374151' }}
+                    value={tx.description || ''}
+                    placeholder="내용..."
+                    onChange={(e) => onUpdate({ ...tx, description: e.target.value })}
+                  />
+                </td>
+
+                {/* 메모 — 바로 수정 */}
                 <td style={{ minWidth: 100 }}>
                   <input
                     className="memo-input"
@@ -132,14 +222,14 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                     onChange={(e) => onUpdate({ ...tx, memo: e.target.value })}
                   />
                 </td>
-                <td style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12, color: '#9CA3AF' }}>
-                  {tx.description || ''}
-                </td>
-                <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+
+                {/* 금액 — 왼쪽 정렬 */}
+                <td style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
                   <span className={tx.type === 'expense' ? 'amount-expense' : 'amount-income'}>
                     {tx.type === 'expense' ? '−' : '+'}{formatKRW(tx.amount)}
                   </span>
                 </td>
+
                 <td>
                   <button className="delete-btn" onClick={() => onDelete(tx.id)} title="삭제">✕</button>
                 </td>
@@ -147,7 +237,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
             ))}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', color: '#9CA3AF', padding: '32px 0' }}>
+                <td colSpan={8} style={{ textAlign: 'center', color: '#9CA3AF', padding: '32px 0' }}>
                   거래 내역이 없습니다
                 </td>
               </tr>
@@ -156,16 +246,10 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
         </table>
       </div>
 
-      {(editTx || showAdd) && (
+      {showAdd && (
         <TransactionModal
-          initial={editTx || undefined}
-          onClose={() => { setEditTx(null); setShowAdd(false); }}
-          onSave={(tx) => {
-            if (editTx) onUpdate(tx);
-            else onAdd(tx);
-            setEditTx(null);
-            setShowAdd(false);
-          }}
+          onClose={() => setShowAdd(false)}
+          onSave={(tx) => { onAdd(tx); setShowAdd(false); }}
         />
       )}
     </div>
