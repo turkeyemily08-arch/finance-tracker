@@ -1,0 +1,359 @@
+{
+  "settings": {
+    "allowance": 150000,
+    "lastUpdated": "2026-05-18"
+  },
+  "transactions": [
+    {
+      "id": "tx-20260501-001",
+      "date": "2026-05-01",
+      "type": "expense",
+      "source": "공과금",
+      "category": "장보기",
+      "amount": 152480,
+      "memo": "이마트트레이더스 (5/5 취소환불 완료)"
+    },
+    {
+      "id": "tx-20260501-002",
+      "date": "2026-05-01",
+      "type": "expense",
+      "source": "공과금",
+      "category": "온누리/상품권",
+      "amount": 90000,
+      "memo": "온누리상품권 충전 | 정산필요"
+    },
+    {
+      "id": "tx-20260501-003",
+      "date": "2026-05-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "amount": 2851,
+      "memo": "스타필드시티 위례점"
+    },
+    {
+      "id": "tx-20260501-004",
+      "date": "2026-05-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "amount": 27800,
+      "memo": "스타필드"
+    },
+    {
+      "id": "tx-20260502-001",
+      "date": "2026-05-02",
+      "type": "expense",
+      "source": "공과금",
+      "category": "장보기",
+      "amount": 11900,
+      "memo": "홈플러스 야탑점 | 정산필요"
+    },
+    {
+      "id": "tx-20260502-002",
+      "date": "2026-05-02",
+      "type": "expense",
+      "source": "용돈",
+      "category": "생활용품",
+      "amount": 20000,
+      "memo": "다이소 (5/5 일부환불 포함)"
+    },
+    {
+      "id": "tx-20260502-003",
+      "date": "2026-05-02",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "amount": 1700,
+      "memo": "청년축산 야탑지점"
+    },
+    {
+      "id": "tx-20260502-004",
+      "date": "2026-05-02",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "amount": 17070,
+      "memo": "뉴코아아울렛 야탑점"
+    },
+    {
+      "id": "tx-20260503-001",
+      "date": "2026-05-03",
+      "type": "expense",
+      "source": "용돈",
+      "category": "간식/편의점",
+      "amount": 10000,
+      "memo": "찐빵 모란시장"
+    },
+    {
+      "id": "tx-20260503-002",
+      "date": "2026-05-03",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "amount": 2400,
+      "memo": "메가커피"
+    },
+    {
+      "id": "tx-20260504-001",
+      "date": "2026-05-04",
+      "type": "expense",
+      "source": "용돈",
+      "category": "간식/편의점",
+      "amount": 15650,
+      "memo": "CU 리솜포레스트점"
+    },
+    {
+      "id": "tx-20260504-002",
+      "date": "2026-05-04",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "amount": 59000,
+      "memo": "더진지 (5/5 일부환불 포함)"
+    },
+    {
+      "id": "tx-20260505-001",
+      "date": "2026-05-05",
+      "type": "expense",
+      "source": "용돈",
+      "category": "자기계발/학회",
+      "amount": 60000,
+      "memo": "한국디지털콘텐츠 (학회비)"
+    },
+    {
+      "id": "tx-20260505-002",
+      "date": "2026-05-05",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 97000,
+      "memo": "더진지+다이소 환불"
+    },
+    {
+      "id": "tx-20260505-003",
+      "date": "2026-05-05",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 152480,
+      "memo": "이마트트레이더스 취소 환불"
+    },
+    {
+      "id": "tx-20260506-001",
+      "date": "2026-05-06",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 1088,
+      "memo": "ETF 분배금"
+    },
+    {
+      "id": "tx-20260506-002",
+      "date": "2026-05-06",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 992,
+      "memo": "ETF 분배금"
+    },
+    {
+      "id": "tx-20260506-003",
+      "date": "2026-05-06",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 10,
+      "memo": "탄소중립실천 포인트"
+    },
+    {
+      "id": "tx-20260506-004",
+      "date": "2026-05-06",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "amount": 14700,
+      "memo": "티머니go | 정산필요"
+    },
+    {
+      "id": "tx-20260506-005",
+      "date": "2026-05-06",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "amount": 900,
+      "memo": "티머니go 부분취소 후 최종결제 | 정산필요"
+    },
+    {
+      "id": "tx-20260506-006",
+      "date": "2026-05-06",
+      "type": "expense",
+      "source": "공과금",
+      "category": "보험료",
+      "amount": 30415,
+      "memo": "한화손해보험 | 정산필요"
+    },
+    {
+      "id": "tx-20260507-001",
+      "date": "2026-05-07",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 60000,
+      "memo": "구창민 이체 (학회 디지털콘텐츠 납부금 정산)"
+    },
+    {
+      "id": "tx-20260508-001",
+      "date": "2026-05-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "생활용품",
+      "amount": 5000,
+      "memo": "다이소"
+    },
+    {
+      "id": "tx-20260508-002",
+      "date": "2026-05-08",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "amount": 14700,
+      "memo": "티머니go | 정산필요"
+    },
+    {
+      "id": "tx-20260509-001",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "복지포인트",
+      "category": "쇼핑(포인트)",
+      "amount": 79760,
+      "memo": "무신사 | 정산필요 (복지포인트, 6/15 정산예정)"
+    },
+    {
+      "id": "tx-20260509-002",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "공과금",
+      "category": "외식",
+      "amount": 4000,
+      "memo": "스타필드 DPLYR (커플카드) | 정산필요"
+    },
+    {
+      "id": "tx-20260509-003",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "복지포인트",
+      "category": "쇼핑(포인트)",
+      "amount": 72880,
+      "memo": "무인양품 | 정산필요 (복지포인트, 6/15 정산예정)"
+    },
+    {
+      "id": "tx-20260509-004",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "amount": 20860,
+      "memo": "스타필드 식사"
+    },
+    {
+      "id": "tx-20260509-005",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "복지포인트",
+      "category": "쇼핑(포인트)",
+      "amount": 7000,
+      "memo": "스타필드 | 정산필요 (복지포인트, 6/15 정산예정)"
+    },
+    {
+      "id": "tx-20260509-006",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "용돈",
+      "category": "식비/외식",
+      "amount": 12500,
+      "memo": "스타필드 식사"
+    },
+    {
+      "id": "tx-20260509-007",
+      "date": "2026-05-09",
+      "type": "expense",
+      "source": "공과금",
+      "category": "경조사",
+      "amount": 35000,
+      "memo": "김민지 이체 (경조사) | 정산필요"
+    },
+    {
+      "id": "tx-20260511-001",
+      "date": "2026-05-11",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "amount": 8100,
+      "memo": "교통카드 | 정산필요"
+    },
+    {
+      "id": "tx-20260511-002",
+      "date": "2026-05-11",
+      "type": "expense",
+      "source": "공과금",
+      "category": "경조사",
+      "amount": 50000,
+      "memo": "이지영 축의금 | 정산필요"
+    },
+    {
+      "id": "tx-20260513-001",
+      "date": "2026-05-13",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "amount": 14700,
+      "memo": "티머니go | 정산필요"
+    },
+    {
+      "id": "tx-20260513-002",
+      "date": "2026-05-13",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페/음료",
+      "amount": 3900,
+      "memo": "성수정 이체 (사내카페 충남카페)"
+    },
+    {
+      "id": "tx-20260514-001",
+      "date": "2026-05-14",
+      "type": "income",
+      "source": "정산",
+      "category": "공과금 정산",
+      "amount": 50000,
+      "memo": "이민구 이체 (회사샘 축의금 대납 정산)"
+    },
+    {
+      "id": "tx-20260517-001",
+      "date": "2026-05-17",
+      "type": "income",
+      "source": "정산",
+      "category": "기타 수입",
+      "amount": 200000,
+      "memo": "이민구 이체 (유니폼 195,000원 선결제 정산, 용돈에서 매달 조금씩 상환 예정 — 6월부터 시작)"
+    },
+    {
+      "id": "tx-20260517-002",
+      "date": "2026-05-17",
+      "type": "expense",
+      "source": "공과금",
+      "category": "마트/장보기",
+      "amount": 12990,
+      "memo": "홈플러스 | 정산필요"
+    },
+    {
+      "id": "tx-20260517-003",
+      "date": "2026-05-17",
+      "type": "expense",
+      "source": "용돈",
+      "category": "문화/여가",
+      "amount": 7999,
+      "memo": "메가박스"
+    }
+  ]
+}
