@@ -1,7 +1,9 @@
 import { formatKRW } from '../utils';
-import { ALLOWANCE } from '../constants';
 
-export default function SummaryCards({ stats }) {
+export default function SummaryCards({ stats, welfareBalance }) {
+  const saving = stats.income - stats.expense;
+  const isSurplus = saving >= 0;
+
   const cards = [
     {
       icon: '＋',
@@ -9,7 +11,7 @@ export default function SummaryCards({ stats }) {
       label: '이번 달 수입',
       amount: formatKRW(stats.income),
       amountColor: '#10B981',
-      sub: `급여 ${formatKRW(stats.급여)} + 정산 ${formatKRW(stats.정산수입)}`,
+      sub: `급여 ${formatKRW(stats.급여)}`,
       badge: null,
     },
     {
@@ -24,21 +26,23 @@ export default function SummaryCards({ stats }) {
       badgeColor: '#D97706',
     },
     {
-      icon: '↗',
-      iconBg: '#EFF6FF',
-      label: '용돈 잔액',
-      amount: formatKRW(Math.max(stats.용돈잔액, 0)),
-      amountColor: stats.용돈잔액 < 0 ? '#E06666' : '#2563EB',
-      sub: `${ALLOWANCE.toLocaleString()}원 중 사용 ${formatKRW(stats.용돈지출)}`,
+      icon: isSurplus ? '↗' : '↘',
+      iconBg: isSurplus ? '#EFF6FF' : '#FEF2F2',
+      label: '이번 달 저축',
+      amount: isSurplus ? formatKRW(saving) : `−${formatKRW(-saving)}`,
+      amountColor: isSurplus ? '#2563EB' : '#E06666',
+      sub: stats.income > 0
+        ? `저축률 ${Math.max(0, Math.round((saving / stats.income) * 100))}%`
+        : null,
       badge: null,
     },
     {
-      icon: '＝',
+      icon: '✦',
       iconBg: '#F5F3FF',
-      label: '복지포인트 사용',
-      amount: formatKRW(stats.복지포인트지출),
+      label: '복지포인트 잔액',
+      amount: formatKRW(welfareBalance || 0),
       amountColor: '#8E7CC3',
-      sub: null,
+      sub: '사용 가능',
       badge: null,
     },
   ];

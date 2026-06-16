@@ -13,6 +13,10 @@ dist
 dist-ssr
 *.local
 
+# Atomic-write leftovers & local backups
+*.tmp.*
+*.pre-recovery-bak
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

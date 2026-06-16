@@ -1,19 +1,24 @@
 import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../constants';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
 
-const DEFAULT = {
-  date: new Date().toISOString().slice(0, 10),
+const todayLocal = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+const getDefault = () => ({
+  date: todayLocal(),
   type: 'expense',
   source: '용돈',
   category: '식비/외식',
   description: '',
   amount: '',
   memo: '',
-};
+});
 
 export default function TransactionModal({ onClose, onSave, initial }) {
-  const [form, setForm] = useState(initial || DEFAULT);
+  const [form, setForm] = useState(() => initial || getDefault());
 
   useEffect(() => {
     if (initial) setForm(initial);
@@ -38,7 +43,7 @@ export default function TransactionModal({ onClose, onSave, initial }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.description || !form.amount) return;
+    if (!form.amount) return;
     onSave({
       ...form,
       id: form.id || uuidv4(),
@@ -85,10 +90,26 @@ export default function TransactionModal({ onClose, onSave, initial }) {
           </div>
 
           <div className="form-row">
-            <label className="form-label">내용</label>
-            <input className="form-input" value={form.description}
+            <label className="form-label">결제수단</label>
+            <select className="form-select" value={form.paymentMethod || ''}
+              onChange={(e) => set('paymentMethod', e.target.value)}>
+              <option value="">선택 안함</option>
+              {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
+            </select>
+          </div>
+
+          <div className="form-row">
+            <label className="form-label">메모 (필수)</label>
+            <input className="form-input" value={form.memo}
+              onChange={(e) => set('memo', e.target.value)}
+              placeholder="정산필요 / 내용 등 자유 입력" required />
+          </div>
+
+          <div className="form-row">
+            <label className="form-label">내용 (선택)</label>
+            <input className="form-input" value={form.description || ''}
               onChange={(e) => set('description', e.target.value)}
-              placeholder="거래 내용을 입력하세요" required />
+              placeholder="가게명 등 (생략 가능)" />
           </div>
 
           <div className="form-row">
@@ -98,12 +119,6 @@ export default function TransactionModal({ onClose, onSave, initial }) {
               placeholder="0" min="0" required />
           </div>
 
-          <div className="form-row">
-            <label className="form-label">메모 (선택)</label>
-            <input className="form-input" value={form.memo}
-              onChange={(e) => set('memo', e.target.value)}
-              placeholder="메모를 입력하세요" />
-          </div>
 
           <div className="modal-btns">
             <button type="button" className="btn-cancel" onClick={onClose}>취소</button>

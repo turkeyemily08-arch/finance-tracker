@@ -16,8 +16,9 @@ export const filterByMonth = (transactions, year, month) => {
 };
 
 export const calcMonthStats = (transactions) => {
+  // 정산은 남편 공동저축 계좌이체이므로 수입으로 집계하지 않음
   const income = transactions
-    .filter((t) => t.type === 'income')
+    .filter((t) => t.type === 'income' && t.source !== '정산')
     .reduce((s, t) => s + t.amount, 0);
   const expense = transactions
     .filter((t) => t.type === 'expense')
@@ -27,6 +28,12 @@ export const calcMonthStats = (transactions) => {
     .reduce((s, t) => s + t.amount, 0);
   const 정산수입 = transactions
     .filter((t) => t.source === '정산')
+    .reduce((s, t) => s + t.amount, 0);
+  const 공과금정산수입 = transactions
+    .filter((t) => t.source === '정산' && t.category === '공과금 정산')
+    .reduce((s, t) => s + t.amount, 0);
+  const 교통비지출 = transactions
+    .filter((t) => t.type === 'expense' && t.source === '공과금' && t.category === '교통비')
     .reduce((s, t) => s + t.amount, 0);
   const 용돈지출 = transactions
     .filter((t) => t.type === 'expense' && t.source === '용돈')
@@ -46,7 +53,8 @@ export const calcMonthStats = (transactions) => {
     용돈지출,
     복지포인트지출,
     급여,
-    미정산: 공과금지출 - 정산수입,
+    교통비지출,
+    미정산: 공과금지출 - 공과금정산수입,
     용돈잔액: ALLOWANCE - 용돈지출,
   };
 };
@@ -80,8 +88,9 @@ export const calcMonthlyTrend = (transactions) => {
   transactions.forEach((t) => {
     const key = getMonthKey(t.date);
     if (!map[key]) map[key] = { month: key, income: 0, expense: 0 };
-    if (t.type === 'income') map[key].income += t.amount;
-    else map[key].expense += t.amount;
+    // 정산은 계좌이체이므로 수입으로 집계하지 않음
+    if (t.type === 'income' && t.source !== '정산') map[key].income += t.amount;
+    else if (t.type === 'expense') map[key].expense += t.amount;
   });
   return Object.values(map)
     .sort((a, b) => a.month.localeCompare(b.month))
@@ -91,6 +100,59 @@ export const calcMonthlyTrend = (transactions) => {
       지출: m.expense,
       저축: Math.max(m.income - m.expense, 0),
     }));
+};
+
+export const calcDailyPublicBillBalance = (transactions, year, month) => {
+  const monthTx = filterByMonth(transactions, year, month).sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const today = new Date();
+  const isCurrentMonth =
+    today.getFullYear() === year && today.getMonth() + 1 === month;
+  const lastDay = isCurrentMonth ? today.getDate() : daysInMonth;
+
+  const result = [];
+  let balance = 0;
+  for (let d = 1; d <= lastDay; d++) {
+    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    const expense = monthTx
+      .filter((t) => t.date === dateStr && t.type === 'expense' && t.source === '공과금')
+      .reduce((s, t) => s + t.amount, 0);
+    const settled = monthTx
+      .filter((t) => t.date === dateStr && t.source === '정산' && t.category === '공과금 정산')
+      .reduce((s, t) => s + t.amount, 0);
+    balance = balance - expense + settled;
+    result.push({ day: `${d}일`, balance });
+  }
+  return result;
+};
+
+export const calcPaymentBreakdown = (transactions) => {
+  const map = {};
+  transactions
+    .filter((t) => t.type === 'expense' && t.paymentMethod)
+    .forEach((t) => {
+      const key = t.paymentMethod || '기타';
+      map[key] = (map[key] || 0) + t.amount;
+    });
+  return Object.entries(map)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+};
+
+export const calcNextMonthPrediction = (allTransactions) => {
+  const trend = calcMonthlyTrend(allTransactions);
+  if (!trend.length) return null;
+  const recent = trend.slice(-3);
+  // 예상 수입: 가장 최근 월 수입 (급여 기준)
+  const predictedIncome = recent[recent.length - 1]?.수입 || 0;
+  // 예상 지출: 최근 월 평균
+  const avgExpense = Math.round(recent.reduce((s, m) => s + m.지출, 0) / recent.length);
+  const saving = Math.max(0, predictedIncome - avgExpense);
+  const deficit = Math.max(0, avgExpense - predictedIncome);
+  return { income: predictedIncome, expense: avgExpense, saving, deficit, monthsUsed: recent.length };
 };
 
 export const calcCategoryBreakdown = (transactions, type = 'expense') => {
