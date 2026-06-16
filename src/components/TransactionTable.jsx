@@ -9,11 +9,22 @@ const weekday = (dateStr) => {
   return isNaN(d) ? '' : WD[d.getDay()];
 };
 
+// 편집 중에만 보이는 드롭다운/입력 스타일
+const editStyle = {
+  fontSize: 14, padding: '3px 6px', borderRadius: 8,
+  border: '1px solid #2563EB', outline: 'none', background: '#fff',
+  color: '#1F2937', cursor: 'pointer',
+};
+
 export default function TransactionTable({ transactions, onUpdate, onDelete, onAdd }) {
   const [filter, setFilter] = useState('전체');
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
-  const [dateEditId, setDateEditId] = useState(null);
+  const [editCell, setEditCell] = useState(null); // { id, field }
+
+  const isEditing = (tx, field) => editCell && editCell.id === tx.id && editCell.field === field;
+  const startEdit = (tx, field) => setEditCell({ id: tx.id, field });
+  const stopEdit = () => setEditCell(null);
 
   const filters = ['전체', '수입', '지출', '공과금', '용돈', '복지포인트', '정산필요'];
   const filtered = transactions.filter((t) => {
@@ -55,8 +66,6 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
     if (tx.paymentMethod && !opts.includes(tx.paymentMethod)) opts = [tx.paymentMethod, ...opts];
     return opts;
   };
-
-  const selectReset = { border: 'none', outline: 'none', cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none', MozAppearance: 'none' };
 
   return (
     <div className="tx-card">
@@ -133,73 +142,93 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
               <tr key={tx.id}>
                 {/* 날짜 + (요일) — 클릭하면 날짜 선택 */}
                 <td style={{ color: '#6B7280', whiteSpace: 'nowrap' }}>
-                  {dateEditId === tx.id ? (
+                  {isEditing(tx, 'date') ? (
                     <input
                       type="date"
                       autoFocus
                       value={tx.date}
                       onChange={(e) => onUpdate({ ...tx, date: e.target.value })}
-                      onBlur={() => setDateEditId(null)}
-                      style={{ ...selectReset, background: '#EFF6FF', borderRadius: 4, fontSize: 12, color: '#1F2937', padding: '2px 4px' }}
+                      onBlur={stopEdit}
+                      style={editStyle}
                     />
                   ) : (
-                    <span
-                      onClick={() => setDateEditId(tx.id)}
-                      style={{ cursor: 'pointer', padding: '2px 4px', borderRadius: 4 }}
-                      title="클릭하면 날짜 변경"
-                    >
-                      {formatDate(tx.date)} <span style={{ color: '#9CA3AF', fontSize: 11 }}>({weekday(tx.date)})</span>
+                    <span onClick={() => startEdit(tx, 'date')} style={{ cursor: 'pointer' }} title="클릭하면 날짜 변경">
+                      {formatDate(tx.date)} <span style={{ color: '#9CA3AF', fontSize: 13 }}>({weekday(tx.date)})</span>
                     </span>
                   )}
                 </td>
 
-                {/* 재원 드롭다운 (배지 모양 유지) */}
+                {/* 재원 — 평소엔 배지, 클릭하면 드롭다운 */}
                 <td>
-                  <select
-                    value={tx.source}
-                    onChange={(e) => {
-                      const ns = e.target.value;
-                      const cats = tx.type === 'income' ? INCOME_CATEGORIES : (EXPENSE_CATEGORIES[ns] || []);
-                      const nc = cats.includes(tx.category) ? tx.category : (cats[0] || tx.category);
-                      onUpdate({ ...tx, source: ns, category: nc });
-                    }}
-                    style={{
-                      ...selectReset, borderRadius: 12, padding: '2px 8px', fontSize: 11, fontWeight: 600,
-                      background: (SOURCE_COLORS[tx.source] || '#9CA3AF') + '22',
-                      color: SOURCE_COLORS[tx.source] || '#6B7280',
-                    }}
-                  >
-                    {sourceOptions(tx).map((s) => <option key={s} value={s} style={{ color: '#1F2937', fontWeight: 400 }}>{s}</option>)}
-                  </select>
+                  {isEditing(tx, 'source') ? (
+                    <select
+                      autoFocus
+                      value={tx.source}
+                      onChange={(e) => {
+                        const ns = e.target.value;
+                        const cats = tx.type === 'income' ? INCOME_CATEGORIES : (EXPENSE_CATEGORIES[ns] || []);
+                        const nc = cats.includes(tx.category) ? tx.category : (cats[0] || tx.category);
+                        onUpdate({ ...tx, source: ns, category: nc });
+                        stopEdit();
+                      }}
+                      onBlur={stopEdit}
+                      style={editStyle}
+                    >
+                      {sourceOptions(tx).map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  ) : (
+                    <span
+                      className="source-badge"
+                      style={{ background: (SOURCE_COLORS[tx.source] || '#9CA3AF') + '22', color: SOURCE_COLORS[tx.source] || '#6B7280', cursor: 'pointer' }}
+                      onClick={() => startEdit(tx, 'source')}
+                    >
+                      {tx.source}
+                    </span>
+                  )}
                 </td>
 
-                {/* 카테고리 드롭다운 (배지 모양 유지) */}
+                {/* 카테고리 — 평소엔 배지, 클릭하면 드롭다운 */}
                 <td>
-                  <select
-                    value={tx.category}
-                    onChange={(e) => onUpdate({ ...tx, category: e.target.value })}
-                    style={{
-                      ...selectReset, borderRadius: 12, padding: '2px 8px', fontSize: 11,
-                      background: '#F3F4F6', color: '#374151', maxWidth: 130,
-                    }}
-                  >
-                    {categoryOptions(tx).map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
+                  {isEditing(tx, 'category') ? (
+                    <select
+                      autoFocus
+                      value={tx.category}
+                      onChange={(e) => { onUpdate({ ...tx, category: e.target.value }); stopEdit(); }}
+                      onBlur={stopEdit}
+                      style={editStyle}
+                    >
+                      {categoryOptions(tx).map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  ) : (
+                    <span className="cat-badge" style={{ cursor: 'pointer' }} onClick={() => startEdit(tx, 'category')}>
+                      {tx.category}
+                    </span>
+                  )}
                 </td>
 
-                {/* 결제수단 드롭다운 (회색 알약 모양 유지) */}
+                {/* 결제수단 — 평소엔 알약, 클릭하면 드롭다운 */}
                 <td style={{ whiteSpace: 'nowrap' }}>
-                  <select
-                    value={tx.paymentMethod || ''}
-                    onChange={(e) => onUpdate({ ...tx, paymentMethod: e.target.value })}
-                    style={{
-                      ...selectReset, borderRadius: 4, padding: '2px 6px', fontSize: 11,
-                      background: '#F3F4F6', color: tx.paymentMethod ? '#374151' : '#9CA3AF',
-                    }}
-                  >
-                    <option value="">−</option>
-                    {paymentOptions(tx).map((m) => <option key={m} value={m}>{m}</option>)}
-                  </select>
+                  {isEditing(tx, 'payment') ? (
+                    <select
+                      autoFocus
+                      value={tx.paymentMethod || ''}
+                      onChange={(e) => { onUpdate({ ...tx, paymentMethod: e.target.value }); stopEdit(); }}
+                      onBlur={stopEdit}
+                      style={editStyle}
+                    >
+                      <option value="">선택 안함</option>
+                      {paymentOptions(tx).map((m) => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                  ) : tx.paymentMethod ? (
+                    <span
+                      style={{ fontSize: 14, padding: '3px 7px', borderRadius: 4, background: '#F3F4F6', color: '#374151', cursor: 'pointer' }}
+                      onClick={() => startEdit(tx, 'payment')}
+                    >
+                      {tx.paymentMethod}
+                    </span>
+                  ) : (
+                    <span style={{ color: '#D1D5DB', fontSize: 14, cursor: 'pointer', padding: '0 4px' }} onClick={() => startEdit(tx, 'payment')}>−</span>
+                  )}
                 </td>
 
                 {/* 내용(description) — 바로 수정, 글자색 진하게 */}
