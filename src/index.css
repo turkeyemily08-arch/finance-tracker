@@ -7,10 +7,10 @@ body {
   font-size: 14px;
 }
 
-#root { max-width: 1400px; margin: 0 auto; padding: 16px 8px; }
+#root { max-width: 1760px; margin: 0 auto; padding: 16px 8px; }
 
 /* 메인 2단 레이아웃: 왼쪽 대시보드 / 오른쪽 거래내역 */
-.main-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.main-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 .main-left { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .main-right { position: sticky; top: 12px; min-width: 0; }
 @media (max-width: 1080px) {

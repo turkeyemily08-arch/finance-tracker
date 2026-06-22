@@ -231,7 +231,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                 </td>
 
                 {/* 내용(description, 메모 통합) — 바로 수정, 글자색 진하게 */}
-                <td style={{ minWidth: 160 }}>
+                <td style={{ minWidth: 120 }}>
                   <input
                     className="memo-input"
                     style={{ color: '#374151' }}
