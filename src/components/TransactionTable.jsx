@@ -39,7 +39,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
     if (filter === '전체') return true;
     if (filter === '수입') return t.type === 'income';
     if (filter === '지출') return t.type === 'expense';
-    if (filter === '정산필요') return (t.memo || '').includes('정산필요');
+    if (filter === '정산필요') return ((t.description || '') + (t.memo || '')).includes('정산필요');
     return t.source === filter;
   });
 
@@ -123,7 +123,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
         </div>
       )}
 
-      <div style={{ overflowX: 'auto', minHeight: q ? 160 : undefined }}>
+      <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: 'calc(100vh - 200px)', minHeight: q ? 160 : undefined }}>
         <table className="tx-table">
           <thead>
             <tr>
@@ -132,7 +132,6 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
               <th>카테고리</th>
               <th>결제</th>
               <th>내용</th>
-              <th>메모</th>
               <th>금액</th>
               <th></th>
             </tr>
@@ -231,8 +230,8 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                   )}
                 </td>
 
-                {/* 내용(description) — 바로 수정, 글자색 진하게 */}
-                <td style={{ minWidth: 110 }}>
+                {/* 내용(description, 메모 통합) — 바로 수정, 글자색 진하게 */}
+                <td style={{ minWidth: 160 }}>
                   <input
                     className="memo-input"
                     style={{ color: '#374151' }}
@@ -242,21 +241,32 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                   />
                 </td>
 
-                {/* 메모 — 바로 수정 */}
-                <td style={{ minWidth: 100 }}>
-                  <input
-                    className="memo-input"
-                    value={tx.memo || ''}
-                    placeholder="메모..."
-                    onChange={(e) => onUpdate({ ...tx, memo: e.target.value })}
-                  />
-                </td>
-
-                {/* 금액 — 왼쪽 정렬 */}
+                {/* 금액 — 왼쪽 정렬, 클릭하면 바로 수정 */}
                 <td style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  <span className={tx.type === 'expense' ? 'amount-expense' : 'amount-income'}>
-                    {tx.type === 'expense' ? '−' : '+'}{formatKRW(tx.amount)}
-                  </span>
+                  {isEditing(tx, 'amount') ? (
+                    <input
+                      type="number"
+                      autoFocus
+                      defaultValue={tx.amount}
+                      min="0"
+                      onBlur={(e) => {
+                        const v = Number(e.target.value);
+                        if (!isNaN(v) && v >= 0 && v !== tx.amount) onUpdate({ ...tx, amount: v });
+                        stopEdit();
+                      }}
+                      onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                      style={{ ...editStyle, width: 110, textAlign: 'left' }}
+                    />
+                  ) : (
+                    <span
+                      className={tx.type === 'expense' ? 'amount-expense' : 'amount-income'}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => startEdit(tx, 'amount')}
+                      title="클릭하면 금액 수정"
+                    >
+                      {tx.type === 'expense' ? '−' : '+'}{formatKRW(tx.amount)}
+                    </span>
+                  )}
                 </td>
 
                 <td>
@@ -266,7 +276,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
             ))}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={8} style={{ textAlign: 'center', color: '#9CA3AF', padding: '32px 0' }}>
+                <td colSpan={7} style={{ textAlign: 'center', color: '#9CA3AF', padding: '32px 0' }}>
                   거래 내역이 없습니다
                 </td>
               </tr>

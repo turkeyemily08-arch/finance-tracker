@@ -6,10 +6,18 @@ import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentBreakdown, formatKR
 import { CATEGORY_COLORS, PAYMENT_METHOD_COLORS } from '../constants';
 
 function CategoryBarChart({ data, title }) {
+  const sum = data.reduce((s, d) => s + d.value, 0);
+  const titleWithSum = (
+    <div className="chart-title" style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
+      <span>{title}</span>
+      <span style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>합계 {sum.toLocaleString()}원</span>
+    </div>
+  );
+
   if (!data.length) {
     return (
       <div className="chart-card">
-        <div className="chart-title">{title}</div>
+        {titleWithSum}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 160, color: '#9CA3AF', fontSize: 13 }}>이번 달 지출 없음</div>
       </div>
     );
@@ -26,7 +34,7 @@ function CategoryBarChart({ data, title }) {
 
   return (
     <div className="chart-card">
-      <div className="chart-title">{title}</div>
+      {titleWithSum}
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 24, right: 8, left: -20, bottom: 50 }}>
           <XAxis

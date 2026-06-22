@@ -47,6 +47,16 @@ function saveDeletion(id) {
   localStorage.setItem(DELETIONS_KEY, JSON.stringify([...d]));
 }
 
+// 메모를 내용(description)으로 합치기: 둘 다 있으면 "내용 (메모)", 합친 뒤 memo는 비움
+// → 서버 데이터든 사용자 추가/수정 데이터든 로드 시 일괄 적용. 한 번 합쳐지면 memo가 비어 재병합 안 됨.
+function mergeMemoIntoDesc(t) {
+  const memo = (t.memo || '').trim();
+  if (!memo) return t;
+  const desc = (t.description || '').trim();
+  const merged = desc ? `${desc} (${memo})` : memo;
+  return { ...t, description: merged, memo: '' };
+}
+
 // 서버 데이터 + 사용자 수정(patches) + 사용자 추가(additions) - 사용자 삭제(deletions) 병합
 function mergeAll(serverTransactions) {
   const patches = getPatches();
@@ -62,7 +72,7 @@ function mergeAll(serverTransactions) {
     .filter((t) => !serverIds.has(t.id) && !deletions.has(t.id))
     .forEach((t) => merged.push(t));
 
-  return merged;
+  return merged.map(mergeMemoIntoDesc);
 }
 
 function useTransactions() {
@@ -171,6 +181,8 @@ export default function App() {
         </div>
       </div>
 
+      <div className="main-grid">
+        <div className="main-left">
       <SummaryCards stats={stats} welfareBalance={settings.welfarePointsBalance || 0} />
 
       <div className="grid-2">
@@ -253,13 +265,17 @@ export default function App() {
         <AdviceCard stats={stats} transactions={monthTx} year={year} month={month} />
         <NextMonthCard allTransactions={transactions} year={year} month={month} />
       </div>
+        </div>
 
-      <TransactionTable
-        transactions={monthTx}
-        onAdd={addTransaction}
-        onUpdate={updateTransaction}
-        onDelete={deleteTransaction}
-      />
+        <div className="main-right">
+          <TransactionTable
+            transactions={monthTx}
+            onAdd={addTransaction}
+            onUpdate={updateTransaction}
+            onDelete={deleteTransaction}
+          />
+        </div>
+      </div>
 
       <div className="app-footer">
         Powered by Claude · 마지막 업데이트: {settings.lastUpdated || '−'}

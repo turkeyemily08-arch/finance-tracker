@@ -2,7 +2,7 @@ import { formatKRW } from '../utils';
 
 export function CopyButtons({ transactions, stats, year, month }) {
   const settlementItems = transactions.filter(
-    (t) => t.type === 'expense' && (t.memo || '').includes('정산필요')
+    (t) => t.type === 'expense' && ((t.description || '') + (t.memo || '')).includes('정산필요')
   );
 
   const copySettlement = () => {

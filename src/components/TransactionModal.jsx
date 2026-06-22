@@ -14,7 +14,6 @@ const getDefault = () => ({
   category: '식비/외식',
   description: '',
   amount: '',
-  memo: '',
 });
 
 export default function TransactionModal({ onClose, onSave, initial }) {
@@ -99,17 +98,10 @@ export default function TransactionModal({ onClose, onSave, initial }) {
           </div>
 
           <div className="form-row">
-            <label className="form-label">메모 (필수)</label>
-            <input className="form-input" value={form.memo}
-              onChange={(e) => set('memo', e.target.value)}
-              placeholder="정산필요 / 내용 등 자유 입력" required />
-          </div>
-
-          <div className="form-row">
-            <label className="form-label">내용 (선택)</label>
+            <label className="form-label">내용 (필수)</label>
             <input className="form-input" value={form.description || ''}
               onChange={(e) => set('description', e.target.value)}
-              placeholder="가게명 등 (생략 가능)" />
+              placeholder="가게명 / 정산필요 등 자유 입력" required />
           </div>
 
           <div className="form-row">
