@@ -33,12 +33,13 @@ export const PAYMENT_METHOD_COLORS = {
   '토스카드':    '#B3A5F5',
   '온누리상품권': '#B8A9F2',
   '여민전':      '#C4B5FD',
+  '공주페이':    '#B3A5F5',
   '계좌이체':    '#ABA6D0',
   '현금':       '#9D8CF0',
   '기타':       '#CBC7E0',
 };
 
-export const PAYMENT_METHODS = ['신한카드', '삼성카드', 'DPLYR카드', '복지카드', '토스카드', '온누리상품권', '여민전', '계좌이체', '현금', '기타'];
+export const PAYMENT_METHODS = ['신한카드', '삼성카드', 'DPLYR카드', '복지카드', '토스카드', '온누리상품권', '여민전', '공주페이', '계좌이체', '현금', '기타'];
 
 export const ALL_EXPENSE_CATEGORIES = [
   ...EXPENSE_CATEGORIES.공과금,

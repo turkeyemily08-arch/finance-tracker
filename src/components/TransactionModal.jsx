@@ -28,7 +28,7 @@ export default function TransactionModal({ onClose, onSave, initial }) {
   const sourceOptions =
     form.type === 'expense'
       ? ['공과금', '용돈', '복지포인트']
-      : ['급여', '정산', '복지포인트'];
+      : ['급여', '정산', '복지포인트', '용돈'];
 
   const categoryOptions =
     form.type === 'income'

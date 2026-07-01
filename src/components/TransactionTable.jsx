@@ -52,7 +52,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
 
   // 인라인 편집용 옵션 (기존 값이 목록에 없으면 보존해서 맨 앞에 추가)
   const sourceOptions = (tx) => {
-    let opts = tx.type === 'income' ? ['급여', '정산', '복지포인트'] : ['공과금', '용돈', '복지포인트'];
+    let opts = tx.type === 'income' ? ['급여', '정산', '복지포인트', '용돈'] : ['공과금', '용돈', '복지포인트'];
     if (tx.source && !opts.includes(tx.source)) opts = [tx.source, ...opts];
     return opts;
   };

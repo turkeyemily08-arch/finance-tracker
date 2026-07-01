@@ -193,9 +193,9 @@ export default function App() {
           stats={stats}
         />
         <div className="gap-16" style={{ gap: 12 }}>
-          {/* 카드 실적 2칸 + 거래건수 1칸 */}
-          <div className="grid-3" style={{ gap: 10 }}>
-            {['신한카드', '삼성카드'].map((cardName) => {
+          {/* 카드 실적 1칸 + 거래건수 1칸 (신한카드 해지로 제거) */}
+          <div className="grid-2" style={{ gap: 10 }}>
+            {['삼성카드'].map((cardName) => {
               const spent = monthTx
                 .filter(t => t.type === 'expense' && t.paymentMethod === cardName)
                 .reduce((s, t) => s + t.amount, 0);
