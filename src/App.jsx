@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { db } from './firebase';
 import SummaryCards from './components/SummaryCards';
 import AllowancePanel from './components/AllowancePanel';
 import Charts from './components/Charts';
@@ -10,46 +12,26 @@ import { filterByMonth, calcMonthStats } from './utils';
 import './index.css';
 
 const DATA_URL = import.meta.env.BASE_URL + 'data/transactions.json';
-const LS_KEY = 'finance_tracker_data';
-const PATCHES_KEY = 'finance_tracker_patches';   // 서버 거래 수정 내용
-const ADDITIONS_KEY = 'finance_tracker_additions'; // 사용자가 UI로 추가한 거래
-const DELETIONS_KEY = 'finance_tracker_deletions'; // 사용자가 삭제한 서버 거래 ID 목록
+const LS_KEY = 'finance_tracker_data'; // 서버 기본 데이터(승인본) 오프라인 캐시
+const OVERLAY_CACHE_KEY = 'finance_tracker_overlay_cache'; // Firestore 오버레이 로컬 캐시(오프라인 대비)
 
-function getPatches() {
-  try { return JSON.parse(localStorage.getItem(PATCHES_KEY) || '{}'); } catch { return {}; }
-}
-function savePatch(tx) {
-  const p = getPatches(); p[tx.id] = tx;
-  localStorage.setItem(PATCHES_KEY, JSON.stringify(p));
-}
-function removePatch(id) {
-  const p = getPatches(); delete p[id];
-  localStorage.setItem(PATCHES_KEY, JSON.stringify(p));
+// Firestore 도입 전 localStorage 키 — 이 기기에 남아있던 편집 내역을 최초 1회만 이관하는 용도
+const LEGACY_PATCHES_KEY = 'finance_tracker_patches';
+const LEGACY_ADDITIONS_KEY = 'finance_tracker_additions';
+const LEGACY_DELETIONS_KEY = 'finance_tracker_deletions';
+
+function readLegacyOverlay() {
+  const patches = (() => { try { return JSON.parse(localStorage.getItem(LEGACY_PATCHES_KEY) || '{}'); } catch { return {}; } })();
+  const additions = (() => { try { return JSON.parse(localStorage.getItem(LEGACY_ADDITIONS_KEY) || '[]'); } catch { return []; } })();
+  const deletions = (() => { try { return JSON.parse(localStorage.getItem(LEGACY_DELETIONS_KEY) || '[]'); } catch { return []; } })();
+  return { patches, additions, deletions };
 }
 
-function getAdditions() {
-  try { return JSON.parse(localStorage.getItem(ADDITIONS_KEY) || '[]'); } catch { return []; }
-}
-function saveAddition(tx) {
-  const adds = getAdditions();
-  const idx = adds.findIndex((a) => a.id === tx.id);
-  if (idx >= 0) adds[idx] = tx; else adds.push(tx);
-  localStorage.setItem(ADDITIONS_KEY, JSON.stringify(adds));
-}
-function removeAddition(id) {
-  localStorage.setItem(ADDITIONS_KEY, JSON.stringify(getAdditions().filter((a) => a.id !== id)));
-}
-
-function getDeletions() {
-  try { return new Set(JSON.parse(localStorage.getItem(DELETIONS_KEY) || '[]')); } catch { return new Set(); }
-}
-function saveDeletion(id) {
-  const d = getDeletions(); d.add(id);
-  localStorage.setItem(DELETIONS_KEY, JSON.stringify([...d]));
-}
+const EMPTY_OVERLAY = { patches: {}, additions: [], deletions: [] };
+// 규리님 가계부 전용 문서 하나에 수정/추가/삭제 내역을 저장 → 실시간 구독으로 기기 간 자동 반영
+const OVERLAY_DOC = doc(db, 'households', 'kyuri');
 
 // 메모를 내용(description)으로 합치기: 둘 다 있으면 "내용 (메모)", 합친 뒤 memo는 비움
-// → 서버 데이터든 사용자 추가/수정 데이터든 로드 시 일괄 적용. 한 번 합쳐지면 memo가 비어 재병합 안 됨.
 function mergeMemoIntoDesc(t) {
   const memo = (t.memo || '').trim();
   if (!memo) return t;
@@ -58,37 +40,42 @@ function mergeMemoIntoDesc(t) {
   return { ...t, description: merged, memo: '' };
 }
 
-// 서버 데이터 + 사용자 수정(patches) + 사용자 추가(additions) - 사용자 삭제(deletions) 병합
-function mergeAll(serverTransactions) {
-  const patches = getPatches();
-  const additions = getAdditions();
-  const deletions = getDeletions();
+// 서버 데이터(승인본) + 오버레이(수정/추가/삭제) 병합
+function mergeAll(serverTransactions, overlay) {
+  const { patches = {}, additions = [], deletions = [] } = overlay || EMPTY_OVERLAY;
+  const deletionSet = new Set(deletions);
   const serverIds = new Set(serverTransactions.map((t) => t.id));
 
   const merged = serverTransactions
-    .filter((t) => !deletions.has(t.id))
-    .map((t) => patches[t.id] ? { ...t, ...patches[t.id] } : t);
+    .filter((t) => !deletionSet.has(t.id))
+    .map((t) => (patches[t.id] ? { ...t, ...patches[t.id] } : t));
 
   additions
-    .filter((t) => !serverIds.has(t.id) && !deletions.has(t.id))
+    .filter((t) => !serverIds.has(t.id) && !deletionSet.has(t.id))
     .forEach((t) => merged.push(t));
 
   return merged.map(mergeMemoIntoDesc);
 }
 
 function useTransactions() {
-  const [transactions, setTransactions] = useState([]);
+  const [serverTx, setServerTx] = useState(null); // null = 아직 안 옴
   const [settings, setSettings] = useState({ allowance: 150000, lastUpdated: '' });
-  const [loaded, setLoaded] = useState(false);
+  const [overlay, setOverlay] = useState(EMPTY_OVERLAY);
+  const [baseLoaded, setBaseLoaded] = useState(false);
+  const [overlayLoaded, setOverlayLoaded] = useState(false);
 
+  const writeTimer = useRef(null);
+  const pendingOverlay = useRef(null);
+  const migratedRef = useRef(false);
+
+  // 1) 서버 기본 데이터(승인본) 로드 — 기존과 동일
   useEffect(() => {
     fetch(DATA_URL + '?t=' + Date.now())
       .then((r) => r.json())
       .then((data) => {
-        const merged = mergeAll(data.transactions || []);
-        setTransactions(merged);
+        setServerTx(data.transactions || []);
         setSettings(data.settings || {});
-        setLoaded(true);
+        setBaseLoaded(true);
         localStorage.setItem(LS_KEY, JSON.stringify(data));
       })
       .catch(() => {
@@ -96,48 +83,125 @@ function useTransactions() {
         if (local) {
           try {
             const parsed = JSON.parse(local);
-            setTransactions(mergeAll(parsed.transactions || []));
+            setServerTx(parsed.transactions || []);
             setSettings(parsed.settings || {});
-          } catch {}
+          } catch { setServerTx([]); }
+        } else {
+          setServerTx([]);
         }
-        setLoaded(true);
+        setBaseLoaded(true);
       });
   }, []);
 
-  const persist = useCallback((txs, s = settings) => {
-    localStorage.setItem(LS_KEY, JSON.stringify({ settings: s, transactions: txs }));
-  }, [settings]);
+  // 2) Firestore 오버레이 실시간 구독 — 폰/PC 어디서 수정하든 몇 초 안에 서로 반영됨
+  useEffect(() => {
+    const unsub = onSnapshot(
+      OVERLAY_DOC,
+      async (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          const next = {
+            patches: data.patches || {},
+            additions: data.additions || [],
+            deletions: data.deletions || [],
+          };
+          setOverlay(next);
+          localStorage.setItem(OVERLAY_CACHE_KEY, JSON.stringify(next));
+        } else if (!migratedRef.current) {
+          // 최초 1회: 이 기기에 남아있던 로컬(localStorage) 편집 내역을 Firestore로 이관
+          migratedRef.current = true;
+          const legacy = readLegacyOverlay();
+          setOverlay(legacy);
+          localStorage.setItem(OVERLAY_CACHE_KEY, JSON.stringify(legacy));
+          await setDoc(OVERLAY_DOC, legacy).catch(() => {});
+        }
+        setOverlayLoaded(true);
+      },
+      () => {
+        // 오프라인 등으로 구독 실패 시 마지막 캐시로 대체
+        const cached = localStorage.getItem(OVERLAY_CACHE_KEY);
+        if (cached) {
+          try { setOverlay(JSON.parse(cached)); } catch { setOverlay(readLegacyOverlay()); }
+        } else {
+          setOverlay(readLegacyOverlay());
+        }
+        setOverlayLoaded(true);
+      }
+    );
+    return unsub;
+  }, []);
+
+  // 네트워크가 완전히 막혀 onSnapshot이 응답도 에러도 못 낼 때를 대비한 안전장치
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOverlayLoaded((prev) => {
+        if (prev) return prev;
+        const cached = localStorage.getItem(OVERLAY_CACHE_KEY);
+        if (cached) { try { setOverlay(JSON.parse(cached)); } catch { /* 캐시 파싱 실패 시 기본값 유지 */ } }
+        return true;
+      });
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Firestore 쓰기는 400ms 디바운스 — 메모/내용 입력처럼 매 키 입력마다 onUpdate가 호출돼도
+  // 네트워크 요청을 과도하게 보내지 않고, 화면은 즉시(낙관적) 갱신됨
+  const scheduleWrite = useCallback((next) => {
+    pendingOverlay.current = next;
+    if (writeTimer.current) clearTimeout(writeTimer.current);
+    writeTimer.current = setTimeout(() => {
+      setDoc(OVERLAY_DOC, pendingOverlay.current).catch(() => {});
+    }, 400);
+  }, []);
+
+  const transactions = useMemo(
+    () => (serverTx === null ? [] : mergeAll(serverTx, overlay)),
+    [serverTx, overlay]
+  );
 
   const addTransaction = useCallback((tx) => {
-    saveAddition(tx); // 로컬에 영구 보존 → 서버 재배포 후에도 유지
-    setTransactions((prev) => {
-      const next = [...prev, tx];
-      persist(next);
+    setOverlay((prev) => {
+      const next = { ...prev, additions: [...prev.additions, tx] };
+      scheduleWrite(next);
       return next;
     });
-  }, [persist]);
+  }, [scheduleWrite]);
 
   const updateTransaction = useCallback((tx) => {
-    const isUserAdded = getAdditions().some((a) => a.id === tx.id);
-    if (isUserAdded) saveAddition(tx); else savePatch(tx);
-    setTransactions((prev) => {
-      const next = prev.map((t) => (t.id === tx.id ? tx : t));
-      persist(next);
+    setOverlay((prev) => {
+      const isUserAdded = prev.additions.some((a) => a.id === tx.id);
+      const next = isUserAdded
+        ? { ...prev, additions: prev.additions.map((a) => (a.id === tx.id ? tx : a)) }
+        : { ...prev, patches: { ...prev.patches, [tx.id]: tx } };
+      scheduleWrite(next);
       return next;
     });
-  }, [persist]);
+  }, [scheduleWrite]);
 
   const deleteTransaction = useCallback((id) => {
-    const isUserAdded = getAdditions().some((a) => a.id === id);
-    if (isUserAdded) removeAddition(id); else { saveDeletion(id); removePatch(id); }
-    setTransactions((prev) => {
-      const next = prev.filter((t) => t.id !== id);
-      persist(next);
+    setOverlay((prev) => {
+      const isUserAdded = prev.additions.some((a) => a.id === id);
+      let next;
+      if (isUserAdded) {
+        next = { ...prev, additions: prev.additions.filter((a) => a.id !== id) };
+      } else {
+        const patches = { ...prev.patches };
+        delete patches[id];
+        next = { ...prev, patches, deletions: [...new Set([...prev.deletions, id])] };
+      }
+      scheduleWrite(next);
       return next;
     });
-  }, [persist]);
+  }, [scheduleWrite]);
 
-  return { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction };
+  return {
+    transactions,
+    settings,
+    loaded: baseLoaded && overlayLoaded,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+  };
 }
 
 export default function App() {
