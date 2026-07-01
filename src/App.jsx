@@ -4,6 +4,7 @@ import AllowancePanel from './components/AllowancePanel';
 import Charts from './components/Charts';
 import AdviceCard, { NextMonthCard } from './components/AdviceCard';
 import TransactionTable from './components/TransactionTable';
+import SettlementAlert from './components/SettlementAlert';
 import { CopyButtons } from './components/ExtraWidgets';
 import { filterByMonth, calcMonthStats } from './utils';
 import './index.css';
@@ -180,6 +181,8 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      <SettlementAlert allTransactions={transactions} />
 
       <div className="main-grid">
         <div className="main-left">

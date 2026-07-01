@@ -142,6 +142,21 @@ export const calcPaymentBreakdown = (transactions) => {
     .sort((a, b) => b.value - a.value);
 };
 
+// "정산필요" 태그가 붙은 지출 중 아직 정산되지 않은 항목 알림 (전체 기간 대상, 월 무관)
+export const calcSettlementAlerts = (allTransactions) => {
+  const today = new Date();
+  const items = allTransactions
+    .filter((t) => t.type === 'expense' && ((t.description || '') + (t.memo || '')).includes('정산필요'))
+    .map((t) => {
+      const d = new Date(t.date + 'T00:00:00');
+      const daysAgo = isNaN(d) ? 0 : Math.max(0, Math.floor((today - d) / 86400000));
+      return { ...t, daysAgo };
+    })
+    .sort((a, b) => b.daysAgo - a.daysAgo);
+  const total = items.reduce((s, t) => s + t.amount, 0);
+  return { items, count: items.length, total, oldest: items[0] || null };
+};
+
 export const calcNextMonthPrediction = (allTransactions) => {
   const trend = calcMonthlyTrend(allTransactions);
   if (!trend.length) return null;
