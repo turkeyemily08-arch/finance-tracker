@@ -74,7 +74,7 @@ function MonthlyTrendChart({ transactions }) {
   const incomeLabel = ({ x, y, width, value }) => {
     if (!value || value < 10000) return null;
     return (
-      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#059669" fontWeight={700}>
+      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#4E9E86" fontWeight={700}>
         {(value / 10000).toFixed(0)}만
       </text>
     );
@@ -88,11 +88,11 @@ function MonthlyTrendChart({ transactions }) {
     const sub = over ? '⚠️초과' : entry?.수입 > 0 ? `${pct}%` : '';
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#DC2626" fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#8B7FE8" fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
         {sub ? (
-          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#E06666' : '#DC2626'}>
+          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#C77D9B' : '#8B7FE8'}>
             {sub}
           </text>
         ) : null}
@@ -108,10 +108,10 @@ function MonthlyTrendChart({ transactions }) {
     const pct = entry?.수입 > 0 ? Math.round((value / entry.수입) * 100) : 0;
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#4F46E5" fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#6D5FD0" fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
-        <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill="#4F46E5">
+        <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill="#6D5FD0">
           {pct}%
         </text>
       </g>
@@ -130,13 +130,13 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} verticalAlign="top" height={32} />
-          <Bar dataKey="수입" fill="#34D399" radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="수입" fill="#5FAE96" radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={incomeLabel} />
           </Bar>
-          <Bar dataKey="지출" fill="#F87171" radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="지출" fill="#A78BFA" radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={expenseLabel} />
           </Bar>
-          <Bar dataKey="저축" fill="#818CF8" radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="저축" fill="#7C6FE8" radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={savingLabel} />
           </Bar>
         </BarChart>

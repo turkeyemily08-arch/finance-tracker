@@ -53,9 +53,9 @@ export function CopyButtons({ transactions, stats, year, month }) {
         onClick={copySettlement}
         style={{
           ...btnBase,
-          background: settlementItems.length > 0 ? '#FFF7ED' : '#fff',
-          color: settlementItems.length > 0 ? '#EA580C' : '#9CA3AF',
-          borderColor: settlementItems.length > 0 ? '#FED7AA' : '#E5E7EB',
+          background: settlementItems.length > 0 ? '#F1EFFB' : '#fff',
+          color: settlementItems.length > 0 ? '#6D5FD0' : '#9CA3AF',
+          borderColor: settlementItems.length > 0 ? '#DDD6F3' : '#E5E7EB',
         }}
       >
         📋 정산 요약{settlementItems.length > 0 ? ` (${settlementItems.length}건)` : ''}
@@ -79,8 +79,8 @@ export function WelfarePointsCard({ balance }) {
 export function CardPerformanceCard({ monthTx }) {
   const TARGET = 300000;
   const cards = [
-    { name: '신한카드', color: '#60A5FA', doneColor: '#34D399' },
-    { name: '삼성카드', color: '#818CF8', doneColor: '#34D399' },
+    { name: '신한카드', color: '#8B7FE8', doneColor: '#5FAE96' },
+    { name: '삼성카드', color: '#7C6FE8', doneColor: '#5FAE96' },
   ];
 
   return (

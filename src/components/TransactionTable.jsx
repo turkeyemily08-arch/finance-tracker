@@ -12,7 +12,7 @@ const weekday = (dateStr) => {
 // 편집 중에만 보이는 드롭다운/입력 스타일
 const editStyle = {
   fontSize: 14, padding: '3px 6px', borderRadius: 8,
-  border: '1px solid #2563EB', outline: 'none', background: '#fff',
+  border: '1px solid #7C6FE8', outline: 'none', background: '#fff',
   color: '#1F2937', cursor: 'pointer',
 };
 
@@ -89,7 +89,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                 key={f}
                 className={filter === f ? 'active' : ''}
                 onClick={() => setFilter(f)}
-                style={f === '정산필요' && filter === f ? { background: '#E06666', color: '#fff' } : f === '정산필요' ? { color: '#E06666', borderColor: '#E06666' } : undefined}
+                style={f === '정산필요' && filter === f ? { background: '#C77D9B', color: '#fff' } : f === '정산필요' ? { color: '#C77D9B', borderColor: '#C77D9B' } : undefined}
               >
                 {f}
               </button>
@@ -108,12 +108,12 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
             🔍 <b style={{ color: '#374151' }}>"{q}"</b> 검색 결과 <b>{sorted.length}건</b>
           </span>
           {searchExpense > 0 && (
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#E06666' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#6D5FD0' }}>
               지출 합계 {searchExpense.toLocaleString()}원
             </span>
           )}
           {searchIncome > 0 && (
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#10B981' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#5FAE96' }}>
               수입 합계 {searchIncome.toLocaleString()}원
             </span>
           )}

@@ -7,10 +7,10 @@ body {
   font-size: 14px;
 }
 
-#root { max-width: 1760px; margin: 0 auto; padding: 16px 8px; }
+#root { max-width: 1860px; margin: 0 auto; padding: 16px 8px; }
 
-/* 메인 2단 레이아웃: 왼쪽 대시보드 / 오른쪽 거래내역 */
-.main-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+/* 메인 2단 레이아웃: 왼쪽 대시보드 / 오른쪽 거래내역(더 넓게) */
+.main-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 .main-left { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .main-right { position: sticky; top: 12px; min-width: 0; }
 @media (max-width: 1080px) {
@@ -39,7 +39,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 20px;
 }
-.app-title { font-size: 22px; font-weight: 700; color: #2563EB; }
+.app-title { font-size: 22px; font-weight: 700; color: #6D5FD0; }
 .month-nav { display: flex; align-items: center; gap: 12px; }
 .month-nav button {
   background: #F3F4F6; border: none; border-radius: 8px;
@@ -78,13 +78,13 @@ body {
 .allowance-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .allowance-title { font-size: 15px; font-weight: 600; }
 .allowance-badge {
-  background: #FEF3C7; color: #D97706;
+  background: #EEEBFA; color: #6D5FD0;
   border-radius: 20px; padding: 3px 10px; font-size: 12px; font-weight: 600;
 }
 .allowance-bar-wrap { background: #F3F4F6; border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 8px; }
 .allowance-bar { height: 100%; border-radius: 8px; transition: width 0.5s; }
 .allowance-nums { display: flex; justify-content: space-between; font-size: 12px; color: #6B7280; margin-bottom: 16px; }
-.allowance-nums span:first-child { color: #E06666; font-weight: 600; }
+.allowance-nums span:first-child { color: #6D5FD0; font-weight: 600; }
 
 .chart-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .chart-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: #374151; }
@@ -110,7 +110,7 @@ body {
   padding: 5px 14px; border-radius: 20px; border: 1px solid #E5E7EB;
   background: #fff; font-size: 12px; cursor: pointer; transition: all 0.15s;
 }
-.tx-filters button.active { background: #2563EB; color: #fff; border-color: #2563EB; }
+.tx-filters button.active { background: #7C6FE8; color: #fff; border-color: #7C6FE8; }
 .tx-table { width: 100%; border-collapse: collapse; }
 .tx-table th {
   text-align: left; padding: 8px 6px; font-size: 15px; color: #9CA3AF;
@@ -128,8 +128,8 @@ body {
   display: inline-block; padding: 3px 9px; border-radius: 12px;
   font-size: 14px; background: #F3F4F6; color: #374151; white-space: nowrap;
 }
-.amount-expense { color: #E06666; font-weight: 600; }
-.amount-income { color: #10B981; font-weight: 600; }
+.amount-expense { color: #4B5563; font-weight: 600; }
+.amount-income { color: #5FAE96; font-weight: 600; }
 
 .memo-input {
   border: none; background: transparent; font-size: 15px; color: #6B7280;
@@ -137,14 +137,14 @@ body {
   cursor: pointer;
 }
 .memo-input:hover { background: #F3F4F6; }
-.memo-input:focus { background: #EFF6FF; color: #1F2937; }
+.memo-input:focus { background: #F1EFFB; color: #1F2937; }
 
 .add-btn {
   display: flex; align-items: center; gap: 6px;
-  padding: 7px 14px; background: #2563EB; color: #fff;
+  padding: 7px 14px; background: #7C6FE8; color: #fff;
   border: none; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: 500;
 }
-.add-btn:hover { background: #1D4ED8; }
+.add-btn:hover { background: #6A5AD4; }
 
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.4);
@@ -161,7 +161,7 @@ body {
   width: 100%; padding: 10px 12px; border: 1px solid #E5E7EB;
   border-radius: 10px; font-size: 14px; outline: none; background: #fff;
 }
-.form-input:focus, .form-select:focus { border-color: #2563EB; }
+.form-input:focus, .form-select:focus { border-color: #7C6FE8; }
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
 .btn-cancel {
@@ -170,9 +170,9 @@ body {
 }
 .btn-save {
   flex: 2; padding: 11px; border: none; border-radius: 10px;
-  background: #2563EB; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600;
+  background: #7C6FE8; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600;
 }
-.btn-save:hover { background: #1D4ED8; }
+.btn-save:hover { background: #6A5AD4; }
 
 .app-footer {
   text-align: center; font-size: 11px; color: #9CA3AF; margin-top: 32px; padding: 16px;
@@ -182,4 +182,4 @@ body {
   background: none; border: none; cursor: pointer; color: #D1D5DB;
   font-size: 14px; padding: 2px 6px; border-radius: 4px;
 }
-.delete-btn:hover { color: #E06666; background: #FEF2F2; }
+.delete-btn:hover { color: #7C6FE8; background: #F1EFFB; }

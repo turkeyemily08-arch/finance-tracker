@@ -203,7 +203,7 @@ export default function App() {
               return (
                 <div className="stat-card" key={cardName}>
                   <div className="stat-label">{cardName}</div>
-                  <div className="stat-value" style={{ color: done ? '#10B981' : '#60A5FA', fontSize: 15 }}>
+                  <div className="stat-value" style={{ color: done ? '#5FAE96' : '#A78BFA', fontSize: 15 }}>
                     {done ? '✅ 달성' : `${Math.round(spent / 10000)}만원`}
                   </div>
                   <div className="stat-sub">
@@ -227,8 +227,8 @@ export default function App() {
           <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px' }}>
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
-              { label: '공과금', value: stats.공과금지출, color: '#4F86C6' },
-              { label: '용돈', value: stats.용돈지출, color: '#E06666' },
+              { label: '공과금', value: stats.공과금지출, color: '#7C6FE8' },
+              { label: '용돈', value: stats.용돈지출, color: '#A78BFA' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />
@@ -240,10 +240,10 @@ export default function App() {
             ))}
             {/* 복지포인트: 지출 대신 잔액 표시 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#8E7CC3', flexShrink: 0 }} />
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#9D8CF0', flexShrink: 0 }} />
               <span style={{ fontSize: 12, color: '#374151', flex: 1 }}>복지포인트</span>
               <span style={{ fontSize: 11, color: '#9CA3AF', marginRight: 4 }}>잔액</span>
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#8E7CC3' }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#9D8CF0' }}>
                 {(settings.welfarePointsBalance || 0).toLocaleString()}원
               </span>
             </div>
@@ -251,7 +251,7 @@ export default function App() {
               <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #F3F4F6', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11 }}>🚌</span>
                 <span style={{ fontSize: 12, color: '#374151', flex: 1 }}>교통비 합계 <span style={{ color: '#9CA3AF', fontSize: 11 }}>(정산 청구용)</span></span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#4F86C6' }}>{stats.교통비지출.toLocaleString()}원</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#7C6FE8' }}>{stats.교통비지출.toLocaleString()}원</span>
               </div>
             )}
           </div>
