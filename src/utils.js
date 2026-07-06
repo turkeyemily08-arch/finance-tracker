@@ -142,11 +142,26 @@ export const calcPaymentBreakdown = (transactions) => {
     .sort((a, b) => b.value - a.value);
 };
 
-// "정산필요" 태그가 붙은 지출 중 아직 정산되지 않은 항목 알림 (전체 기간 대상, 월 무관)
+// 이 날짜부터는 공과금 지출을 체크박스 없이도 자동으로 정산 대상으로 간주함.
+// 그 이전 과거 데이터는 명시적 체크(needsSettlement) 또는 "정산필요" 문자열이 있을 때만 대상으로 유지(167건 호환).
+export const SETTLEMENT_BASELINE_DATE = '2026-07-06';
+
+// 정산이 필요한(아직 정산 안 된) 지출인지 판정.
+// 1) needsSettlement가 명시적으로 지정돼 있으면 그 값 그대로.
+// 2) 공과금 지출이고 오늘(기준일) 이후 거래면 자동으로 정산 대상.
+// 3) 그 외(과거 데이터)는 기존 "정산필요" 문자열로 판단.
+export const needsSettle = (t) => {
+  if (t.type !== 'expense') return false;
+  if (t.needsSettlement !== undefined) return t.needsSettlement;
+  if (t.source === '공과금' && t.date >= SETTLEMENT_BASELINE_DATE) return true;
+  return ((t.description || '') + (t.memo || '')).includes('정산필요');
+};
+
+// 정산 필요 지출 중 아직 정산되지 않은 항목 알림 (전체 기간 대상, 월 무관)
 export const calcSettlementAlerts = (allTransactions) => {
   const today = new Date();
   const items = allTransactions
-    .filter((t) => t.type === 'expense' && ((t.description || '') + (t.memo || '')).includes('정산필요'))
+    .filter(needsSettle)
     .map((t) => {
       const d = new Date(t.date + 'T00:00:00');
       const daysAgo = isNaN(d) ? 0 : Math.max(0, Math.floor((today - d) / 86400000));

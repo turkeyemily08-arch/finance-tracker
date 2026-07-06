@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatDate, formatKRW } from '../utils';
+import { formatDate, formatKRW, needsSettle } from '../utils';
 import { SOURCE_COLORS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
 import TransactionModal from './TransactionModal';
 
@@ -39,7 +39,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
     if (filter === '전체') return true;
     if (filter === '수입') return t.type === 'income';
     if (filter === '지출') return t.type === 'expense';
-    if (filter === '정산필요') return ((t.description || '') + (t.memo || '')).includes('정산필요');
+    if (filter === '정산필요') return needsSettle(t);
     return t.source === filter;
   });
 
@@ -269,7 +269,21 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                   )}
                 </td>
 
-                <td>
+                <td style={{ whiteSpace: 'nowrap' }}>
+                  {tx.type === 'expense' && (() => {
+                    const on = needsSettle(tx);
+                    return (
+                      <button
+                        onClick={() => onUpdate({ ...tx, needsSettlement: !on })}
+                        title={on ? '클릭하면 정산완료 처리' : '클릭하면 정산필요로 표시'}
+                        style={{
+                          border: 'none', background: 'transparent', cursor: 'pointer',
+                          fontSize: 15, marginRight: 4, opacity: on ? 1 : 0.28,
+                          filter: on ? 'none' : 'grayscale(1)',
+                        }}
+                      >🔖</button>
+                    );
+                  })()}
                   <button className="delete-btn" onClick={() => onDelete(tx.id)} title="삭제">✕</button>
                 </td>
               </tr>

@@ -14,6 +14,8 @@ const getDefault = () => ({
   category: '식비/외식',
   description: '',
   amount: '',
+  // needsSettlement는 일부러 안 넣음: 공과금이면 자동으로 체크된 것처럼 보이되(effectiveNeedsSettlement),
+  // 사용자가 직접 건드리기 전까지는 저장 시 필드 자체를 남기지 않아 utils.needsSettle()의 자동 판정에 맡김
 });
 
 export default function TransactionModal({ onClose, onSave, initial }) {
@@ -43,11 +45,15 @@ export default function TransactionModal({ onClose, onSave, initial }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.amount) return;
-    onSave({
+    const payload = {
       ...form,
       id: form.id || uuidv4(),
       amount: Number(String(form.amount).replace(/,/g, '')),
-    });
+    };
+    // 사용자가 체크박스를 직접 건드리지 않았으면 필드 자체를 저장하지 않음
+    // → utils.needsSettle()의 "공과금은 자동 정산대상" 판정이 계속 적용됨
+    if (payload.needsSettlement === undefined) delete payload.needsSettlement;
+    onSave(payload);
   };
 
   return (
@@ -101,7 +107,7 @@ export default function TransactionModal({ onClose, onSave, initial }) {
             <label className="form-label">내용 (필수)</label>
             <input className="form-input" value={form.description || ''}
               onChange={(e) => set('description', e.target.value)}
-              placeholder="가게명 / 정산필요 등 자유 입력" required />
+              placeholder="가게명 등 자유 입력" required />
           </div>
 
           <div className="form-row">
@@ -110,6 +116,27 @@ export default function TransactionModal({ onClose, onSave, initial }) {
               onChange={(e) => set('amount', e.target.value)}
               placeholder="0" min="0" required />
           </div>
+
+          {form.type === 'expense' && (() => {
+            // 사용자가 체크박스를 아직 안 건드렸으면: 공과금은 자동 체크, 그 외는 미체크
+            const effectiveChecked = form.needsSettlement !== undefined
+              ? form.needsSettlement
+              : form.source === '공과금';
+            return (
+              <div className="form-row">
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: '#374151' }}>
+                  <input type="checkbox"
+                    checked={effectiveChecked}
+                    onChange={(e) => set('needsSettlement', e.target.checked)}
+                    style={{ width: 18, height: 18, cursor: 'pointer', accentColor: '#7C6FE8' }} />
+                  🔖 정산 필요 (나중에 정산받을 지출)
+                  {form.needsSettlement === undefined && form.source === '공과금' && (
+                    <span style={{ fontSize: 11, color: '#9CA3AF' }}>(공과금은 자동 체크)</span>
+                  )}
+                </label>
+              </div>
+            );
+          })()}
 
 
           <div className="modal-btns">

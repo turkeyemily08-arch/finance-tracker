@@ -1,9 +1,16 @@
-import { formatKRW } from '../utils';
+import { formatKRW, needsSettle } from '../utils';
 
-export function CopyButtons({ transactions, stats, year, month }) {
-  const settlementItems = transactions.filter(
-    (t) => t.type === 'expense' && ((t.description || '') + (t.memo || '')).includes('정산필요')
-  );
+export function CopyButtons({ transactions, stats, year, month, onSettleAll }) {
+  const settlementItems = transactions.filter(needsSettle);
+
+  const handleSettleAll = () => {
+    if (!settlementItems.length) return;
+    const ok = window.confirm(
+      `${year}년 ${month}월 정산필요 항목 ${settlementItems.length}건(${settlementItems.reduce((s, t) => s + t.amount, 0).toLocaleString()}원)을 정산완료 처리할까요?`
+    );
+    if (!ok) return;
+    onSettleAll(settlementItems.map((t) => t.id));
+  };
 
   const copySettlement = () => {
     if (!settlementItems.length) { alert('정산 필요 항목이 없습니다.'); return; }
@@ -60,6 +67,14 @@ export function CopyButtons({ transactions, stats, year, month }) {
       >
         📋 정산 요약{settlementItems.length > 0 ? ` (${settlementItems.length}건)` : ''}
       </button>
+      {settlementItems.length > 0 && (
+        <button
+          onClick={handleSettleAll}
+          style={{ ...btnBase, background: '#EAF6F1', color: '#5FAE96', borderColor: '#CDEBDD' }}
+        >
+          ✅ 이번달 정산완료
+        </button>
+      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ export const EXPENSE_CATEGORIES = {
   복지포인트: ['의료/건강(포인트)', '쇼핑(포인트)', '문화/여가(포인트)', '식품/장보기(포인트)', '기타(포인트)'],
 };
 
-export const INCOME_CATEGORIES = ['급여', '공과금 정산', '복지포인트 충전', '환불/취소', '기타 수입'];
+export const INCOME_CATEGORIES = ['급여', '부모님 용돈', '공과금 정산', '복지포인트 충전', '환불/취소', '기타 수입'];
 
 export const PAYMENT_METHOD_COLORS = {
   '신한카드':    '#8B7FE8',
@@ -102,6 +102,7 @@ export const CATEGORY_COLORS = {
   '기타 공과금':    '#CBC7E0',
   // 수입 카테고리
   '급여':           '#7C6FE8',
+  '부모님 용돈':    '#8B7FE8',
   '공과금 정산':    '#9D8CF0',
   '복지포인트 충전':'#A78BFA',
   '환불/취소':      '#C4B5FD',

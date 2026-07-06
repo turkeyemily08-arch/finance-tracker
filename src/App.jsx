@@ -215,6 +215,14 @@ export default function App() {
   const monthTx = filterByMonth(transactions, year, month);
   const stats = calcMonthStats(monthTx);
 
+  // "이번달 정산완료" 버튼: 넘겨받은 id들을 정산완료(needsSettlement:false)로 일괄 처리
+  const settleTransactions = useCallback((ids) => {
+    ids.forEach((id) => {
+      const tx = transactions.find((t) => t.id === id);
+      if (tx) updateTransaction({ ...tx, needsSettlement: false });
+    });
+  }, [transactions, updateTransaction]);
+
   const prevMonth = () => {
     if (month === 1) { setYear(y => y - 1); setMonth(12); }
     else setMonth(m => m - 1);
@@ -237,7 +245,7 @@ export default function App() {
       <div className="app-header">
         <div className="app-title">My Finance Tracker</div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <CopyButtons transactions={monthTx} stats={stats} year={year} month={month} />
+          <CopyButtons transactions={monthTx} stats={stats} year={year} month={month} onSettleAll={settleTransactions} />
           <div className="month-nav">
             <button onClick={prevMonth}>←</button>
             <span className="month-label">{year}년 {month}월</span>
