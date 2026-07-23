@@ -68,7 +68,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
       category: '교통비',
       paymentMethod: '토스카드(커플)',
       amount: busAmount,
-      description: '고속버스',
+      description: '시외버스',
     });
     setShowBusPopover(false);
   };
@@ -85,7 +85,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
       </button>
 
       <button onClick={() => setShowBusPopover((v) => !v)} style={{ ...btnBase, color: '#7C6FE8' }}>
-        🚌 고속버스
+        🚌 시외버스
       </button>
       {showBusPopover && (
         <div style={{
@@ -94,7 +94,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
           padding: 14, boxShadow: '0 8px 24px rgba(0,0,0,0.12)', width: 220,
         }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 8 }}>
-            🚌 고속버스 (공과금 · 토스카드(커플))
+            🚌 시외버스 (공과금 · 토스카드(커플))
           </div>
           <label style={{ fontSize: 11, color: '#6B7280', display: 'block', marginBottom: 4 }}>날짜</label>
           <input

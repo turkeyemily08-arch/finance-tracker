@@ -187,18 +187,20 @@ export const calcSelfPaidSummary = (allTransactions) => {
 };
 
 // 정산 필요 지출 중 아직 정산되지 않은 항목 알림 (전체 기간 대상, 월 무관)
+// 목록 자체는 금액 내림차순으로 보여주되, "가장 오래된 항목" 표시는 날짜 기준으로 별도 계산
 export const calcSettlementAlerts = (allTransactions) => {
   const today = new Date();
-  const items = allTransactions
-    .filter(needsSettle)
-    .map((t) => {
-      const d = new Date(t.date + 'T00:00:00');
-      const daysAgo = isNaN(d) ? 0 : Math.max(0, Math.floor((today - d) / 86400000));
-      return { ...t, daysAgo };
-    })
-    .sort((a, b) => b.daysAgo - a.daysAgo);
+  const withDaysAgo = allTransactions.filter(needsSettle).map((t) => {
+    const d = new Date(t.date + 'T00:00:00');
+    const daysAgo = isNaN(d) ? 0 : Math.max(0, Math.floor((today - d) / 86400000));
+    return { ...t, daysAgo };
+  });
+  const oldest = withDaysAgo.length
+    ? withDaysAgo.reduce((a, b) => (b.daysAgo > a.daysAgo ? b : a))
+    : null;
+  const items = [...withDaysAgo].sort((a, b) => b.amount - a.amount);
   const total = items.reduce((s, t) => s + t.amount, 0);
-  return { items, count: items.length, total, oldest: items[0] || null };
+  return { items, count: items.length, total, oldest };
 };
 
 export const calcNextMonthPrediction = (allTransactions) => {

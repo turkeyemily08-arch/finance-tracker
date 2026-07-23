@@ -1,4 +1,4 @@
-import { calcSettlementAlerts, calcSelfPaidSummary } from '../utils';
+import { calcSettlementAlerts, calcSelfPaidSummary, formatDate } from '../utils';
 
 // 정산 대기 중인 지출을 자동으로 감지해 알려주는 카드. 클릭하면 전체 목록 모달이 열린다.
 export default function SettlementAlert({ allTransactions, onOpenAll }) {
@@ -45,7 +45,8 @@ export default function SettlementAlert({ allTransactions, onOpenAll }) {
                 fontSize: 13, color: '#1F2937', background: '#fff',
                 border: '1px solid #E5E1F5', borderRadius: 8, padding: '6px 10px',
               }}>
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span style={{ color: '#9CA3AF', fontWeight: 600, whiteSpace: 'nowrap' }}>{formatDate(t.date)}</span>
+                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {t.description || t.category}
                 </span>
                 <span style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>{t.amount.toLocaleString()}원</span>
