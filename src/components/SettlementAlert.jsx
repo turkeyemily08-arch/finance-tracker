@@ -9,11 +9,8 @@ export default function SettlementAlert({ allTransactions, onOpenAll }) {
   const urgent = oldest && oldest.daysAgo >= 14;
   const accent = urgent ? '#C77D9B' : '#6D5FD0';
 
-  // 어떤 카테고리들이 대기 중인지 한눈에 보이도록 미리보기 (최대 4개)
-  const catCounts = {};
-  items.forEach((t) => { catCounts[t.category] = (catCounts[t.category] || 0) + 1; });
-  const catEntries = Object.entries(catCounts).sort((a, b) => b[1] - a[1]);
-  const catPreview = catEntries.slice(0, 4);
+  // 어떤 항목들이 대기 중인지 "이름 금액" 형태로 바로 보이도록 (최대 4개)
+  const itemPreview = items.slice(0, 4);
 
   return (
     <div
@@ -41,25 +38,25 @@ export default function SettlementAlert({ allTransactions, onOpenAll }) {
             </div>
           )}
 
-          {catPreview.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
-              {catPreview.map(([cat, cnt]) => (
-                <span key={cat} style={{
-                  fontSize: 12, fontWeight: 700, color: '#1F2937',
-                  background: '#fff', border: '1px solid #E5E1F5', borderRadius: 8, padding: '4px 9px',
-                }}>
-                  {cat} {cnt}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            {itemPreview.map((t) => (
+              <div key={t.id} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+                fontSize: 13, color: '#1F2937', background: '#fff',
+                border: '1px solid #E5E1F5', borderRadius: 8, padding: '6px 10px',
+              }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {t.description || t.category}
                 </span>
-              ))}
-              {catEntries.length > catPreview.length && (
-                <span style={{ fontSize: 12, fontWeight: 600, color: '#1F2937', padding: '4px 2px' }}>
-                  +{catEntries.length - catPreview.length}
-                </span>
-              )}
-            </div>
-          )}
-
-          <div style={{ fontSize: 13, fontWeight: 700, color: accent }}>클릭하면 전체보기 →</div>
+                <span style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>{t.amount.toLocaleString()}원</span>
+              </div>
+            ))}
+            {items.length > itemPreview.length && (
+              <div style={{ fontSize: 12, fontWeight: 700, color: accent }}>
+                +{items.length - itemPreview.length}건 더 (클릭하면 전체보기)
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <div style={{ fontSize: 13, color: '#1F2937' }}>정산 대기 항목 없음 🎉</div>
