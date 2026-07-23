@@ -264,7 +264,7 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 13600,
-      "memo": "고속버스"
+      "memo": "시외버스"
     },
     {
       "id": "tx-20260410-003",
@@ -284,7 +284,7 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 29400,
-      "memo": "고속버스"
+      "memo": "시외버스"
     },
     {
       "id": "tx-20260410-005",
@@ -364,7 +364,7 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 39400,
-      "memo": "고속버스"
+      "memo": "시외버스"
     },
     {
       "id": "tx-20260425-001",
