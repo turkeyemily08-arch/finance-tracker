@@ -673,7 +673,7 @@
       "date": "2026-05-09",
       "type": "expense",
       "source": "복지포인트",
-      "category": "쇼핑(포인트)",
+      "category": "복지포인트",
       "paymentMethod": "복지카드",
       "amount": 79760,
       "memo": "무신사 | 정산필요 (복지포인트, 6/15 정산예정)"
@@ -693,7 +693,7 @@
       "date": "2026-05-09",
       "type": "expense",
       "source": "복지포인트",
-      "category": "쇼핑(포인트)",
+      "category": "복지포인트",
       "paymentMethod": "복지카드",
       "amount": 72880,
       "memo": "무인양품 | 정산필요 (복지포인트, 6/15 정산예정)"
@@ -713,7 +713,7 @@
       "date": "2026-05-09",
       "type": "expense",
       "source": "복지포인트",
-      "category": "쇼핑(포인트)",
+      "category": "복지포인트",
       "paymentMethod": "복지카드",
       "amount": 7000,
       "memo": "스타필드 | 정산필요 (복지포인트, 6/15 정산예정)"
