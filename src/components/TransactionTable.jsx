@@ -21,6 +21,8 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [editCell, setEditCell] = useState(null); // { id, field }
+  const [sortKey, setSortKey] = useState('date');
+  const [sortDir, setSortDir] = useState('desc'); // 'asc' | 'desc'
 
   // 차트 막대를 클릭하면(App.jsx) 여기로 검색어가 전달돼 즉시 해당 카테고리로 필터링됨
   useEffect(() => {
@@ -48,7 +50,22 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
     return t.source === filter;
   });
 
-  const sorted = [...filtered].sort((a, b) => b.date.localeCompare(a.date));
+  // 헤더 클릭으로 오름차순/내림차순 정렬 (화살표 표시는 생략 — 클릭해보면 바로 알 수 있음)
+  const toggleSort = (key) => {
+    if (sortKey === key) setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'));
+    else { setSortKey(key); setSortDir('desc'); }
+  };
+  const sortValue = (t, key) => {
+    if (key === 'payment') return t.paymentMethod || '';
+    if (key === 'description') return t.description || '';
+    return t[key] ?? '';
+  };
+  const sorted = [...filtered].sort((a, b) => {
+    const va = sortValue(a, sortKey);
+    const vb = sortValue(b, sortKey);
+    const cmp = typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va).localeCompare(String(vb));
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
 
   // 검색어가 있을 때, 검색 결과 지출/수입 합계 계산
   const q = search.trim();
@@ -112,6 +129,17 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
           <span style={{ fontSize: 12, color: '#6B7280' }}>
             🔍 <b style={{ color: '#374151' }}>"{q}"</b> 검색 결과 <b>{sorted.length}건</b>
           </span>
+          <button
+            onClick={() => setSearch('')}
+            title="필터 해제하고 전체 보기"
+            style={{
+              border: '1px solid #E5E7EB', background: '#fff', color: '#9CA3AF',
+              borderRadius: 6, width: 20, height: 20, fontSize: 11, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+            }}
+          >
+            ✕
+          </button>
           {searchExpense > 0 && (
             <span style={{ fontSize: 13, fontWeight: 700, color: '#C2568C' }}>
               지출 합계 {searchExpense.toLocaleString()}원
@@ -132,12 +160,12 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
         <table className="tx-table">
           <thead>
             <tr>
-              <th>날짜</th>
-              <th>재원</th>
-              <th>카테고리</th>
-              <th>결제</th>
-              <th>내용</th>
-              <th>금액</th>
+              <th onClick={() => toggleSort('date')} style={{ cursor: 'pointer' }}>날짜</th>
+              <th onClick={() => toggleSort('source')} style={{ cursor: 'pointer' }}>재원</th>
+              <th onClick={() => toggleSort('category')} style={{ cursor: 'pointer' }}>카테고리</th>
+              <th onClick={() => toggleSort('payment')} style={{ cursor: 'pointer' }}>결제</th>
+              <th onClick={() => toggleSort('description')} style={{ cursor: 'pointer' }}>내용</th>
+              <th onClick={() => toggleSort('amount')} style={{ cursor: 'pointer' }}>금액</th>
               <th></th>
             </tr>
           </thead>
