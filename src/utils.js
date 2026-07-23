@@ -146,15 +146,32 @@ export const calcPaymentBreakdown = (transactions) => {
 // 그 이전 과거 데이터는 명시적 체크(needsSettlement) 또는 "정산필요" 문자열이 있을 때만 대상으로 유지(167건 호환).
 export const SETTLEMENT_BASELINE_DATE = '2026-07-06';
 
+// 정산 요청 없이 본인이 부담하기로 한 지출인지 (t.selfPaid === true)
+export const isSelfPaid = (t) => t.selfPaid === true;
+
+// 자동판정에서 예외로 둘 조합. 지금은 "공과금/교통비/토스카드"만 — 토스카드로 낸 교통비는
+// 정산 대상이 아닌 개인 이동으로 보는 경우가 많아 자동으로 체크되지 않게 함(명시적 체크는 여전히 우선).
+const isAutoExcluded = (t) =>
+  t.source === '공과금' && t.category === '교통비' && t.paymentMethod === '토스카드';
+
 // 정산이 필요한(아직 정산 안 된) 지출인지 판정.
-// 1) needsSettlement가 명시적으로 지정돼 있으면 그 값 그대로.
-// 2) 공과금 지출이고 오늘(기준일) 이후 거래면 자동으로 정산 대상.
-// 3) 그 외(과거 데이터)는 기존 "정산필요" 문자열로 판단.
+// 1) 본인부담(selfPaid)으로 처리했으면 정산 대상 아님.
+// 2) needsSettlement가 명시적으로 지정돼 있으면 그 값 그대로.
+// 3) 공과금 지출이고 오늘(기준일) 이후 거래면 자동으로 정산 대상 — 단, 자동제외 조합(토스카드 교통비 등)은 제외.
+// 4) 그 외(과거 데이터)는 기존 "정산필요" 문자열로 판단.
 export const needsSettle = (t) => {
   if (t.type !== 'expense') return false;
+  if (isSelfPaid(t)) return false;
   if (t.needsSettlement !== undefined) return t.needsSettlement;
-  if (t.source === '공과금' && t.date >= SETTLEMENT_BASELINE_DATE) return true;
+  if (t.source === '공과금' && t.date >= SETTLEMENT_BASELINE_DATE) return !isAutoExcluded(t);
   return ((t.description || '') + (t.memo || '')).includes('정산필요');
+};
+
+// 본인부담으로 처리한 공과금 지출 요약 (정산 대기 목록과 별도로 보여주기 위함)
+export const calcSelfPaidSummary = (allTransactions) => {
+  const items = allTransactions.filter((t) => t.type === 'expense' && t.source === '공과금' && isSelfPaid(t));
+  const total = items.reduce((s, t) => s + t.amount, 0);
+  return { items, count: items.length, total };
 };
 
 // 정산 필요 지출 중 아직 정산되지 않은 항목 알림 (전체 기간 대상, 월 무관)
@@ -215,7 +232,7 @@ export const generateAdvice = (stats, transactions) => {
   } else {
     advice.push({
       icon: '✅',
-      color: '#5FAE96',
+      color: '#3DAA71',
       text: `용돈 예산 관리 양호! 이번 달 ${formatKRW(stats.용돈잔액)} 남았습니다.`,
     });
   }

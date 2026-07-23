@@ -70,7 +70,7 @@ export function CopyButtons({ transactions, stats, year, month, onSettleAll }) {
       {settlementItems.length > 0 && (
         <button
           onClick={handleSettleAll}
-          style={{ ...btnBase, background: '#EAF6F1', color: '#5FAE96', borderColor: '#CDEBDD' }}
+          style={{ ...btnBase, background: '#E7F6EE', color: '#3DAA71', borderColor: '#C2E9D5' }}
         >
           ✅ 이번달 정산완료
         </button>
@@ -94,8 +94,8 @@ export function WelfarePointsCard({ balance }) {
 export function CardPerformanceCard({ monthTx }) {
   const TARGET = 300000;
   const cards = [
-    { name: '신한카드', color: '#8B7FE8', doneColor: '#5FAE96' },
-    { name: '삼성카드', color: '#7C6FE8', doneColor: '#5FAE96' },
+    { name: '신한카드', color: '#8B7FE8', doneColor: '#3DAA71' },
+    { name: '삼성카드', color: '#7C6FE8', doneColor: '#3DAA71' },
   ];
 
   return (

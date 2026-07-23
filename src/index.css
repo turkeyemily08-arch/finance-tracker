@@ -128,8 +128,8 @@ body {
   display: inline-block; padding: 3px 9px; border-radius: 12px;
   font-size: 14px; background: #F3F4F6; color: #374151; white-space: nowrap;
 }
-.amount-expense { color: #4B5563; font-weight: 600; }
-.amount-income { color: #5FAE96; font-weight: 600; }
+.amount-expense { color: #C2568C; font-weight: 600; }
+.amount-income { color: #3DAA71; font-weight: 600; }
 
 .memo-input {
   border: none; background: transparent; font-size: 15px; color: #6B7280;

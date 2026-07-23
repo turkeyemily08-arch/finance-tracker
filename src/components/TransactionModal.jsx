@@ -29,8 +29,8 @@ export default function TransactionModal({ onClose, onSave, initial }) {
 
   const sourceOptions =
     form.type === 'expense'
-      ? ['공과금', '용돈', '복지포인트']
-      : ['급여', '정산', '복지포인트', '용돈'];
+      ? ['공과금', '용돈', '복지포인트', '기타']
+      : ['급여', '정산', '복지포인트', '용돈', '기타'];
 
   const categoryOptions =
     form.type === 'income'
@@ -117,11 +117,33 @@ export default function TransactionModal({ onClose, onSave, initial }) {
               placeholder="0" min="0" required />
           </div>
 
-          {form.type === 'expense' && (() => {
-            // 사용자가 체크박스를 아직 안 건드렸으면: 공과금은 자동 체크, 그 외는 미체크
+          {form.type === 'expense' && form.source === '공과금' && (
+            <div className="form-row">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: '#6B7280' }}>
+                <input type="checkbox"
+                  checked={form.selfPaid === true}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setForm((f) => {
+                      if (checked) return { ...f, selfPaid: true, needsSettlement: false };
+                      const next = { ...f, selfPaid: false };
+                      delete next.needsSettlement;
+                      return next;
+                    });
+                  }}
+                  style={{ width: 16, height: 16, cursor: 'pointer', accentColor: '#B58BD0' }} />
+                👛 본인부담 (정산 요청 안 하고 제가 낼게요)
+              </label>
+            </div>
+          )}
+
+          {form.type === 'expense' && !form.selfPaid && (() => {
+            // 토스카드로 낸 교통비는 자동 체크 대상에서 제외 (개인 이동으로 보는 경우가 많음)
+            const isTossTransitFare = form.source === '공과금' && form.category === '교통비' && form.paymentMethod === '토스카드';
+            // 사용자가 체크박스를 아직 안 건드렸으면: 공과금은 자동 체크(단, 토스카드 교통비 제외), 그 외는 미체크
             const effectiveChecked = form.needsSettlement !== undefined
               ? form.needsSettlement
-              : form.source === '공과금';
+              : (form.source === '공과금' && !isTossTransitFare);
             return (
               <div className="form-row">
                 <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 14, color: '#374151' }}>
@@ -130,8 +152,11 @@ export default function TransactionModal({ onClose, onSave, initial }) {
                     onChange={(e) => set('needsSettlement', e.target.checked)}
                     style={{ width: 18, height: 18, cursor: 'pointer', accentColor: '#7C6FE8' }} />
                   🔖 정산 필요 (나중에 정산받을 지출)
-                  {form.needsSettlement === undefined && form.source === '공과금' && (
+                  {form.needsSettlement === undefined && form.source === '공과금' && !isTossTransitFare && (
                     <span style={{ fontSize: 11, color: '#9CA3AF' }}>(공과금은 자동 체크)</span>
+                  )}
+                  {isTossTransitFare && form.needsSettlement === undefined && (
+                    <span style={{ fontSize: 11, color: '#9CA3AF' }}>(토스카드 교통비는 자동 제외)</span>
                   )}
                 </label>
               </div>

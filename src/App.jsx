@@ -7,8 +7,9 @@ import Charts from './components/Charts';
 import AdviceCard, { NextMonthCard } from './components/AdviceCard';
 import TransactionTable from './components/TransactionTable';
 import SettlementAlert from './components/SettlementAlert';
+import SettlementListModal from './components/SettlementListModal';
 import { CopyButtons } from './components/ExtraWidgets';
-import { filterByMonth, calcMonthStats } from './utils';
+import { filterByMonth, calcMonthStats, calcSettlementAlerts } from './utils';
 import './index.css';
 
 const DATA_URL = import.meta.env.BASE_URL + 'data/transactions.json';
@@ -223,6 +224,20 @@ export default function App() {
     });
   }, [transactions, updateTransaction]);
 
+  // 정산 알림 배너 클릭 → 전체 정산대기 목록 모달
+  const [showSettlementList, setShowSettlementList] = useState(false);
+  const settlementAlerts = calcSettlementAlerts(transactions);
+
+  // 카테고리 차트 막대 클릭 → 거래내역 검색창에 해당 카테고리를 채워 즉시 필터링 + 스크롤 이동
+  const [categoryFilterSignal, setCategoryFilterSignal] = useState(null); // { term, nonce }
+  const handleCategoryClick = useCallback((name) => {
+    if (!name) return;
+    setCategoryFilterSignal({ term: name, nonce: Date.now() });
+    requestAnimationFrame(() => {
+      document.getElementById('tx-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, []);
+
   const prevMonth = () => {
     if (month === 1) { setYear(y => y - 1); setMonth(12); }
     else setMonth(m => m - 1);
@@ -254,7 +269,15 @@ export default function App() {
         </div>
       </div>
 
-      <SettlementAlert allTransactions={transactions} />
+      <SettlementAlert allTransactions={transactions} onOpenAll={() => setShowSettlementList(true)} />
+      {showSettlementList && (
+        <SettlementListModal
+          items={settlementAlerts.items}
+          total={settlementAlerts.total}
+          onClose={() => setShowSettlementList(false)}
+          onSettle={(id) => settleTransactions([id])}
+        />
+      )}
 
       <div className="main-grid">
         <div className="main-left">
@@ -278,7 +301,7 @@ export default function App() {
               return (
                 <div className="stat-card" key={cardName}>
                   <div className="stat-label">{cardName}</div>
-                  <div className="stat-value" style={{ color: done ? '#5FAE96' : '#A78BFA', fontSize: 15 }}>
+                  <div className="stat-value" style={{ color: done ? '#3DAA71' : '#A78BFA', fontSize: 15 }}>
                     {done ? '✅ 달성' : `${Math.round(spent / 10000)}만원`}
                   </div>
                   <div className="stat-sub">
@@ -303,7 +326,7 @@ export default function App() {
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
               { label: '공과금', value: stats.공과금지출, color: '#7C6FE8' },
-              { label: '용돈', value: stats.용돈지출, color: '#A78BFA' },
+              { label: '용돈', value: stats.용돈지출, color: '#C2568C' },
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: item.color, flexShrink: 0 }} />
@@ -333,7 +356,7 @@ export default function App() {
         </div>
       </div>
 
-      <Charts monthTx={monthTx} allTx={transactions} />
+      <Charts monthTx={monthTx} allTx={transactions} onCategoryClick={handleCategoryClick} />
 
       {/* 소비 조언 + 다음달 예측 나란히 */}
       <div className="grid-2">
@@ -342,12 +365,13 @@ export default function App() {
       </div>
         </div>
 
-        <div className="main-right">
+        <div className="main-right" id="tx-section">
           <TransactionTable
             transactions={monthTx}
             onAdd={addTransaction}
             onUpdate={updateTransaction}
             onDelete={deleteTransaction}
+            externalSearch={categoryFilterSignal}
           />
         </div>
       </div>

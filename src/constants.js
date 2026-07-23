@@ -6,6 +6,7 @@ export const SOURCES = {
   복지포인트: '복지포인트',
   급여: '급여',
   정산: '정산',
+  기타: '기타',
 };
 
 export const EXPENSE_CATEGORIES = {
@@ -21,6 +22,8 @@ export const EXPENSE_CATEGORIES = {
     '가족 외식/모임', '할부상환', '기타 용돈',
   ],
   복지포인트: ['의료/건강(포인트)', '쇼핑(포인트)', '문화/여가(포인트)', '식품/장보기(포인트)', '기타(포인트)'],
+  // 용돈도 공과금도 아닌 애매한 지출(예: 가족 여행용돈 지원 등)을 위한 재원
+  기타: ['가족 지원/선물', '경조사', '기타'],
 };
 
 export const INCOME_CATEGORIES = ['급여', '부모님 용돈', '공과금 정산', '복지포인트 충전', '환불/취소', '기타 수입'];
@@ -32,14 +35,21 @@ export const PAYMENT_METHOD_COLORS = {
   '복지카드':    '#9D8CF0',
   '토스카드':    '#B3A5F5',
   '온누리상품권': '#B8A9F2',
-  '여민전':      '#C4B5FD',
-  '공주페이':    '#B3A5F5',
+  '공주페이/여민전': '#C4B5FD',
   '계좌이체':    '#ABA6D0',
   '현금':       '#9D8CF0',
   '기타':       '#CBC7E0',
 };
 
-export const PAYMENT_METHODS = ['신한카드', '삼성카드', 'DPLYR카드', '복지카드', '토스카드', '온누리상품권', '여민전', '공주페이', '계좌이체', '현금', '기타'];
+// 공주페이(공주시)·여민전(세종시) 둘 다 비슷한 지역화폐 앱이라 하나로 합쳐 관리
+export const PAYMENT_METHODS = ['신한카드', '삼성카드', 'DPLYR카드', '복지카드', '토스카드', '온누리상품권', '공주페이/여민전', '계좌이체', '현금', '기타'];
+
+// 결제수단별 지출 / 카테고리별 지출 차트에서 "1등=가장 진한 보라, 아래로 갈수록 연하게"
+// 순위 기반으로 색을 매길 때 쓰는 공용 그라데이션 (데이터는 이미 금액 내림차순 정렬돼 있음)
+export const PURPLE_GRADIENT = [
+  '#5B4FC7', '#6C5FD6', '#7C6FE8', '#8B7FE8', '#9D8CF0',
+  '#A78BFA', '#B3A5F5', '#C4B5FD', '#D8CFFB', '#E7E1FC',
+];
 
 export const ALL_EXPENSE_CATEGORIES = [
   ...EXPENSE_CATEGORIES.공과금,
@@ -109,10 +119,16 @@ export const CATEGORY_COLORS = {
   '기타 수입':      '#B7B2D6',
 };
 
+// 공과금(보라)과 용돈(핑크)을 확실히 다른 색 계열로 — 예전엔 둘 다 보라 계열이라 구분이 잘 안 됐음
 export const SOURCE_COLORS = {
   공과금: '#7C6FE8',
-  용돈: '#A78BFA',
+  용돈: '#C2568C',
   복지포인트: '#9D8CF0',
   급여: '#6D5FD0',
   정산: '#B3A5F5',
+  기타: '#9CA3AF',
 };
+
+// 지출 금액/차트에 쓰는 핑크 톤 (용돈 색과 계열 통일), 수입/긍정 지표에 쓰는 새 초록 톤
+export const EXPENSE_PINK = '#C2568C';
+export const INCOME_GREEN = '#3DAA71';

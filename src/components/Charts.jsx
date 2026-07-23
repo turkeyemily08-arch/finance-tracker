@@ -1,11 +1,14 @@
 import {
   Cell, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LabelList,
+  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LabelList, CartesianGrid,
 } from 'recharts';
 import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentBreakdown, formatKRW } from '../utils';
-import { CATEGORY_COLORS, PAYMENT_METHOD_COLORS } from '../constants';
+import { PURPLE_GRADIENT, EXPENSE_PINK, INCOME_GREEN } from '../constants';
 
-function CategoryBarChart({ data, title }) {
+// 순위(정렬 후 인덱스) 기반 보라 그라데이션 — 1등이 가장 진하고 아래로 갈수록 연해짐
+const rankColor = (i) => PURPLE_GRADIENT[i % PURPLE_GRADIENT.length];
+
+function CategoryBarChart({ data, title, onCategoryClick }) {
   const sum = data.reduce((s, d) => s + d.value, 0);
   const titleWithSum = (
     <div className="chart-title" style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8 }}>
@@ -35,6 +38,7 @@ function CategoryBarChart({ data, title }) {
   return (
     <div className="chart-card">
       {titleWithSum}
+      <div style={{ fontSize: 11, color: '#9CA3AF', marginTop: -8, marginBottom: 8 }}>막대를 클릭하면 거래내역에서 바로 필터링돼요</div>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 24, right: 8, left: -20, bottom: 50 }}>
           <XAxis
@@ -56,9 +60,15 @@ function CategoryBarChart({ data, title }) {
             formatter={(val) => [formatKRW(val), '금액']}
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
-          <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={36}>
+          <Bar
+            dataKey="value"
+            radius={[4, 4, 0, 0]}
+            maxBarSize={36}
+            cursor={onCategoryClick ? 'pointer' : undefined}
+            onClick={(entry) => onCategoryClick && onCategoryClick(entry?.name)}
+          >
             {data.map((entry, i) => (
-              <Cell key={i} fill={CATEGORY_COLORS[entry.name] || '#CBD5E1'} />
+              <Cell key={i} fill={rankColor(i)} />
             ))}
             <LabelList content={renderBarLabel} />
           </Bar>
@@ -74,7 +84,7 @@ function MonthlyTrendChart({ transactions }) {
   const incomeLabel = ({ x, y, width, value }) => {
     if (!value || value < 10000) return null;
     return (
-      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#4E9E86" fontWeight={700}>
+      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#2E8F5E" fontWeight={700}>
         {(value / 10000).toFixed(0)}만
       </text>
     );
@@ -88,11 +98,11 @@ function MonthlyTrendChart({ transactions }) {
     const sub = over ? '⚠️초과' : entry?.수입 > 0 ? `${pct}%` : '';
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#8B7FE8" fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#C2568C" fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
         {sub ? (
-          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#C77D9B' : '#8B7FE8'}>
+          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#C77D9B' : '#C2568C'}>
             {sub}
           </text>
         ) : null}
@@ -123,6 +133,7 @@ function MonthlyTrendChart({ transactions }) {
       <div className="chart-title">📊 월별 수입/지출 추이</div>
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={data} margin={{ top: 38, right: 8, left: -20, bottom: 8 }}>
+          <CartesianGrid vertical horizontal={false} stroke="#E5E7EB" strokeWidth={1} />
           <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#9CA3AF' }} tickLine={false} axisLine={false} />
           <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickFormatter={(v) => `${(v / 10000).toFixed(0)}만`} tickLine={false} axisLine={false} />
           <Tooltip
@@ -130,10 +141,10 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} verticalAlign="top" height={32} />
-          <Bar dataKey="수입" fill="#5FAE96" radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="수입" fill={INCOME_GREEN} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={incomeLabel} />
           </Bar>
-          <Bar dataKey="지출" fill="#A78BFA" radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="지출" fill={EXPENSE_PINK} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={expenseLabel} />
           </Bar>
           <Bar dataKey="저축" fill="#7C6FE8" radius={[4, 4, 0, 0]} maxBarSize={28}>
@@ -154,9 +165,9 @@ function PaymentBarChart({ transactions }) {
     <div className="chart-card">
       <div className="chart-title">💳 결제수단별 지출</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-        {data.map((d) => {
+        {data.map((d, i) => {
           const pct = total > 0 ? (d.value / total) * 100 : 0;
-          const color = PAYMENT_METHOD_COLORS[d.name] || '#BDBDBD';
+          const color = rankColor(i);
           return (
             <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 64, fontSize: 12, color: '#374151', textAlign: 'right', flexShrink: 0 }}>
@@ -183,15 +194,15 @@ function PaymentBarChart({ transactions }) {
   );
 }
 
-export default function Charts({ monthTx, allTx }) {
+export default function Charts({ monthTx, allTx, onCategoryClick }) {
   const yongdonData = calcCategoryBreakdown(monthTx.filter(t => t.source === '용돈'), 'expense').filter(d => d.value > 0);
   const gonggwamData = calcCategoryBreakdown(monthTx.filter(t => t.source === '공과금'), 'expense').filter(d => d.value > 0);
 
   return (
     <>
       <div className="grid-2">
-        <CategoryBarChart data={yongdonData} title="💸 용돈 카테고리별" />
-        <CategoryBarChart data={gonggwamData} title="🏛️ 공과금 카테고리별" />
+        <CategoryBarChart data={yongdonData} title="💸 용돈 카테고리별" onCategoryClick={onCategoryClick} />
+        <CategoryBarChart data={gonggwamData} title="🏛️ 공과금 카테고리별" onCategoryClick={onCategoryClick} />
       </div>
       <PaymentBarChart transactions={monthTx} />
       <MonthlyTrendChart transactions={allTx} />

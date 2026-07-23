@@ -50,12 +50,12 @@ export function NextMonthCard({ allTransactions, year, month }) {
   const items = [
     {
       icon: '💵',
-      color: '#5FAE96',
+      color: '#3DAA71',
       text: `예상 수입 ${formatKRW(pred.income)} — 최근 월 급여 기준`,
     },
     {
       icon: '💸',
-      color: isDeficit ? '#C77D9B' : '#A78BFA',
+      color: isDeficit ? '#C77D9B' : '#C2568C',
       text: `예상 지출 ${formatKRW(pred.expense)} — 최근 ${pred.monthsUsed}개월 평균`,
     },
     isDeficit

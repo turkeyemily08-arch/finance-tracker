@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { formatDate, formatKRW, needsSettle } from '../utils';
+import { useState, useEffect } from 'react';
+import { formatDate, formatKRW, needsSettle, isSelfPaid } from '../utils';
 import { SOURCE_COLORS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
 import TransactionModal from './TransactionModal';
 
@@ -16,11 +16,16 @@ const editStyle = {
   color: '#1F2937', cursor: 'pointer',
 };
 
-export default function TransactionTable({ transactions, onUpdate, onDelete, onAdd }) {
+export default function TransactionTable({ transactions, onUpdate, onDelete, onAdd, externalSearch }) {
   const [filter, setFilter] = useState('전체');
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [editCell, setEditCell] = useState(null); // { id, field }
+
+  // 차트 막대를 클릭하면(App.jsx) 여기로 검색어가 전달돼 즉시 해당 카테고리로 필터링됨
+  useEffect(() => {
+    if (externalSearch?.term !== undefined) setSearch(externalSearch.term);
+  }, [externalSearch]);
 
   const isEditing = (tx, field) => editCell && editCell.id === tx.id && editCell.field === field;
   const startEdit = (tx, field) => setEditCell({ id: tx.id, field });
@@ -52,7 +57,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
 
   // 인라인 편집용 옵션 (기존 값이 목록에 없으면 보존해서 맨 앞에 추가)
   const sourceOptions = (tx) => {
-    let opts = tx.type === 'income' ? ['급여', '정산', '복지포인트', '용돈'] : ['공과금', '용돈', '복지포인트'];
+    let opts = tx.type === 'income' ? ['급여', '정산', '복지포인트', '용돈', '기타'] : ['공과금', '용돈', '복지포인트', '기타'];
     if (tx.source && !opts.includes(tx.source)) opts = [tx.source, ...opts];
     return opts;
   };
@@ -108,12 +113,12 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
             🔍 <b style={{ color: '#374151' }}>"{q}"</b> 검색 결과 <b>{sorted.length}건</b>
           </span>
           {searchExpense > 0 && (
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#6D5FD0' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#C2568C' }}>
               지출 합계 {searchExpense.toLocaleString()}원
             </span>
           )}
           {searchIncome > 0 && (
-            <span style={{ fontSize: 13, fontWeight: 700, color: '#5FAE96' }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#3DAA71' }}>
               수입 합계 {searchIncome.toLocaleString()}원
             </span>
           )}
@@ -282,6 +287,28 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                           filter: on ? 'none' : 'grayscale(1)',
                         }}
                       >🔖</button>
+                    );
+                  })()}
+                  {tx.type === 'expense' && tx.source === '공과금' && (() => {
+                    const self = isSelfPaid(tx);
+                    return (
+                      <button
+                        onClick={() => {
+                          if (self) {
+                            const next = { ...tx, selfPaid: false };
+                            delete next.needsSettlement;
+                            onUpdate(next);
+                          } else {
+                            onUpdate({ ...tx, selfPaid: true, needsSettlement: false });
+                          }
+                        }}
+                        title={self ? '클릭하면 본인부담 해제' : '클릭하면 본인부담으로 표시(정산 요청 안 함)'}
+                        style={{
+                          border: 'none', background: 'transparent', cursor: 'pointer',
+                          fontSize: 15, marginRight: 4, opacity: self ? 1 : 0.28,
+                          filter: self ? 'none' : 'grayscale(1)',
+                        }}
+                      >👛</button>
                     );
                   })()}
                   <button className="delete-btn" onClick={() => onDelete(tx.id)} title="삭제">✕</button>
