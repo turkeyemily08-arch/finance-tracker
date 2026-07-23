@@ -3,10 +3,38 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LabelList, CartesianGrid,
 } from 'recharts';
 import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentBreakdown, formatKRW } from '../utils';
-import { PURPLE_GRADIENT, EXPENSE_PINK, INCOME_GREEN } from '../constants';
+import { PURPLE_GRADIENT, EXPENSE_PINK, INCOME_GREEN, CATEGORY_EMOJI } from '../constants';
 
 // 순위(정렬 후 인덱스) 기반 보라 그라데이션 — 1등이 가장 진하고 아래로 갈수록 연해짐
 const rankColor = (i) => PURPLE_GRADIENT[i % PURPLE_GRADIENT.length];
+
+// 카테고리 이름 + 이모지, 진한 검정 굵은 글씨로 — 한눈에 잘 보이도록
+const CategoryTick = ({ x, y, payload }) => {
+  const emoji = CATEGORY_EMOJI[payload.value] || '';
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text dx={-4} dy={10} textAnchor="end" transform="rotate(-35)" fontSize={11} fontWeight={700} fill="#1F2937">
+        {emoji ? `${emoji} ${payload.value}` : payload.value}
+      </text>
+    </g>
+  );
+};
+
+// 월별 추이 차트: 각 월 그룹 "사이"(경계)에 세로선을 그리기 위한 좌표 계산.
+// 기본 CartesianGrid는 카테고리 중앙에 선을 그려서 구분 효과가 없었던 문제를 해결.
+const monthBoundaryLines = ({ xAxis }) => {
+  try {
+    const { scale } = xAxis;
+    const domain = scale.domain();
+    if (!scale.bandwidth || domain.length < 2) return [];
+    const bw = scale.bandwidth();
+    const step = scale.step ? scale.step() : bw;
+    const pad = (step - bw) / 2;
+    return domain.slice(0, -1).map((d) => scale(d) + bw + pad);
+  } catch {
+    return [];
+  }
+};
 
 function CategoryBarChart({ data, title, onCategoryClick }) {
   const sum = data.reduce((s, d) => s + d.value, 0);
@@ -43,11 +71,9 @@ function CategoryBarChart({ data, title, onCategoryClick }) {
         <BarChart data={data} margin={{ top: 24, right: 8, left: -20, bottom: 50 }}>
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 11, fill: '#374151' }}
+            tick={<CategoryTick />}
             tickLine={false}
             axisLine={false}
-            angle={-35}
-            textAnchor="end"
             interval={0}
           />
           <YAxis
@@ -133,7 +159,10 @@ function MonthlyTrendChart({ transactions }) {
       <div className="chart-title">📊 월별 수입/지출 추이</div>
       <ResponsiveContainer width="100%" height={250}>
         <BarChart data={data} margin={{ top: 38, right: 8, left: -20, bottom: 8 }}>
-          <CartesianGrid vertical horizontal={false} stroke="#E5E7EB" strokeWidth={1} />
+          <CartesianGrid
+            vertical horizontal={false} stroke="#D1D5DB" strokeWidth={1}
+            verticalCoordinatesGenerator={monthBoundaryLines}
+          />
           <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#9CA3AF' }} tickLine={false} axisLine={false} />
           <YAxis tick={{ fontSize: 11, fill: '#9CA3AF' }} tickFormatter={(v) => `${(v / 10000).toFixed(0)}만`} tickLine={false} axisLine={false} />
           <Tooltip

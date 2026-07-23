@@ -6,10 +6,12 @@ import AllowancePanel from './components/AllowancePanel';
 import Charts from './components/Charts';
 import AdviceCard, { NextMonthCard } from './components/AdviceCard';
 import TransactionTable from './components/TransactionTable';
+import TransactionModal from './components/TransactionModal';
 import SettlementAlert from './components/SettlementAlert';
 import SettlementListModal from './components/SettlementListModal';
+import MiniCalendar from './components/MiniCalendar';
 import { CopyButtons } from './components/ExtraWidgets';
-import { filterByMonth, calcMonthStats, calcSettlementAlerts } from './utils';
+import { filterByMonth, calcMonthStats, calcSettlementAlerts, calcWelfareBalance } from './utils';
 import './index.css';
 
 const DATA_URL = import.meta.env.BASE_URL + 'data/transactions.json';
@@ -215,6 +217,11 @@ export default function App() {
 
   const monthTx = filterByMonth(transactions, year, month);
   const stats = calcMonthStats(monthTx);
+  // 복지포인트 잔액: 오늘 이후 복지카드 결제가 있으면 자동으로 차감돼서 보임
+  const welfareBalance = calcWelfareBalance(settings, transactions);
+
+  // 캘린더에서 날짜 클릭 → 그 날짜로 새 거래 추가 모달 열기
+  const [quickAddDate, setQuickAddDate] = useState(null);
 
   // "이번달 정산완료" 버튼: 넘겨받은 id들을 정산완료(needsSettlement:false)로 일괄 처리
   const settleTransactions = useCallback((ids) => {
@@ -260,7 +267,15 @@ export default function App() {
       <div className="app-header">
         <div className="app-title">My Finance Tracker</div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <CopyButtons transactions={monthTx} stats={stats} year={year} month={month} onSettleAll={settleTransactions} />
+          <CopyButtons
+            transactions={monthTx}
+            allTransactions={transactions}
+            stats={stats}
+            year={year}
+            month={month}
+            onSettleAll={settleTransactions}
+            onAdd={addTransaction}
+          />
           <div className="month-nav">
             <button onClick={prevMonth}>←</button>
             <span className="month-label">{year}년 {month}월</span>
@@ -269,7 +284,10 @@ export default function App() {
         </div>
       </div>
 
-      <SettlementAlert allTransactions={transactions} onOpenAll={() => setShowSettlementList(true)} />
+      <div className="grid-2">
+        <SettlementAlert allTransactions={transactions} onOpenAll={() => setShowSettlementList(true)} />
+        <MiniCalendar onDateClick={(d) => setQuickAddDate(d)} />
+      </div>
       {showSettlementList && (
         <SettlementListModal
           items={settlementAlerts.items}
@@ -278,10 +296,17 @@ export default function App() {
           onSettle={(id) => settleTransactions([id])}
         />
       )}
+      {quickAddDate && (
+        <TransactionModal
+          prefillDate={quickAddDate}
+          onClose={() => setQuickAddDate(null)}
+          onSave={(tx) => { addTransaction(tx); setQuickAddDate(null); }}
+        />
+      )}
 
       <div className="main-grid">
         <div className="main-left">
-      <SummaryCards stats={stats} welfareBalance={settings.welfarePointsBalance || 0} />
+      <SummaryCards stats={stats} welfareBalance={welfareBalance} />
 
       <div className="grid-2">
         <AllowancePanel
@@ -342,7 +367,7 @@ export default function App() {
               <span style={{ fontSize: 12, color: '#374151', flex: 1 }}>복지포인트</span>
               <span style={{ fontSize: 11, color: '#9CA3AF', marginRight: 4 }}>잔액</span>
               <span style={{ fontSize: 13, fontWeight: 600, color: '#9D8CF0' }}>
-                {(settings.welfarePointsBalance || 0).toLocaleString()}원
+                {welfareBalance.toLocaleString()}원
               </span>
             </div>
             {stats.교통비지출 > 0 && stats.미정산 > 0 && (

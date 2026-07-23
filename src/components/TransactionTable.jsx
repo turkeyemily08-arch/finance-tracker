@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { formatDate, formatKRW, needsSettle, isSelfPaid } from '../utils';
-import { SOURCE_COLORS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS } from '../constants';
+import { SOURCE_COLORS, EXPENSE_CATEGORIES, INCOME_CATEGORIES, PAYMENT_METHODS, CATEGORY_EMOJI } from '../constants';
 import TransactionModal from './TransactionModal';
 
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
@@ -205,7 +205,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                     </select>
                   ) : (
                     <span className="cat-badge" style={{ cursor: 'pointer' }} onClick={() => startEdit(tx, 'category')}>
-                      {tx.category}
+                      {CATEGORY_EMOJI[tx.category] ? `${CATEGORY_EMOJI[tx.category]} ${tx.category}` : tx.category}
                     </span>
                   )}
                 </td>
@@ -289,7 +289,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                       >🔖</button>
                     );
                   })()}
-                  {tx.type === 'expense' && tx.source === '공과금' && (() => {
+                  {tx.type === 'expense' && (() => {
                     const self = isSelfPaid(tx);
                     return (
                       <button

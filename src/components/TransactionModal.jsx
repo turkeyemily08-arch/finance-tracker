@@ -18,8 +18,9 @@ const getDefault = () => ({
   // 사용자가 직접 건드리기 전까지는 저장 시 필드 자체를 남기지 않아 utils.needsSettle()의 자동 판정에 맡김
 });
 
-export default function TransactionModal({ onClose, onSave, initial }) {
-  const [form, setForm] = useState(() => initial || getDefault());
+export default function TransactionModal({ onClose, onSave, initial, prefillDate }) {
+  // prefillDate: 캘린더에서 날짜를 클릭해 "새 거래"를 열 때만 사용 — 수정(initial)과는 별개
+  const [form, setForm] = useState(() => initial || { ...getDefault(), ...(prefillDate ? { date: prefillDate } : {}) });
 
   useEffect(() => {
     if (initial) setForm(initial);

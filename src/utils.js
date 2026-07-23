@@ -1,4 +1,4 @@
-import { ALLOWANCE } from './constants';
+import { ALLOWANCE, WELFARE_BASELINE_DATE } from './constants';
 
 export const formatKRW = (amount) =>
   `₩${Math.abs(amount).toLocaleString('ko-KR')}`;
@@ -57,6 +57,16 @@ export const calcMonthStats = (transactions) => {
     미정산: 공과금지출 - 공과금정산수입,
     용돈잔액: ALLOWANCE - 용돈지출,
   };
+};
+
+// 복지포인트 잔액: settings에 저장된 값은 기준일(WELFARE_BASELINE_DATE) 시점 잔액.
+// 그 이후 '복지카드'로 결제한 지출은 자동으로 차감해서 보여줌(수기로 잔액을 매번 안 고쳐도 되게).
+export const calcWelfareBalance = (settings, allTransactions) => {
+  const base = settings.welfarePointsBalance || 0;
+  const spent = allTransactions
+    .filter((t) => t.type === 'expense' && t.paymentMethod === '복지카드' && t.date >= WELFARE_BASELINE_DATE)
+    .reduce((s, t) => s + t.amount, 0);
+  return Math.max(0, base - spent);
 };
 
 export const calcDailyAllowanceBalance = (transactions, year, month) => {
@@ -149,10 +159,12 @@ export const SETTLEMENT_BASELINE_DATE = '2026-07-06';
 // 정산 요청 없이 본인이 부담하기로 한 지출인지 (t.selfPaid === true)
 export const isSelfPaid = (t) => t.selfPaid === true;
 
-// 자동판정에서 예외로 둘 조합. 지금은 "공과금/교통비/토스카드"만 — 토스카드로 낸 교통비는
-// 정산 대상이 아닌 개인 이동으로 보는 경우가 많아 자동으로 체크되지 않게 함(명시적 체크는 여전히 우선).
+// 자동판정에서 예외로 둘 조합 (명시적 체크는 여전히 우선함).
+// - 공과금/교통비/토스카드: 개인 이동으로 보는 경우가 많아 자동 정산대상에서 제외
+// - 토스카드(커플): 남편과 공동으로 쓰는 카드라 어떤 지출이든 정산이 필요 없음
 const isAutoExcluded = (t) =>
-  t.source === '공과금' && t.category === '교통비' && t.paymentMethod === '토스카드';
+  (t.source === '공과금' && t.category === '교통비' && t.paymentMethod === '토스카드') ||
+  t.paymentMethod === '토스카드(커플)';
 
 // 정산이 필요한(아직 정산 안 된) 지출인지 판정.
 // 1) 본인부담(selfPaid)으로 처리했으면 정산 대상 아님.
