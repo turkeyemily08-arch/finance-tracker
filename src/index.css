@@ -125,7 +125,7 @@ body {
   font-size: 14px; font-weight: 600; white-space: nowrap;
 }
 .cat-badge {
-  display: inline-flex; align-items: center; justify-content: center;
+  display: inline-flex; align-items: center; justify-content: flex-start;
   min-width: 92px; box-sizing: border-box; padding: 3px 9px; border-radius: 8px;
   font-size: 13px; font-weight: 700; background: #F1F2F5; color: #1F2937; white-space: nowrap;
 }
