@@ -30,7 +30,7 @@ export default function TransactionModal({ onClose, onSave, initial, prefillDate
 
   const sourceOptions =
     form.type === 'expense'
-      ? ['공과금', '용돈', '복지포인트', '기타']
+      ? ['공과금', '용돈', '복지포인트', '저축', '기타']
       : ['급여', '정산', '복지포인트', '용돈', '기타'];
 
   const categoryOptions =
@@ -116,6 +116,26 @@ export default function TransactionModal({ onClose, onSave, initial, prefillDate
             <input className="form-input" type="number" value={form.amount}
               onChange={(e) => set('amount', e.target.value)}
               placeholder="0" min="0" required />
+            {form.type === 'expense' && form.source === '저축' && (
+              <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                {[500000, 200000, 1000000].map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => set('amount', amt)}
+                    style={{
+                      flex: 1, padding: '6px 0', borderRadius: 8, cursor: 'pointer', fontSize: 12,
+                      border: `1px solid ${Number(form.amount) === amt ? '#3DAA71' : '#E5E7EB'}`,
+                      background: Number(form.amount) === amt ? '#E7F6EE' : '#fff',
+                      color: Number(form.amount) === amt ? '#3DAA71' : '#6B7280',
+                      fontWeight: Number(form.amount) === amt ? 700 : 400,
+                    }}
+                  >
+                    {amt.toLocaleString()}원
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {form.type === 'expense' && form.source === '공과금' && (

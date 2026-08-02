@@ -29,7 +29,7 @@ export default function RecurringModal({
 
   const pending = pendingRecurringRules(rules, allTransactions, year, month);
 
-  const sourceOptions = (type) => (type === 'income' ? ['급여', '정산', '복지포인트', '용돈', '기타'] : ['공과금', '용돈', '복지포인트', '기타']);
+  const sourceOptions = (type) => (type === 'income' ? ['급여', '정산', '복지포인트', '용돈', '기타'] : ['공과금', '용돈', '복지포인트', '저축', '기타']);
   const categoryOptions = (type, source) => (type === 'income' ? INCOME_CATEGORIES : (EXPENSE_CATEGORIES[source] || []));
 
   const startNew = () => setForm(getDefaultForm());
