@@ -28,6 +28,7 @@ export default function RecurringModal({
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const pending = pendingRecurringRules(rules, allTransactions, year, month);
+  const isSaving = !!form && form.type === 'expense' && form.source === '저축';
 
   const sourceOptions = (type) => (type === 'income' ? ['급여', '정산', '복지포인트', '용돈', '기타'] : ['공과금', '용돈', '복지포인트', '저축', '기타']);
   const categoryOptions = (type, source) => (type === 'income' ? INCOME_CATEGORIES : (EXPENSE_CATEGORIES[source] || []));
@@ -38,7 +39,12 @@ export default function RecurringModal({
   const saveForm = (e) => {
     e.preventDefault();
     if (!form.amount || !form.description) return;
-    const payload = { ...form, id: form.id || uuidv4(), amount: Number(String(form.amount).replace(/,/g, '')) };
+    const payload = {
+      ...form,
+      id: form.id || uuidv4(),
+      amount: Number(String(form.amount).replace(/,/g, '')),
+      dayOfMonth: Math.min(31, Math.max(1, Number(form.dayOfMonth) || 1)),
+    };
     if (form.id) onUpdateRule(payload); else onAddRule(payload);
     setForm(null);
   };
@@ -123,44 +129,68 @@ export default function RecurringModal({
             <div className="form-row-2" style={{ marginBottom: 14 }}>
               <div className="form-row" style={{ marginBottom: 0 }}>
                 <label className="form-label">구분</label>
-                <select className="form-select" value={form.type}
-                  onChange={(e) => { const t = e.target.value; set('type', t); set('source', t === 'income' ? '급여' : '용돈'); }}>
+                <select className="form-select" value={isSaving ? 'saving' : form.type}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v === 'saving') {
+                      set('type', 'expense');
+                      set('source', '저축');
+                      set('category', EXPENSE_CATEGORIES.저축[0]);
+                      set('paymentMethod', '');
+                    } else {
+                      set('type', v);
+                      set('source', v === 'income' ? '급여' : '용돈');
+                    }
+                  }}>
                   <option value="expense">지출</option>
                   <option value="income">수입</option>
+                  <option value="saving">적금</option>
                 </select>
               </div>
               <div className="form-row" style={{ marginBottom: 0 }}>
                 <label className="form-label">매달 며칠</label>
-                <input className="form-input" type="number" min="1" max="28" value={form.dayOfMonth}
-                  onChange={(e) => set('dayOfMonth', Math.min(28, Math.max(1, Number(e.target.value) || 1)))} required />
+                <input className="form-input" type="number" min="1" max="31" value={form.dayOfMonth}
+                  onChange={(e) => set('dayOfMonth', e.target.value)} required />
               </div>
             </div>
 
-            <div className="form-row-2" style={{ marginBottom: 14 }}>
-              <div className="form-row" style={{ marginBottom: 0 }}>
-                <label className="form-label">재원</label>
-                <select className="form-select" value={form.source}
-                  onChange={(e) => set('source', e.target.value)}>
-                  {sourceOptions(form.type).map((s) => <option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div className="form-row" style={{ marginBottom: 0 }}>
-                <label className="form-label">카테고리</label>
+            {isSaving ? (
+              <div className="form-row" style={{ marginBottom: 14 }}>
+                <label className="form-label">저축 목적지</label>
                 <select className="form-select" value={form.category}
                   onChange={(e) => set('category', e.target.value)}>
-                  {categoryOptions(form.type, form.source).map((c) => <option key={c}>{c}</option>)}
+                  {EXPENSE_CATEGORIES.저축.map((c) => <option key={c}>{c}</option>)}
                 </select>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="form-row-2" style={{ marginBottom: 14 }}>
+                  <div className="form-row" style={{ marginBottom: 0 }}>
+                    <label className="form-label">재원</label>
+                    <select className="form-select" value={form.source}
+                      onChange={(e) => set('source', e.target.value)}>
+                      {sourceOptions(form.type).map((s) => <option key={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-row" style={{ marginBottom: 0 }}>
+                    <label className="form-label">카테고리</label>
+                    <select className="form-select" value={form.category}
+                      onChange={(e) => set('category', e.target.value)}>
+                      {categoryOptions(form.type, form.source).map((c) => <option key={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
 
-            <div className="form-row">
-              <label className="form-label">결제수단</label>
-              <select className="form-select" value={form.paymentMethod || ''}
-                onChange={(e) => set('paymentMethod', e.target.value)}>
-                <option value="">선택 안함</option>
-                {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
-              </select>
-            </div>
+                <div className="form-row">
+                  <label className="form-label">결제수단</label>
+                  <select className="form-select" value={form.paymentMethod || ''}
+                    onChange={(e) => set('paymentMethod', e.target.value)}>
+                    <option value="">선택 안함</option>
+                    {PAYMENT_METHODS.map((m) => <option key={m}>{m}</option>)}
+                  </select>
+                </div>
+              </>
+            )}
 
             <div className="form-row">
               <label className="form-label">내용 (필수)</label>
