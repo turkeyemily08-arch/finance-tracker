@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 import { db } from './firebase';
 import SummaryCards from './components/SummaryCards';
 import AllowancePanel from './components/AllowancePanel';
@@ -9,9 +10,10 @@ import TransactionTable from './components/TransactionTable';
 import TransactionModal from './components/TransactionModal';
 import SettlementAlert from './components/SettlementAlert';
 import SettlementListModal from './components/SettlementListModal';
+import RecurringModal from './components/RecurringModal';
 import MiniCalendar from './components/MiniCalendar';
 import { CopyButtons } from './components/ExtraWidgets';
-import { filterByMonth, calcMonthStats, calcSettlementAlerts, calcWelfareBalance } from './utils';
+import { filterByMonth, calcMonthStats, calcSettlementAlerts, calcWelfareBalance, pendingRecurringRules } from './utils';
 import './index.css';
 
 const DATA_URL = import.meta.env.BASE_URL + 'data/transactions.json';
@@ -27,10 +29,10 @@ function readLegacyOverlay() {
   const patches = (() => { try { return JSON.parse(localStorage.getItem(LEGACY_PATCHES_KEY) || '{}'); } catch { return {}; } })();
   const additions = (() => { try { return JSON.parse(localStorage.getItem(LEGACY_ADDITIONS_KEY) || '[]'); } catch { return []; } })();
   const deletions = (() => { try { return JSON.parse(localStorage.getItem(LEGACY_DELETIONS_KEY) || '[]'); } catch { return []; } })();
-  return { patches, additions, deletions };
+  return { patches, additions, deletions, recurringRules: [] };
 }
 
-const EMPTY_OVERLAY = { patches: {}, additions: [], deletions: [] };
+const EMPTY_OVERLAY = { patches: {}, additions: [], deletions: [], recurringRules: [] };
 // 규리님 가계부 전용 문서 하나에 수정/추가/삭제 내역을 저장 → 실시간 구독으로 기기 간 자동 반영
 const OVERLAY_DOC = doc(db, 'households', 'kyuri');
 
@@ -107,6 +109,7 @@ function useTransactions() {
             patches: data.patches || {},
             additions: data.additions || [],
             deletions: data.deletions || [],
+            recurringRules: data.recurringRules || [],
           };
           setOverlay(next);
           localStorage.setItem(OVERLAY_CACHE_KEY, JSON.stringify(next));
@@ -197,6 +200,32 @@ function useTransactions() {
     });
   }, [scheduleWrite]);
 
+  // 반복거래 규칙 관리 (적금처럼 매달 같은 금액을 넣고 싶을 때). 실제 거래를 자동으로 몰래
+  // 만들진 않고, 규칙만 저장해뒀다가 "이번달 대기중" 목록에서 한 번 확인 후 추가하는 방식.
+  const addRecurringRule = useCallback((rule) => {
+    setOverlay((prev) => {
+      const next = { ...prev, recurringRules: [...(prev.recurringRules || []), rule] };
+      scheduleWrite(next);
+      return next;
+    });
+  }, [scheduleWrite]);
+
+  const updateRecurringRule = useCallback((rule) => {
+    setOverlay((prev) => {
+      const next = { ...prev, recurringRules: (prev.recurringRules || []).map((r) => (r.id === rule.id ? rule : r)) };
+      scheduleWrite(next);
+      return next;
+    });
+  }, [scheduleWrite]);
+
+  const deleteRecurringRule = useCallback((id) => {
+    setOverlay((prev) => {
+      const next = { ...prev, recurringRules: (prev.recurringRules || []).filter((r) => r.id !== id) };
+      scheduleWrite(next);
+      return next;
+    });
+  }, [scheduleWrite]);
+
   return {
     transactions,
     settings,
@@ -204,6 +233,10 @@ function useTransactions() {
     addTransaction,
     updateTransaction,
     deleteTransaction,
+    recurringRules: overlay.recurringRules || [],
+    addRecurringRule,
+    updateRecurringRule,
+    deleteRecurringRule,
   };
 }
 
@@ -212,8 +245,10 @@ export default function App() {
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
 
-  const { transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction } =
-    useTransactions();
+  const {
+    transactions, settings, loaded, addTransaction, updateTransaction, deleteTransaction,
+    recurringRules, addRecurringRule, updateRecurringRule, deleteRecurringRule,
+  } = useTransactions();
 
   const monthTx = filterByMonth(transactions, year, month);
   const stats = calcMonthStats(monthTx);
@@ -222,6 +257,23 @@ export default function App() {
 
   // 캘린더에서 날짜 클릭 → 그 날짜로 새 거래 추가 모달 열기
   const [quickAddDate, setQuickAddDate] = useState(null);
+
+  // 반복거래(적금 등) 관리 모달
+  const [showRecurringModal, setShowRecurringModal] = useState(false);
+  const pendingRecurring = pendingRecurringRules(recurringRules, transactions, year, month);
+  const quickAddRecurring = useCallback((rule, date) => {
+    addTransaction({
+      id: uuidv4(),
+      date,
+      type: rule.type,
+      source: rule.source,
+      category: rule.category,
+      paymentMethod: rule.paymentMethod || '',
+      amount: rule.amount,
+      description: rule.description,
+      recurringId: rule.id,
+    });
+  }, [addTransaction]);
 
   // "이번달 정산완료" 버튼: 넘겨받은 id들을 정산완료(needsSettlement:false)로 일괄 처리
   const settleTransactions = useCallback((ids) => {
@@ -276,6 +328,30 @@ export default function App() {
             onSettleAll={settleTransactions}
             onAdd={addTransaction}
           />
+          <button
+            onClick={() => setShowRecurringModal(true)}
+            style={{
+              fontSize: 12, padding: '6px 12px', borderRadius: 8, cursor: 'pointer', whiteSpace: 'nowrap',
+              border: `1px solid ${pendingRecurring.length > 0 ? '#DDD6F3' : '#E5E7EB'}`,
+              background: pendingRecurring.length > 0 ? '#F1EFFB' : '#fff',
+              color: pendingRecurring.length > 0 ? '#6D5FD0' : '#374151',
+            }}
+          >
+            🔁 반복거래{pendingRecurring.length > 0 ? ` (${pendingRecurring.length})` : ''}
+          </button>
+          {showRecurringModal && (
+            <RecurringModal
+              rules={recurringRules}
+              allTransactions={transactions}
+              year={year}
+              month={month}
+              onAddRule={addRecurringRule}
+              onUpdateRule={updateRecurringRule}
+              onDeleteRule={deleteRecurringRule}
+              onQuickAdd={quickAddRecurring}
+              onClose={() => setShowRecurringModal(false)}
+            />
+          )}
           <div className="month-nav">
             <button onClick={prevMonth}>←</button>
             <span className="month-label">{year}년 {month}월</span>

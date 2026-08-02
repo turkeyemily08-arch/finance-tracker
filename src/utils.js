@@ -15,6 +15,19 @@ export const filterByMonth = (transactions, year, month) => {
   return transactions.filter((t) => t.date.startsWith(key));
 };
 
+// 반복거래 규칙(적금 등)이 특정 월에 이미 추가됐는지 확인.
+// 생성된 거래는 recurringId로 규칙과 연결돼있어서, 같은 규칙을 그 달에 두 번 추가하는 걸 막아줌.
+export const isRuleAppliedForMonth = (rule, allTransactions, year, month) => {
+  const key = `${year}-${String(month).padStart(2, '0')}`;
+  return allTransactions.some((t) => t.recurringId === rule.id && t.date.startsWith(key));
+};
+
+// 활성화된 규칙 중, 보고 있는 달에 아직 추가 안 된 것들만 골라줌
+export const pendingRecurringRules = (rules, allTransactions, year, month) =>
+  (rules || [])
+    .filter((r) => r.active !== false)
+    .filter((r) => !isRuleAppliedForMonth(r, allTransactions, year, month));
+
 export const calcMonthStats = (transactions) => {
   // 정산은 남편 공동저축 계좌이체이므로 수입으로 집계하지 않음
   const income = transactions
