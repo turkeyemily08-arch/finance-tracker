@@ -38,10 +38,11 @@ export default function RecurringModal({
 
   const saveForm = (e) => {
     e.preventDefault();
-    if (!form.amount || !form.description) return;
+    if (!form.amount || (!isSaving && !form.description)) return;
     const payload = {
       ...form,
       id: form.id || uuidv4(),
+      description: isSaving ? form.category : form.description,
       amount: Number(String(form.amount).replace(/,/g, '')),
       dayOfMonth: Math.min(31, Math.max(1, Number(form.dayOfMonth) || 1)),
     };
@@ -192,12 +193,14 @@ export default function RecurringModal({
               </>
             )}
 
-            <div className="form-row">
-              <label className="form-label">내용 (필수)</label>
-              <input className="form-input" value={form.description || ''}
-                onChange={(e) => set('description', e.target.value)}
-                placeholder="예: 적금" required />
-            </div>
+            {!isSaving && (
+              <div className="form-row">
+                <label className="form-label">내용 (필수)</label>
+                <input className="form-input" value={form.description || ''}
+                  onChange={(e) => set('description', e.target.value)}
+                  placeholder="예: 적금" required />
+              </div>
+            )}
 
             <div className="form-row">
               <label className="form-label">금액 (원)</label>
