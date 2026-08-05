@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LabelList, CartesianGrid,
 } from 'recharts';
 import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentBreakdown, formatKRW } from '../utils';
-import { PURPLE_GRADIENT, EXPENSE_PINK, INCOME_GREEN, CATEGORY_EMOJI, SOURCE_COLORS } from '../constants';
+import { PURPLE_GRADIENT, CATEGORY_EMOJI } from '../constants';
 
 // 순위(정렬 후 인덱스) 기반 보라 그라데이션 — 1등이 가장 진하고 아래로 갈수록 연해짐
 const rankColor = (i) => PURPLE_GRADIENT[i % PURPLE_GRADIENT.length];
@@ -104,13 +104,19 @@ function CategoryBarChart({ data, title, onCategoryClick }) {
   );
 }
 
+// 이 차트만 나머지 UI(보라 톤)와 맞춰서 수입/지출/저축을 전부 보라 계열 명도 차로 구분
+const TREND_INCOME = PURPLE_GRADIENT[0];   // 가장 진한 보라
+const TREND_EXPENSE = PURPLE_GRADIENT[3];  // 중간 보라
+const TREND_SAVING = PURPLE_GRADIENT[6];   // 연한 보라
+const TREND_OVER = '#B94A34';              // 지출 초과 경고만 예외적으로 붉은 톤 유지
+
 function MonthlyTrendChart({ transactions }) {
   const data = calcMonthlyTrend(transactions);
 
   const incomeLabel = ({ x, y, width, value }) => {
     if (!value || value < 10000) return null;
     return (
-      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#237A56" fontWeight={700}>
+      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill={TREND_INCOME} fontWeight={700}>
         {(value / 10000).toFixed(0)}만
       </text>
     );
@@ -124,11 +130,11 @@ function MonthlyTrendChart({ transactions }) {
     const sub = over ? '⚠️초과' : entry?.수입 > 0 ? `${pct}%` : '';
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#E0754A" fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill={TREND_EXPENSE} fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
         {sub ? (
-          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#B94A34' : '#E0754A'}>
+          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? TREND_OVER : TREND_EXPENSE}>
             {sub}
           </text>
         ) : null}
@@ -144,10 +150,10 @@ function MonthlyTrendChart({ transactions }) {
     const pct = entry?.수입 > 0 ? Math.round((value / entry.수입) * 100) : 0;
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill={SOURCE_COLORS.저축} fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill={TREND_SAVING} fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
-        <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={SOURCE_COLORS.저축}>
+        <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={TREND_SAVING}>
           {pct}%
         </text>
       </g>
@@ -170,13 +176,13 @@ function MonthlyTrendChart({ transactions }) {
             contentStyle={{ borderRadius: 10, fontSize: 12, border: '1px solid #E5E7EB' }}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} verticalAlign="top" height={32} />
-          <Bar dataKey="수입" fill={INCOME_GREEN} radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="수입" fill={TREND_INCOME} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={incomeLabel} />
           </Bar>
-          <Bar dataKey="지출" fill={EXPENSE_PINK} radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="지출" fill={TREND_EXPENSE} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={expenseLabel} />
           </Bar>
-          <Bar dataKey="저축" fill={SOURCE_COLORS.저축} radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="저축" fill={TREND_SAVING} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={savingLabel} />
           </Bar>
         </BarChart>
