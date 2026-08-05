@@ -247,7 +247,7 @@ export const generateAdvice = (stats, transactions) => {
   if (stats.용돈잔액 < 0) {
     advice.push({
       icon: '⚠️',
-      color: '#C77D9B',
+      color: '#B94A34',
       text: `용돈 예산 ${formatKRW(ALLOWANCE)}을 ${formatKRW(-stats.용돈잔액)} 초과했습니다. 다음 달 지출 패턴을 점검해보세요.`,
     });
   } else if (stats.용돈잔액 < 30000) {
@@ -259,7 +259,7 @@ export const generateAdvice = (stats, transactions) => {
   } else {
     advice.push({
       icon: '✅',
-      color: '#3DAA71',
+      color: '#3DB97A',
       text: `용돈 예산 관리 양호! 이번 달 ${formatKRW(stats.용돈잔액)} 남았습니다.`,
     });
   }
@@ -267,7 +267,7 @@ export const generateAdvice = (stats, transactions) => {
   if (stats.미정산 > 0) {
     advice.push({
       icon: '📋',
-      color: '#7C6FE8',
+      color: '#8261A8',
       text: `공과금 ${formatKRW(stats.공과금지출)} 지출 중 ${formatKRW(stats.미정산)}이 아직 정산되지 않았습니다.`,
     });
   }
@@ -277,7 +277,7 @@ export const generateAdvice = (stats, transactions) => {
     const top = topCats[0];
     advice.push({
       icon: '📊',
-      color: '#9D8CF0',
+      color: '#A88AC7',
       text: `이번 달 최대 지출 카테고리는 '${top.name}' (${formatKRW(top.value)})입니다.`,
     });
   }
@@ -288,7 +288,7 @@ export const generateAdvice = (stats, transactions) => {
   if (martCount >= 3) {
     advice.push({
       icon: '🛒',
-      color: '#8B7FE8',
+      color: '#9575B8',
       text: `이번 달 마트 방문 ${martCount}회. 장볼 때 목록 작성 후 한 번에 구매하면 충동구매를 줄일 수 있습니다.`,
     });
   }

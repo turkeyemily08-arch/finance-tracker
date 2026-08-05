@@ -27,12 +27,12 @@ export default function SettlementListModal({ items, total, onClose, onSettle })
                 {t.description || '−'}
               </span>
               <span style={{ fontSize: 13, fontWeight: 700, color: '#374151', whiteSpace: 'nowrap' }}>{t.amount.toLocaleString()}원</span>
-              <span style={{ fontSize: 11, color: t.daysAgo >= 14 ? '#C77D9B' : '#B0A8DB', whiteSpace: 'nowrap' }}>{t.daysAgo}일</span>
+              <span style={{ fontSize: 11, color: t.daysAgo >= 14 ? '#B94A34' : '#B0A8DB', whiteSpace: 'nowrap' }}>{t.daysAgo}일</span>
               <button
                 onClick={() => onSettle(t.id)}
                 title="정산완료 처리"
                 style={{
-                  border: '1px solid #CDEBDD', background: '#EAF6F1', color: '#3DAA71',
+                  border: '1px solid #CDEBDD', background: '#EAF6F1', color: '#3DB97A',
                   borderRadius: 8, fontSize: 11, padding: '4px 8px', cursor: 'pointer', whiteSpace: 'nowrap',
                 }}
               >

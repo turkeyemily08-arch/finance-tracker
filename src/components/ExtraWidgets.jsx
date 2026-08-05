@@ -84,7 +84,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
         📄 월간 리포트
       </button>
 
-      <button onClick={() => setShowBusPopover((v) => !v)} style={{ ...btnBase, color: '#7C6FE8' }}>
+      <button onClick={() => setShowBusPopover((v) => !v)} style={{ ...btnBase, color: '#8261A8' }}>
         🚌 시외버스
       </button>
       {showBusPopover && (
@@ -109,9 +109,9 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
                 onClick={() => setBusAmount(amt)}
                 style={{
                   flex: 1, padding: '6px 0', borderRadius: 8, cursor: 'pointer', fontSize: 12,
-                  border: `1px solid ${busAmount === amt ? '#7C6FE8' : '#E5E7EB'}`,
+                  border: `1px solid ${busAmount === amt ? '#8261A8' : '#E5E7EB'}`,
                   background: busAmount === amt ? '#F1EFFB' : '#fff',
-                  color: busAmount === amt ? '#7C6FE8' : '#6B7280', fontWeight: busAmount === amt ? 700 : 400,
+                  color: busAmount === amt ? '#8261A8' : '#6B7280', fontWeight: busAmount === amt ? 700 : 400,
                 }}
               >
                 {amt.toLocaleString()}원
@@ -120,7 +120,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             <button onClick={() => setShowBusPopover(false)} style={{ ...btnBase, flex: 1, color: '#9CA3AF' }}>취소</button>
-            <button onClick={addBusFare} style={{ ...btnBase, flex: 1, background: '#7C6FE8', color: '#fff', border: 'none' }}>추가</button>
+            <button onClick={addBusFare} style={{ ...btnBase, flex: 1, background: '#8261A8', color: '#fff', border: 'none' }}>추가</button>
           </div>
         </div>
       )}
@@ -130,7 +130,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
         style={{
           ...btnBase,
           background: allSettlementItems.length > 0 ? '#F1EFFB' : '#fff',
-          color: allSettlementItems.length > 0 ? '#6D5FD0' : '#9CA3AF',
+          color: allSettlementItems.length > 0 ? '#6E4F96' : '#9CA3AF',
           borderColor: allSettlementItems.length > 0 ? '#DDD6F3' : '#E5E7EB',
         }}
       >
@@ -139,7 +139,7 @@ export function CopyButtons({ transactions, allTransactions, stats, year, month,
       {monthlySettlementItems.length > 0 && (
         <button
           onClick={handleSettleAll}
-          style={{ ...btnBase, background: '#E7F6EE', color: '#3DAA71', borderColor: '#C2E9D5' }}
+          style={{ ...btnBase, background: '#E7F6EE', color: '#3DB97A', borderColor: '#C2E9D5' }}
         >
           ✅ 이번달 정산완료
         </button>
@@ -153,7 +153,7 @@ export function WelfarePointsCard({ balance, allTransactions }) {
   return (
     <div className="stat-card">
       <div className="stat-label">복지포인트 잔액</div>
-      <div className="stat-value" style={{ color: '#A78BFA', fontSize: 16 }}>
+      <div className="stat-value" style={{ color: '#BA9FD3', fontSize: 16 }}>
         {effective > 0 ? formatKRW(effective) : '−'}
       </div>
       <div className="stat-sub">사용 가능</div>
@@ -164,8 +164,8 @@ export function WelfarePointsCard({ balance, allTransactions }) {
 export function CardPerformanceCard({ monthTx }) {
   const TARGET = 300000;
   const cards = [
-    { name: '신한카드', color: '#8B7FE8', doneColor: '#3DAA71' },
-    { name: '삼성카드', color: '#7C6FE8', doneColor: '#3DAA71' },
+    { name: '신한카드', color: '#9575B8', doneColor: '#3DB97A' },
+    { name: '삼성카드', color: '#8261A8', doneColor: '#3DB97A' },
   ];
 
   return (

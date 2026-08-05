@@ -19,7 +19,7 @@ export default function MiniCalendar({ onDateClick }) {
   const prevMonth = () => { if (viewMonth === 1) { setViewYear((y) => y - 1); setViewMonth(12); } else setViewMonth((m) => m - 1); };
   const nextMonth = () => { if (viewMonth === 12) { setViewYear((y) => y + 1); setViewMonth(1); } else setViewMonth((m) => m + 1); };
 
-  const navBtn = { border: 'none', background: '#F1EFFB', borderRadius: 8, width: 26, height: 26, cursor: 'pointer', fontSize: 13, color: '#6D5FD0' };
+  const navBtn = { border: 'none', background: '#F1EFFB', borderRadius: 8, width: 26, height: 26, cursor: 'pointer', fontSize: 13, color: '#6E4F96' };
 
   return (
     <div className="stat-card" style={{ textAlign: 'left', padding: '18px 20px' }}>
@@ -36,7 +36,7 @@ export default function MiniCalendar({ onDateClick }) {
         {WD.map((w, i) => (
           <div key={w} style={{
             textAlign: 'center', fontSize: 12, fontWeight: 700,
-            color: i === 0 ? '#C77D9B' : '#1F2937',
+            color: i === 0 ? '#B94A34' : '#1F2937',
           }}>
             {w}
           </div>
@@ -55,8 +55,8 @@ export default function MiniCalendar({ onDateClick }) {
               style={{
                 border: 'none', borderRadius: 8, padding: '8px 0', fontSize: 14, fontWeight: todayCell ? 800 : 600,
                 cursor: 'pointer',
-                background: todayCell ? '#6D5FD0' : sunday ? '#F7EEF3' : '#F8FAFC',
-                color: todayCell ? '#fff' : sunday ? '#C77D9B' : '#1F2937',
+                background: todayCell ? '#6E4F96' : sunday ? '#F7EEF3' : '#F8FAFC',
+                color: todayCell ? '#fff' : sunday ? '#B94A34' : '#1F2937',
               }}
             >
               {d}

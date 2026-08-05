@@ -8,7 +8,7 @@ export default function AdviceCard({ stats, transactions, year, month }) {
     <div className="advice-card">
       <div className="advice-header">
         <div className="advice-title">
-          <span style={{ color: '#6D5FD0' }}>✦</span> Claude 소비 조언
+          <span style={{ color: '#6E4F96' }}>✦</span> Claude 소비 조언
         </div>
         <div className="advice-date">{dateStr} 기준</div>
       </div>
@@ -33,7 +33,7 @@ export function NextMonthCard({ allTransactions, year, month }) {
       <div className="advice-card">
         <div className="advice-header">
           <div className="advice-title">
-            <span style={{ color: '#9D8CF0' }}>◈</span> 다음 달 예측
+            <span style={{ color: '#A88AC7' }}>◈</span> 다음 달 예측
           </div>
           <div className="advice-date">{nextYear}년 {nextMonth}월</div>
         </div>
@@ -50,23 +50,23 @@ export function NextMonthCard({ allTransactions, year, month }) {
   const items = [
     {
       icon: '💵',
-      color: '#3DAA71',
+      color: '#3DB97A',
       text: `예상 수입 ${formatKRW(pred.income)} — 최근 월 급여 기준`,
     },
     {
       icon: '💸',
-      color: isDeficit ? '#C77D9B' : '#C2568C',
+      color: isDeficit ? '#B94A34' : '#E0754A',
       text: `예상 지출 ${formatKRW(pred.expense)} — 최근 ${pred.monthsUsed}개월 평균`,
     },
     isDeficit
       ? {
           icon: '⚠️',
-          color: '#C77D9B',
+          color: '#B94A34',
           text: `예상 적자 ${formatKRW(pred.deficit)} — 지출 패턴 점검이 필요해요`,
         }
       : {
           icon: savingRate >= 30 ? '🎯' : '💡',
-          color: savingRate >= 30 ? '#7C6FE8' : '#B58BD0',
+          color: savingRate >= 30 ? '#8261A8' : '#B58BD0',
           text: `예상 저축 ${formatKRW(pred.saving)} (저축률 ${savingRate}%)${savingRate < 20 ? ' — 지출 줄이기를 고려해보세요' : ' — 좋은 흐름이에요!'}`,
         },
   ];
@@ -75,7 +75,7 @@ export function NextMonthCard({ allTransactions, year, month }) {
     <div className="advice-card">
       <div className="advice-header">
         <div className="advice-title">
-          <span style={{ color: '#9D8CF0' }}>◈</span> 다음 달 예측
+          <span style={{ color: '#A88AC7' }}>◈</span> 다음 달 예측
         </div>
         <div className="advice-date">{nextYear}년 {nextMonth}월</div>
       </div>
@@ -86,7 +86,7 @@ export function NextMonthCard({ allTransactions, year, month }) {
       ))}
       <div style={{
         marginTop: 10, padding: '8px 12px', background: '#F8F7FF',
-        borderRadius: 8, fontSize: 11, color: '#9D8CF0', lineHeight: 1.5,
+        borderRadius: 8, fontSize: 11, color: '#A88AC7', lineHeight: 1.5,
       }}>
         * 예측은 실제와 다를 수 있어요. 정산·보너스 등 비정기 수입은 반영되지 않습니다.
       </div>

@@ -125,9 +125,9 @@ export default function TransactionModal({ onClose, onSave, initial, prefillDate
                     onClick={() => set('amount', amt)}
                     style={{
                       flex: 1, padding: '6px 0', borderRadius: 8, cursor: 'pointer', fontSize: 12,
-                      border: `1px solid ${Number(form.amount) === amt ? '#3DAA71' : '#E5E7EB'}`,
+                      border: `1px solid ${Number(form.amount) === amt ? '#3DB97A' : '#E5E7EB'}`,
                       background: Number(form.amount) === amt ? '#E7F6EE' : '#fff',
-                      color: Number(form.amount) === amt ? '#3DAA71' : '#6B7280',
+                      color: Number(form.amount) === amt ? '#3DB97A' : '#6B7280',
                       fontWeight: Number(form.amount) === amt ? 700 : 400,
                     }}
                   >
@@ -171,7 +171,7 @@ export default function TransactionModal({ onClose, onSave, initial, prefillDate
                   <input type="checkbox"
                     checked={effectiveChecked}
                     onChange={(e) => set('needsSettlement', e.target.checked)}
-                    style={{ width: 18, height: 18, cursor: 'pointer', accentColor: '#7C6FE8' }} />
+                    style={{ width: 18, height: 18, cursor: 'pointer', accentColor: '#8261A8' }} />
                   🔖 정산 필요 (나중에 정산받을 지출)
                   {form.needsSettlement === undefined && form.source === '공과금' && !isTossTransitFare && (
                     <span style={{ fontSize: 11, color: '#9CA3AF' }}>(공과금은 자동 체크)</span>

@@ -7,7 +7,7 @@ export default function SettlementAlert({ allTransactions, onOpenAll }) {
   if (count === 0 && selfCount === 0) return null;
 
   const urgent = oldest && oldest.daysAgo >= 14;
-  const accent = urgent ? '#C77D9B' : '#6D5FD0';
+  const accent = urgent ? '#B94A34' : '#6E4F96';
 
   // 어떤 항목들이 대기 중인지 "이름 금액" 형태로 바로 보이도록 (최대 4개)
   const itemPreview = items.slice(0, 4);

@@ -3,7 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, LabelList, CartesianGrid,
 } from 'recharts';
 import { calcCategoryBreakdown, calcMonthlyTrend, calcPaymentBreakdown, formatKRW } from '../utils';
-import { PURPLE_GRADIENT, EXPENSE_PINK, INCOME_GREEN, CATEGORY_EMOJI } from '../constants';
+import { PURPLE_GRADIENT, EXPENSE_PINK, INCOME_GREEN, CATEGORY_EMOJI, SOURCE_COLORS } from '../constants';
 
 // 순위(정렬 후 인덱스) 기반 보라 그라데이션 — 1등이 가장 진하고 아래로 갈수록 연해짐
 const rankColor = (i) => PURPLE_GRADIENT[i % PURPLE_GRADIENT.length];
@@ -110,7 +110,7 @@ function MonthlyTrendChart({ transactions }) {
   const incomeLabel = ({ x, y, width, value }) => {
     if (!value || value < 10000) return null;
     return (
-      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#2E8F5E" fontWeight={700}>
+      <text x={x + width / 2} y={y - 5} textAnchor="middle" fontSize={11} fill="#237A56" fontWeight={700}>
         {(value / 10000).toFixed(0)}만
       </text>
     );
@@ -124,11 +124,11 @@ function MonthlyTrendChart({ transactions }) {
     const sub = over ? '⚠️초과' : entry?.수입 > 0 ? `${pct}%` : '';
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#C2568C" fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#E0754A" fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
         {sub ? (
-          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#C77D9B' : '#C2568C'}>
+          <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={over ? '#B94A34' : '#E0754A'}>
             {sub}
           </text>
         ) : null}
@@ -144,10 +144,10 @@ function MonthlyTrendChart({ transactions }) {
     const pct = entry?.수입 > 0 ? Math.round((value / entry.수입) * 100) : 0;
     return (
       <g>
-        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill="#6D5FD0" fontWeight={700}>
+        <text x={x + width / 2} y={y - 16} textAnchor="middle" fontSize={11} fill={SOURCE_COLORS.저축} fontWeight={700}>
           {(value / 10000).toFixed(0)}만
         </text>
-        <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill="#6D5FD0">
+        <text x={x + width / 2} y={y - 4} textAnchor="middle" fontSize={10} fill={SOURCE_COLORS.저축}>
           {pct}%
         </text>
       </g>
@@ -176,7 +176,7 @@ function MonthlyTrendChart({ transactions }) {
           <Bar dataKey="지출" fill={EXPENSE_PINK} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={expenseLabel} />
           </Bar>
-          <Bar dataKey="저축" fill="#7C6FE8" radius={[4, 4, 0, 0]} maxBarSize={28}>
+          <Bar dataKey="저축" fill={SOURCE_COLORS.저축} radius={[4, 4, 0, 0]} maxBarSize={28}>
             <LabelList content={savingLabel} />
           </Bar>
         </BarChart>

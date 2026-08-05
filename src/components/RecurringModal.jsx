@@ -73,12 +73,12 @@ export default function RecurringModal({
                     padding: '8px 12px', borderRadius: 10, background: '#F1EFFB', border: '1px solid #DDD6F3',
                   }}>
                     <div style={{ fontSize: 13, color: '#1F2937' }}>
-                      <b>{r.description}</b> <span style={{ color: '#6D5FD0', fontWeight: 700 }}>{r.amount.toLocaleString()}원</span>
+                      <b>{r.description}</b> <span style={{ color: '#6E4F96', fontWeight: 700 }}>{r.amount.toLocaleString()}원</span>
                       <span style={{ color: '#9CA3AF', fontSize: 11 }}> · 매달 {r.dayOfMonth}일 · {r.source}</span>
                     </div>
                     <button
                       onClick={() => onQuickAdd(r, dateFor(year, month, r.dayOfMonth))}
-                      style={{ ...btnBase, background: '#7C6FE8', color: '#fff', border: 'none', whiteSpace: 'nowrap' }}
+                      style={{ ...btnBase, background: '#8261A8', color: '#fff', border: 'none', whiteSpace: 'nowrap' }}
                     >
                       + 추가
                     </button>
