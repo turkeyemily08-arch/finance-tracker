@@ -1,7 +1,9 @@
 import { formatKRW } from '../utils';
 
 export default function SummaryCards({ stats, welfareBalance }) {
-  const saving = stats.income - stats.expense;
+  // 실제 저축 이체액(적금 등)을 그대로 보여줌 — 예전엔 수입-지출(잔여금)로 계산했는데,
+  // 저축 이체가 지출에서 빠지게 되면서 잔여금과 실제 저축액이 달라져 헷갈릴 수 있어 분리함.
+  const saving = stats.저축지출 || 0;
   const isSurplus = saving >= 0;
 
   const cards = [

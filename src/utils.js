@@ -33,8 +33,13 @@ export const calcMonthStats = (transactions) => {
   const income = transactions
     .filter((t) => t.type === 'income' && t.source !== '정산')
     .reduce((s, t) => s + t.amount, 0);
+  // 저축(적금 등) 이체는 소비가 아니라 돈을 옮겨두는 것뿐이라 지출 합계에서 제외.
+  // 대신 실제 저축액(저축지출)으로 따로 집계해서 "이번 달 저축"에 반영함.
   const expense = transactions
-    .filter((t) => t.type === 'expense')
+    .filter((t) => t.type === 'expense' && t.source !== '저축')
+    .reduce((s, t) => s + t.amount, 0);
+  const 저축지출 = transactions
+    .filter((t) => t.type === 'expense' && t.source === '저축')
     .reduce((s, t) => s + t.amount, 0);
   const 공과금지출 = transactions
     .filter((t) => t.type === 'expense' && t.source === '공과금')
@@ -61,6 +66,7 @@ export const calcMonthStats = (transactions) => {
   return {
     income,
     expense,
+    저축지출,
     공과금지출,
     정산수입,
     용돈지출,
@@ -110,9 +116,11 @@ export const calcMonthlyTrend = (transactions) => {
   const map = {};
   transactions.forEach((t) => {
     const key = getMonthKey(t.date);
-    if (!map[key]) map[key] = { month: key, income: 0, expense: 0 };
+    if (!map[key]) map[key] = { month: key, income: 0, expense: 0, saving: 0 };
     // 정산은 계좌이체이므로 수입으로 집계하지 않음
     if (t.type === 'income' && t.source !== '정산') map[key].income += t.amount;
+    // 저축 이체는 소비가 아니므로 지출에서 빼고 저축으로 따로 집계
+    else if (t.type === 'expense' && t.source === '저축') map[key].saving += t.amount;
     else if (t.type === 'expense') map[key].expense += t.amount;
   });
   return Object.values(map)
@@ -121,7 +129,7 @@ export const calcMonthlyTrend = (transactions) => {
       month: m.month.slice(5) + '월',
       수입: m.income,
       지출: m.expense,
-      저축: Math.max(m.income - m.expense, 0),
+      저축: m.saving,
     }));
 };
 
