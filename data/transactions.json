@@ -684,7 +684,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "외식",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 4000,
       "memo": "스타필드 DPLYR (커플카드)"
     },
@@ -1324,7 +1324,7 @@
       "description": "고기리막국수",
       "amount": 43000,
       "memo": "",
-      "paymentMethod": "DPLYR카드"
+      "paymentMethod": "토스카드(커플)"
     },
     {
       "id": "tx-20260530-004",
@@ -2267,7 +2267,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 14700,
       "memo": "",
       "description": "티머니GO"
@@ -2278,7 +2278,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 14700,
       "memo": "",
       "description": "티머니GO"
@@ -2487,7 +2487,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "카페",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 12300,
       "memo": "",
       "description": "밀크"
@@ -2542,7 +2542,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 14700,
       "memo": "",
       "description": "티머니go(시외버스)"
@@ -2553,7 +2553,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 14700,
       "memo": "",
       "description": "티머니go(시외버스)"
@@ -3004,7 +3004,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "카페",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 5400,
       "memo": "",
       "description": "벤티프레소"
@@ -3015,7 +3015,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "의류/쇼핑",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 16090,
       "memo": "",
       "description": "NC백화점 송파점"
@@ -3037,7 +3037,7 @@
       "type": "expense",
       "source": "용돈",
       "category": "카페",
-      "paymentMethod": "DPLYR카드",
+      "paymentMethod": "토스카드(커플)",
       "amount": 3500,
       "memo": "",
       "description": "벤티프레소"
