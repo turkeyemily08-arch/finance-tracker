@@ -113,15 +113,25 @@ function useTransactions() {
           };
           setOverlay(next);
           localStorage.setItem(OVERLAY_CACHE_KEY, JSON.stringify(next));
+          setOverlayLoaded(true);
+        } else if (snap.metadata.fromCache) {
+          // 로컬(IndexedDB) 캐시가 아직 비어있어서 "문서 없음"으로 보이는 것뿐일 수 있음 —
+          // 실제 서버 응답이 아니므로 여기서 마이그레이션(=덮어쓰기)하면 안 됨.
+          // 캐시에 저장된 이전 오버레이가 있으면 그걸로 화면만 채우고, 서버 확인 스냅샷을 기다림.
+          const cached = localStorage.getItem(OVERLAY_CACHE_KEY);
+          if (cached) {
+            try { setOverlay(JSON.parse(cached)); } catch { /* 캐시 파싱 실패 시 무시 */ }
+          }
         } else if (!migratedRef.current) {
-          // 최초 1회: 이 기기에 남아있던 로컬(localStorage) 편집 내역을 Firestore로 이관
+          // 서버가 실제로 "문서 없음"을 확인해준 경우에만: 이 기기에 남아있던
+          // 로컬(localStorage) 편집 내역을 최초 1회 Firestore로 이관
           migratedRef.current = true;
           const legacy = readLegacyOverlay();
           setOverlay(legacy);
           localStorage.setItem(OVERLAY_CACHE_KEY, JSON.stringify(legacy));
           await setDoc(OVERLAY_DOC, legacy).catch(() => {});
+          setOverlayLoaded(true);
         }
-        setOverlayLoaded(true);
       },
       () => {
         // 오프라인 등으로 구독 실패 시 마지막 캐시로 대체
