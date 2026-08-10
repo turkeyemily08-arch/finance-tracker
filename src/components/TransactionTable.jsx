@@ -317,6 +317,10 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
                       >🔖</button>
                     );
                   })()}
+                  {/* 공과금 지출을 정산완료 처리했을 때만 뜨는 별도 표시 — 애초에 정산 대상이 아니었던 항목과 구분하기 위함 */}
+                  {tx.type === 'expense' && tx.source === '공과금' && tx.needsSettlement === false && (
+                    <span title="정산완료" style={{ fontSize: 15, marginRight: 4 }}>✅</span>
+                  )}
                   {tx.type === 'expense' && (() => {
                     const self = isSelfPaid(tx);
                     return (
