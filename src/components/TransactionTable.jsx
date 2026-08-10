@@ -23,6 +23,12 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
   const [editCell, setEditCell] = useState(null); // { id, field }
   const [sortKey, setSortKey] = useState('date');
   const [sortDir, setSortDir] = useState('desc'); // 'asc' | 'desc'
+  const [selected, setSelected] = useState(() => new Set()); // 체크한 거래 id들 — 선택 합계 표시용
+  const toggleSelect = (id) => setSelected((prev) => {
+    const next = new Set(prev);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  });
 
   // 차트 막대를 클릭하면(App.jsx) 여기로 검색어가 전달돼 즉시 해당 카테고리로 필터링됨
   useEffect(() => {
@@ -66,6 +72,11 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
     const cmp = typeof va === 'number' && typeof vb === 'number' ? va - vb : String(va).localeCompare(String(vb));
     return sortDir === 'asc' ? cmp : -cmp;
   });
+
+  // 체크한 거래들의 합계 (지출/수입 구분해서 보여줌)
+  const selectedTx = sorted.filter((t) => selected.has(t.id));
+  const selectedExpense = selectedTx.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+  const selectedIncome = selectedTx.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
 
   // 검색어가 있을 때, 검색 결과 지출/수입 합계 계산
   const q = search.trim();
@@ -160,6 +171,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
         <table className="tx-table">
           <thead>
             <tr>
+              <th style={{ width: 24 }}></th>
               <th onClick={() => toggleSort('date')} style={{ cursor: 'pointer' }}>날짜</th>
               <th onClick={() => toggleSort('source')} style={{ cursor: 'pointer' }}>재원</th>
               <th onClick={() => toggleSort('category')} style={{ cursor: 'pointer' }}>카테고리</th>
@@ -171,7 +183,15 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
           </thead>
           <tbody>
             {sorted.map((tx) => (
-              <tr key={tx.id}>
+              <tr key={tx.id} style={selected.has(tx.id) ? { background: '#F1EFFB' } : undefined}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selected.has(tx.id)}
+                    onChange={() => toggleSelect(tx.id)}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </td>
                 {/* 날짜 + (요일) — 클릭하면 날짜 선택 */}
                 <td style={{ color: '#6B7280', whiteSpace: 'nowrap' }}>
                   {isEditing(tx, 'date') ? (
@@ -349,7 +369,7 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
             ))}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', color: '#9CA3AF', padding: '32px 0' }}>
+                <td colSpan={8} style={{ textAlign: 'center', color: '#9CA3AF', padding: '32px 0' }}>
                   거래 내역이 없습니다
                 </td>
               </tr>
@@ -363,6 +383,39 @@ export default function TransactionTable({ transactions, onUpdate, onDelete, onA
           onClose={() => setShowAdd(false)}
           onSave={(tx) => { onAdd(tx); setShowAdd(false); }}
         />
+      )}
+
+      {/* 체크한 항목이 있을 때만 뜨는 작은 합계 창 */}
+      {selectedTx.length > 0 && (
+        <div
+          style={{
+            position: 'fixed', right: 20, bottom: 20, zIndex: 50,
+            background: '#fff', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+            border: '1px solid #E5E1F5', padding: '12px 16px', minWidth: 180,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#6E4F96' }}>{selectedTx.length}건 선택</span>
+            <button
+              onClick={() => setSelected(new Set())}
+              title="선택 해제"
+              style={{
+                border: 'none', background: 'transparent', color: '#9CA3AF', cursor: 'pointer',
+                fontSize: 12, padding: 0, lineHeight: 1,
+              }}
+            >✕</button>
+          </div>
+          {selectedExpense > 0 && (
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#E0754A' }}>
+              지출 합계 {selectedExpense.toLocaleString()}원
+            </div>
+          )}
+          {selectedIncome > 0 && (
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#3DB97A' }}>
+              수입 합계 {selectedIncome.toLocaleString()}원
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
