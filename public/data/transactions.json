@@ -150,11 +150,12 @@
       "id": "tx-20260401-001",
       "date": "2026-04-01",
       "type": "expense",
-      "source": "용돈",
-      "category": "식비",
-      "paymentMethod": "",
+      "source": "공과금",
+      "category": "구내식당",
+      "paymentMethod": "계좌이체",
       "amount": 95000,
-      "memo": "구내식당"
+      "memo": "",
+      "description": "구내식당"
     },
     {
       "id": "tx-20260401-002",
@@ -407,17 +408,6 @@
       "memo": "화장품 쿠션"
     },
     {
-      "id": "tx-20260430-001",
-      "date": "2026-04-30",
-      "type": "income",
-      "source": "급여",
-      "category": "급여",
-      "description": "급여",
-      "amount": 3112200,
-      "memo": "급여 → 내 신한계좌",
-      "paymentMethod": "계좌이체"
-    },
-    {
       "id": "tx-20260430-002",
       "date": "2026-04-30",
       "type": "expense",
@@ -429,6 +419,17 @@
       "paymentMethod": "계좌이체"
     },
     {
+      "id": "tx-20260430-001",
+      "date": "2026-05-01",
+      "type": "income",
+      "source": "급여",
+      "category": "급여",
+      "description": "급여 (급여 → 내 신한계좌)",
+      "amount": 3112200,
+      "memo": "",
+      "paymentMethod": "계좌이체"
+    },
+    {
       "id": "tx-20260501-001",
       "date": "2026-05-01",
       "type": "expense",
@@ -436,7 +437,9 @@
       "category": "장보기",
       "paymentMethod": "삼성카드",
       "amount": 152480,
-      "memo": "이마트트레이더스 | 정산필요"
+      "memo": "",
+      "description": "이마트트레이더스 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260501-002",
@@ -446,7 +449,9 @@
       "category": "온누리/상품권",
       "paymentMethod": "계좌이체",
       "amount": 90000,
-      "memo": "온누리상품권 충전 | 정산필요"
+      "memo": "",
+      "description": "온누리상품권 충전 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260501-003",
@@ -476,7 +481,9 @@
       "category": "장보기",
       "paymentMethod": "신한카드",
       "amount": 11900,
-      "memo": "홈플러스 야탑점 | 정산필요"
+      "memo": "",
+      "description": "홈플러스 야탑점 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260502-002",
@@ -486,7 +493,9 @@
       "category": "생활용품",
       "paymentMethod": "삼성카드",
       "amount": 20000,
-      "memo": "다이소 | 정산필요"
+      "memo": "",
+      "description": "다이소 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260502-003",
@@ -546,7 +555,9 @@
       "category": "외식",
       "paymentMethod": "삼성카드",
       "amount": 59000,
-      "memo": "더진지 | 정산필요"
+      "memo": "",
+      "description": "더진지 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260505-001",
@@ -556,7 +567,9 @@
       "category": "자기계발/학회",
       "paymentMethod": "계좌이체",
       "amount": 60000,
-      "memo": "한국디지털콘텐츠 (학회비) | 정산필요"
+      "memo": "",
+      "description": "한국디지털콘텐츠 (학회비) | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260505-002",
@@ -616,7 +629,9 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 14700,
-      "memo": "티머니go | 정산필요"
+      "memo": "",
+      "needsSettlement": false,
+      "description": "티머니go | 정산필요"
     },
     {
       "id": "tx-20260506-005",
@@ -626,7 +641,9 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 900,
-      "memo": "티머니go 부분취소 후 최종결제 | 정산필요"
+      "memo": "",
+      "description": "티머니go 부분취소 후 최종결제 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260506-006",
@@ -636,7 +653,9 @@
       "category": "보험료",
       "paymentMethod": "계좌이체",
       "amount": 30415,
-      "memo": "한화손해보험 | 정산필요"
+      "memo": "",
+      "description": "한화손해보험 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260507-001",
@@ -666,7 +685,9 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 14700,
-      "memo": "티머니go | 정산필요"
+      "memo": "",
+      "needsSettlement": false,
+      "description": "티머니go | 정산필요"
     },
     {
       "id": "tx-20260509-001",
@@ -676,7 +697,9 @@
       "category": "복지포인트",
       "paymentMethod": "복지카드",
       "amount": 79760,
-      "memo": "무신사 | 정산필요 (복지포인트, 6/15 정산예정)"
+      "memo": "",
+      "needsSettlement": false,
+      "description": "무신사 | 정산필요 (복지포인트, 6/15 정산예정)"
     },
     {
       "id": "tx-20260509-002",
@@ -696,7 +719,9 @@
       "category": "복지포인트",
       "paymentMethod": "복지카드",
       "amount": 72880,
-      "memo": "무인양품 | 정산필요 (복지포인트, 6/15 정산예정)"
+      "memo": "",
+      "description": "무인양품 | 정산필요 (복지포인트, 6/15 정산예정)",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260509-004",
@@ -716,7 +741,9 @@
       "category": "복지포인트",
       "paymentMethod": "복지카드",
       "amount": 7000,
-      "memo": "스타필드 | 정산필요 (복지포인트, 6/15 정산예정)"
+      "memo": "",
+      "needsSettlement": false,
+      "description": "스타필드 | 정산필요 (복지포인트, 6/15 정산예정)"
     },
     {
       "id": "tx-20260509-006",
@@ -736,7 +763,9 @@
       "category": "경조사",
       "paymentMethod": "계좌이체",
       "amount": 35000,
-      "memo": "김민지 이체 (경조사) | 정산필요"
+      "memo": "",
+      "description": "김민지 이체 (경조사) | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260511-001",
@@ -746,7 +775,9 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 8100,
-      "memo": "교통카드 | 정산필요"
+      "memo": "",
+      "needsSettlement": false,
+      "description": "교통카드 | 정산필요"
     },
     {
       "id": "tx-20260511-002",
@@ -756,7 +787,9 @@
       "category": "경조사",
       "paymentMethod": "계좌이체",
       "amount": 50000,
-      "memo": "이지영 축의금 | 정산필요"
+      "memo": "",
+      "description": "이지영 축의금 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260513-001",
@@ -766,7 +799,9 @@
       "category": "교통비",
       "paymentMethod": "신한카드",
       "amount": 14700,
-      "memo": "티머니go | 정산필요"
+      "memo": "",
+      "description": "티머니go | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260513-002",
@@ -907,7 +942,9 @@
       "category": "장보기",
       "paymentMethod": "신한카드",
       "amount": 12990,
-      "memo": "홈플러스 | 정산필요"
+      "memo": "",
+      "description": "홈플러스 | 정산필요",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260517-003",
@@ -1684,10 +1721,11 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "description": "티머니go",
+      "description": "티머니go (정산필요)",
       "amount": 14700,
-      "memo": "정산필요",
-      "paymentMethod": "신한카드"
+      "memo": "",
+      "paymentMethod": "신한카드",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260611-002",
@@ -1695,10 +1733,11 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "description": "티머니go",
+      "description": "티머니go (정산필요)",
       "amount": 14700,
-      "memo": "정산필요",
-      "paymentMethod": "신한카드"
+      "memo": "",
+      "paymentMethod": "신한카드",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260612-002",
@@ -2249,8 +2288,9 @@
       "category": "취미활동",
       "paymentMethod": "삼성카드",
       "amount": 74397,
-      "memo": "해외결제",
-      "description": "WWW.MTCGAME.COM"
+      "memo": "",
+      "description": "WWW.MTCGAME.COM (해외결제)",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260706-002",
@@ -2271,8 +2311,9 @@
       "category": "의료/건강",
       "paymentMethod": "기타",
       "amount": 15100,
-      "memo": "토스뱅크 체크카드",
-      "description": "세종연합비뇨기과"
+      "memo": "",
+      "description": "세종연합비뇨기과 (토스뱅크 체크카드)",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260709-001",
@@ -2283,7 +2324,8 @@
       "paymentMethod": "기타",
       "amount": 37090,
       "memo": "",
-      "description": "11번가"
+      "description": "11번가",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260709-002",
@@ -2291,10 +2333,11 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "토스카드(커플)",
+      "paymentMethod": "DPLYR카드",
       "amount": 14700,
       "memo": "",
-      "description": "티머니GO"
+      "description": "티머니GO",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260709-003",
@@ -2302,10 +2345,11 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "토스카드(커플)",
+      "paymentMethod": "DPLYR카드",
       "amount": 14700,
       "memo": "",
-      "description": "티머니GO"
+      "description": "티머니GO",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260709-004",
@@ -2327,7 +2371,8 @@
       "paymentMethod": "삼성카드",
       "amount": 125450,
       "memo": "",
-      "description": "홈플러스 야탑점"
+      "description": "홈플러스 야탑점",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260710-002",
@@ -2338,7 +2383,8 @@
       "paymentMethod": "기타",
       "amount": 20600,
       "memo": "",
-      "description": "세종메가케어 약국"
+      "description": "세종메가케어 약국",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260710-003",
@@ -2349,7 +2395,8 @@
       "paymentMethod": "삼성카드",
       "amount": 10000,
       "memo": "",
-      "description": "대양석유(주) 세종대평주유소"
+      "description": "대양석유(주) 세종대평주유소",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260710-004",
@@ -2359,8 +2406,9 @@
       "category": "교통비",
       "paymentMethod": "기타",
       "amount": 2455,
-      "memo": "교통이용금액",
-      "description": "토스뱅크카드 출금"
+      "memo": "",
+      "description": "토스뱅크카드 출금 (교통이용금액)",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260710-005",
@@ -2370,8 +2418,9 @@
       "category": "교통비",
       "paymentMethod": "기타",
       "amount": 3400,
-      "memo": "토스뱅크 체크카드",
-      "description": "6월 교통카드 이용"
+      "memo": "",
+      "description": "6월 교통카드 이용 (토스뱅크 체크카드)",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260711-001",
@@ -2382,7 +2431,8 @@
       "paymentMethod": "기타",
       "amount": 2479,
       "memo": "",
-      "description": "성남센트럴타운점"
+      "description": "성남센트럴타운점",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260712-001",
@@ -2393,7 +2443,7 @@
       "paymentMethod": "삼성카드",
       "amount": 2900,
       "memo": "",
-      "description": "올리브영"
+      "description": "ㅁ"
     },
     {
       "id": "tx-20260713-001",
@@ -2701,7 +2751,8 @@
       "paymentMethod": "삼성카드",
       "amount": 19900,
       "memo": "",
-      "description": "쿠팡이츠"
+      "description": "쿠팡이츠",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260726-002",
@@ -2722,8 +2773,8 @@
       "category": "친구/지인",
       "paymentMethod": "계좌이체",
       "amount": 500000,
-      "memo": "받는사람 불명확",
-      "description": "계좌 송금(230-389-077284)"
+      "memo": "",
+      "description": "적금"
     },
     {
       "id": "tx-20260727-002",
@@ -2768,17 +2819,6 @@
       "amount": 78530,
       "memo": "",
       "description": "쿠팡 주식회사"
-    },
-    {
-      "id": "tx-20260731-002",
-      "date": "2026-07-31",
-      "type": "expense",
-      "source": "공과금",
-      "category": "쿠팡",
-      "paymentMethod": "기타",
-      "amount": 78530,
-      "memo": "같은 날 78,530원 두 건 - 중복 가능성 확인 필요",
-      "description": "쿠팡"
     },
     {
       "id": "tx-20260731-003",
@@ -2905,12 +2945,12 @@
       "id": "tx-20260802-001",
       "date": "2026-08-02",
       "type": "expense",
-      "source": "용돈",
-      "category": "친구/지인",
+      "source": "기타",
+      "category": "가족 지원/선물",
       "paymentMethod": "계좌이체",
       "amount": 500000,
-      "memo": "송금",
-      "description": "이민구"
+      "memo": "",
+      "description": "이민구 (송금)"
     },
     {
       "id": "tx-20260802-002",
@@ -3008,21 +3048,21 @@
       "type": "expense",
       "source": "공과금",
       "category": "교통비",
-      "paymentMethod": "기타",
+      "paymentMethod": "토스카드(커플)",
       "amount": 14700,
-      "memo": "토스페이",
-      "description": "티머니go(시외버스)"
+      "memo": "",
+      "description": "티머니go(시외버스) (토스페이)"
     },
     {
       "id": "tx-20260807-002",
       "date": "2026-08-07",
       "type": "expense",
-      "source": "용돈",
-      "category": "친구/지인",
-      "paymentMethod": "기타",
+      "source": "공과금",
+      "category": "취미활동",
+      "paymentMethod": "계좌이체",
       "amount": 28000,
-      "memo": "송금, 토스뱅크",
-      "description": "박혜미"
+      "memo": "",
+      "description": "박혜미 영화 오디세이"
     },
     {
       "id": "tx-20260807-003",
@@ -3039,19 +3079,19 @@
       "id": "tx-20260808-001",
       "date": "2026-08-08",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "생활용품",
       "paymentMethod": "기타",
       "amount": 147000,
-      "memo": "잡화",
-      "description": "소다"
+      "memo": "",
+      "description": "소다 (잡화)"
     },
     {
       "id": "tx-20260808-002",
       "date": "2026-08-08",
       "type": "expense",
-      "source": "용돈",
-      "category": "의류/쇼핑",
+      "source": "공과금",
+      "category": "구내식당",
       "paymentMethod": "기타",
       "amount": 23939,
       "memo": "",
@@ -3061,30 +3101,32 @@
       "id": "tx-20260808-003",
       "date": "2026-08-08",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "카페",
       "paymentMethod": "토스카드(커플)",
       "amount": 5400,
       "memo": "",
-      "description": "벤티프레소"
+      "description": "벤티프레소",
+      "needsSettlement": true
     },
     {
       "id": "tx-20260808-004",
       "date": "2026-08-08",
       "type": "expense",
-      "source": "용돈",
-      "category": "의류/쇼핑",
+      "source": "공과금",
+      "category": "구내식당",
       "paymentMethod": "토스카드(커플)",
       "amount": 16090,
       "memo": "",
-      "description": "NC백화점 송파점"
+      "description": "NC백화점 송파점",
+      "needsSettlement": true
     },
     {
       "id": "tx-20260808-005",
       "date": "2026-08-08",
       "type": "expense",
-      "source": "용돈",
-      "category": "의류/쇼핑",
+      "source": "공과금",
+      "category": "구내식당",
       "paymentMethod": "기타",
       "amount": 42493,
       "memo": "",
@@ -3094,12 +3136,13 @@
       "id": "tx-20260808-006",
       "date": "2026-08-08",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "카페",
       "paymentMethod": "토스카드(커플)",
       "amount": 3500,
       "memo": "",
-      "description": "벤티프레소"
+      "description": "벤티프레소",
+      "needsSettlement": true
     },
     {
       "id": "tx-20260809-001",
@@ -3107,10 +3150,10 @@
       "type": "expense",
       "source": "용돈",
       "category": "생활용품",
-      "paymentMethod": "기타",
+      "paymentMethod": "토스카드",
       "amount": 5000,
-      "memo": "토스뱅크 체크카드",
-      "description": "다이소"
+      "memo": "",
+      "description": "다이소 (토스뱅크 체크카드)"
     }
   ]
 }
