@@ -10,10 +10,18 @@
 - **자동배포 워크플로우 켜져 있음** (`.github/workflows/deploy.yml`, 2026-08-10부터): `main`에 push되면
   GitHub Actions가 자동으로 build → `gh-pages` 브랜치에 배포함. `npm run deploy`를 수동으로 안 돌려도 됨.
   (이 설정은 세션·캐시가 날아가도 리포에 파일로 남아있으니 계속 유지됨.)
+- **Firestore → GitHub 자동 백업 켜져 있음** (`.github/workflows/sync-transactions.yml`, 2026-08-10부터):
+  3시간마다 `scripts/sync-transactions.mjs`가 실시간 DB(Firestore `households/kyuri` 오버레이:
+  patches/additions/deletions)를 읽어 `public/data/transactions.json`에 병합·커밋함(변경 있을 때만,
+  `github-actions[bot]` 커밋으로). **그래서 167건이던 거래 수가 시간이 지나며 자연스럽게 늘어나는 건
+  정상**이다 — 이게 바로 이 자동화의 목적(폰/PC에서 입력한 게 유실 없이 GitHub에도 쌓이는 것)이니
+  "버전이 깨졌다"고 오판해 되돌리지 말 것. (단, 이 스크립트는 memo→description 합치기 같은 UI 표시용
+  변환은 절대 하지 않고 patches/additions/deletions만 그대로 반영하도록 만들어져 있음 — 수정 시 이 원칙
+  유지할 것.)
 
 ## ❌ 절대 하지 말 것
-1. **버전을 통째로 바꾸지 말 것.** 거래 건수가 167이 아닌 다른 데이터(예: 171건 버전, 94건 버전)로
-   `main`이나 `gh-pages`를 덮어쓰지 말 것.
+1. **버전을 통째로 바꾸지 말 것.** 위 자동 백업으로 늘어난 게 아니라 갑자기 건수가 큰 폭으로 줄거나
+   전혀 다른 내용(메모·금액)으로 바뀐 데이터로 `main`이나 `gh-pages`를 덮어쓰지 말 것.
 2. **메모·재원·카테고리를 임의로 정리/변경하지 말 것.** 사용자가 콕 집어 요청한 항목만 수정.
 3. **옛 백업 파일로 "복원"하지 말 것**(전체 덮어쓰기 → 사고남).
 4. 사용자가 명시적으로 "버전 바꿔도 돼"라고 하기 전엔 위 잠금을 유지.
