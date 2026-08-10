@@ -2842,10 +2842,20 @@
       "description": "네이버파이낸셜 주식"
     },
     {
+      "id": "b74043a9-349b-4cfa-98ed-ce652b0eca13",
+      "source": "급여",
+      "date": "2026-08-01",
+      "type": "income",
+      "paymentMethod": "계좌이체",
+      "description": "월급",
+      "category": "급여",
+      "amount": 3174840
+    },
+    {
       "id": "tx-20260801-001",
       "date": "2026-08-01",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "외식",
       "paymentMethod": "케이뱅크 체크카드",
       "amount": 17550,
@@ -2890,18 +2900,29 @@
       "date": "2026-08-01",
       "type": "expense",
       "source": "용돈",
-      "category": "미용/뷰티",
+      "category": "카페",
       "paymentMethod": "기타",
       "amount": 1100,
       "memo": "",
-      "description": "올리브영 네트웍스"
+      "description": "메가MGC커피 야탑점"
+    },
+    {
+      "source": "저축",
+      "date": "2026-08-02",
+      "paymentMethod": "",
+      "recurringId": "6018da0a-4766-442b-92f4-7c564e412d11",
+      "category": "데이트통장(생활비)",
+      "amount": 200000,
+      "id": "9a3cec66-1930-4aef-b629-1df3fc5e7e8f",
+      "type": "expense",
+      "description": "데이트통장(생활비)"
     },
     {
       "id": "tx-20260802-001",
       "date": "2026-08-02",
       "type": "expense",
-      "source": "기타",
-      "category": "가족 지원/선물",
+      "source": "저축",
+      "category": "청년미래적금",
       "paymentMethod": "계좌이체",
       "amount": 500000,
       "memo": "",
@@ -2911,12 +2932,12 @@
       "id": "tx-20260802-002",
       "date": "2026-08-02",
       "type": "expense",
-      "source": "용돈",
-      "category": "친구/지인",
+      "source": "저축",
+      "category": "청년미래적금",
       "paymentMethod": "계좌이체",
       "amount": 200000,
-      "memo": "송금 - 본인 명의라면 자산이동일 수 있어 확인 필요",
-      "description": "한규리"
+      "memo": "",
+      "description": "한규리 (송금 - 본인 명의라면 자산이동일 수 있어 확인 필요)"
     },
     {
       "id": "tx-20260802-003",
@@ -3039,7 +3060,8 @@
       "paymentMethod": "네이버페이",
       "amount": 147000,
       "memo": "",
-      "description": "소다 (구두)"
+      "description": "소다 (구두)",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260808-002",
@@ -3050,7 +3072,8 @@
       "paymentMethod": "네이버페이",
       "amount": 23939,
       "memo": "",
-      "description": "롯데홈쇼핑"
+      "description": "롯데홈쇼핑",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260808-003",
@@ -3062,30 +3085,31 @@
       "amount": 5400,
       "memo": "",
       "description": "벤티프레소",
-      "needsSettlement": true
+      "needsSettlement": false
     },
     {
       "id": "tx-20260808-004",
       "date": "2026-08-08",
       "type": "expense",
       "source": "공과금",
-      "category": "구내식당",
+      "category": "외식",
       "paymentMethod": "토스카드(커플)",
       "amount": 16090,
       "memo": "",
       "description": "NC백화점 송파점",
-      "needsSettlement": true
+      "needsSettlement": false
     },
     {
       "id": "tx-20260808-005",
       "date": "2026-08-08",
       "type": "expense",
       "source": "공과금",
-      "category": "구내식당",
+      "category": "의료/건강",
       "paymentMethod": "네이버페이",
       "amount": 42493,
       "memo": "",
-      "description": "현대HMall"
+      "description": "현대HMall",
+      "needsSettlement": false
     },
     {
       "id": "tx-20260808-006",
