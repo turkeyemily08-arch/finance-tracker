@@ -211,7 +211,7 @@ export const calcSettlementAlerts = (allTransactions) => {
   const oldest = withDaysAgo.length
     ? withDaysAgo.reduce((a, b) => (b.daysAgo > a.daysAgo ? b : a))
     : null;
-  const items = [...withDaysAgo].sort((a, b) => b.amount - a.amount);
+  const items = [...withDaysAgo].sort((a, b) => a.date.localeCompare(b.date));
   const total = items.reduce((s, t) => s + t.amount, 0);
   return { items, count: items.length, total, oldest };
 };
