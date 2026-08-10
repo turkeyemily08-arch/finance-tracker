@@ -2810,6 +2810,248 @@
       "amount": 3174840,
       "memo": "다른 자료엔 7/1로도 적혀있었으나 동일 건으로 보고 7/31 1건만 반영",
       "description": "급여"
+    },
+    {
+      "id": "tx-20260801-001",
+      "date": "2026-08-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "외식",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 17550,
+      "memo": "",
+      "description": "뉴코아 야탑점"
+    },
+    {
+      "id": "tx-20260801-002",
+      "date": "2026-08-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의료/건강",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 19000,
+      "memo": "",
+      "description": "분당시민의약국"
+    },
+    {
+      "id": "tx-20260801-003",
+      "date": "2026-08-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의료/건강",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 7800,
+      "memo": "",
+      "description": "분당시민의약국"
+    },
+    {
+      "id": "tx-20260801-004",
+      "date": "2026-08-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 1100,
+      "memo": "",
+      "description": "메가MGC커피 야탑점"
+    },
+    {
+      "id": "tx-20260801-005",
+      "date": "2026-08-01",
+      "type": "expense",
+      "source": "용돈",
+      "category": "미용/뷰티",
+      "paymentMethod": "기타",
+      "amount": 1100,
+      "memo": "",
+      "description": "올리브영 네트웍스"
+    },
+    {
+      "id": "tx-20260802-001",
+      "date": "2026-08-02",
+      "type": "expense",
+      "source": "용돈",
+      "category": "친구/지인",
+      "paymentMethod": "계좌이체",
+      "amount": 500000,
+      "memo": "송금",
+      "description": "이민구"
+    },
+    {
+      "id": "tx-20260802-002",
+      "date": "2026-08-02",
+      "type": "expense",
+      "source": "용돈",
+      "category": "친구/지인",
+      "paymentMethod": "계좌이체",
+      "amount": 200000,
+      "memo": "송금 - 본인 명의라면 자산이동일 수 있어 확인 필요",
+      "description": "한규리"
+    },
+    {
+      "id": "tx-20260803-001",
+      "date": "2026-08-03",
+      "type": "expense",
+      "source": "용돈",
+      "category": "구독서비스",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 7000,
+      "memo": "",
+      "description": "에스케이플래닛(주)"
+    },
+    {
+      "id": "tx-20260805-001",
+      "date": "2026-08-05",
+      "type": "expense",
+      "source": "용돈",
+      "category": "기타 용돈",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 58797,
+      "memo": "",
+      "description": "토스페이먼츠 주식회사"
+    },
+    {
+      "id": "tx-20260805-002",
+      "date": "2026-08-05",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "paymentMethod": "기타",
+      "amount": 19320,
+      "memo": "토스페이",
+      "description": "무신사"
+    },
+    {
+      "id": "tx-20260805-003",
+      "date": "2026-08-05",
+      "type": "expense",
+      "source": "용돈",
+      "category": "취미활동",
+      "paymentMethod": "기타",
+      "amount": 35000,
+      "memo": "",
+      "description": "어제봤던식물"
+    },
+    {
+      "id": "tx-20260806-001",
+      "date": "2026-08-06",
+      "type": "expense",
+      "source": "공과금",
+      "category": "자동차/주유",
+      "paymentMethod": "삼성카드",
+      "amount": 78532,
+      "memo": "",
+      "description": "세종셀프주유소"
+    },
+    {
+      "id": "tx-20260807-001",
+      "date": "2026-08-07",
+      "type": "expense",
+      "source": "공과금",
+      "category": "교통비",
+      "paymentMethod": "기타",
+      "amount": 14700,
+      "memo": "토스페이",
+      "description": "티머니go(시외버스)"
+    },
+    {
+      "id": "tx-20260807-002",
+      "date": "2026-08-07",
+      "type": "expense",
+      "source": "용돈",
+      "category": "친구/지인",
+      "paymentMethod": "기타",
+      "amount": 28000,
+      "memo": "송금, 토스뱅크",
+      "description": "박혜미"
+    },
+    {
+      "id": "tx-20260807-003",
+      "date": "2026-08-07",
+      "type": "expense",
+      "source": "용돈",
+      "category": "구독서비스",
+      "paymentMethod": "케이뱅크 체크카드",
+      "amount": 16000,
+      "memo": "",
+      "description": "에스케이플래닛(주)"
+    },
+    {
+      "id": "tx-20260808-001",
+      "date": "2026-08-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "생활용품",
+      "paymentMethod": "기타",
+      "amount": 147000,
+      "memo": "잡화",
+      "description": "소다"
+    },
+    {
+      "id": "tx-20260808-002",
+      "date": "2026-08-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "paymentMethod": "기타",
+      "amount": 23939,
+      "memo": "",
+      "description": "롯데홈쇼핑"
+    },
+    {
+      "id": "tx-20260808-003",
+      "date": "2026-08-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페",
+      "paymentMethod": "DPLYR카드",
+      "amount": 5400,
+      "memo": "",
+      "description": "벤티프레소"
+    },
+    {
+      "id": "tx-20260808-004",
+      "date": "2026-08-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "paymentMethod": "DPLYR카드",
+      "amount": 16090,
+      "memo": "",
+      "description": "NC백화점 송파점"
+    },
+    {
+      "id": "tx-20260808-005",
+      "date": "2026-08-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "의류/쇼핑",
+      "paymentMethod": "기타",
+      "amount": 42493,
+      "memo": "",
+      "description": "현대HMall"
+    },
+    {
+      "id": "tx-20260808-006",
+      "date": "2026-08-08",
+      "type": "expense",
+      "source": "용돈",
+      "category": "카페",
+      "paymentMethod": "DPLYR카드",
+      "amount": 3500,
+      "memo": "",
+      "description": "벤티프레소"
+    },
+    {
+      "id": "tx-20260809-001",
+      "date": "2026-08-09",
+      "type": "expense",
+      "source": "용돈",
+      "category": "생활용품",
+      "paymentMethod": "기타",
+      "amount": 5000,
+      "memo": "토스뱅크 체크카드",
+      "description": "다이소"
     }
   ]
 }
