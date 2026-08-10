@@ -2125,37 +2125,25 @@
       "description": "오픈지역사랑상품"
     },
     {
+      "id": "b6e75945-c2c7-473d-a7b9-0ae6d2dd705c",
+      "source": "급여",
+      "category": "급여",
+      "paymentMethod": "계좌이체",
+      "type": "income",
+      "date": "2026-07-01",
+      "amount": 3174840,
+      "description": "월급"
+    },
+    {
       "id": "tx-20260701-001",
       "date": "2026-07-01",
       "type": "expense",
-      "source": "공과금",
-      "category": "기타 용돈",
+      "source": "기타",
+      "category": "가족 지원/선물",
       "paymentMethod": "기타",
       "amount": 251000,
       "memo": "",
-      "description": "정품확인스토어"
-    },
-    {
-      "id": "tx-20260701-002",
-      "date": "2026-07-01",
-      "type": "income",
-      "source": "정산",
-      "category": "기타 수입",
-      "paymentMethod": "계좌이체",
-      "amount": 251000,
-      "memo": "",
-      "description": "이*연"
-    },
-    {
-      "id": "tx-20260702-001",
-      "date": "2026-07-02",
-      "type": "expense",
-      "source": "공과금",
-      "category": "친구/지인",
-      "paymentMethod": "계좌이체",
-      "amount": 500000,
-      "memo": "송금",
-      "description": "이민구"
+      "description": "엄마 집들이 선물 닌자"
     },
     {
       "id": "tx-20260702-002",
@@ -2218,12 +2206,12 @@
       "id": "tx-20260704-004",
       "date": "2026-07-04",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "미용/뷰티",
       "paymentMethod": "삼성카드",
       "amount": 1300,
       "memo": "",
-      "description": "올리브영"
+      "description": ""
     },
     {
       "id": "tx-20260704-005",
@@ -2251,7 +2239,7 @@
       "id": "tx-20260705-001",
       "date": "2026-07-05",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "생활용품",
       "paymentMethod": "기타",
       "amount": 10700,
@@ -2289,25 +2277,14 @@
       "paymentMethod": "삼성카드",
       "amount": 74397,
       "memo": "",
-      "description": "WWW.MTCGAME.COM (해외결제)",
+      "description": "터키 유튜브 결제",
       "needsSettlement": false
-    },
-    {
-      "id": "tx-20260706-002",
-      "date": "2026-07-06",
-      "type": "income",
-      "source": "정산",
-      "category": "기타 수입",
-      "paymentMethod": "계좌이체",
-      "amount": 3562190,
-      "memo": "금액이 커서 출처 확인 필요",
-      "description": "지정 계좌 입금"
     },
     {
       "id": "tx-20260708-001",
       "date": "2026-07-08",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "의료/건강",
       "paymentMethod": "기타",
       "amount": 15100,
@@ -2402,7 +2379,7 @@
       "id": "tx-20260710-004",
       "date": "2026-07-10",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "교통비",
       "paymentMethod": "기타",
       "amount": 2455,
@@ -2439,11 +2416,11 @@
       "date": "2026-07-12",
       "type": "expense",
       "source": "공과금",
-      "category": "미용/뷰티",
+      "category": "카페",
       "paymentMethod": "삼성카드",
       "amount": 2900,
       "memo": "",
-      "description": "ㅁ"
+      "description": "메가커피"
     },
     {
       "id": "tx-20260713-001",
@@ -2482,8 +2459,8 @@
       "id": "tx-20260715-001",
       "date": "2026-07-15",
       "type": "expense",
-      "source": "공과금",
-      "category": "기타 용돈",
+      "source": "용돈",
+      "category": "의류/쇼핑",
       "paymentMethod": "기타",
       "amount": 18694,
       "memo": "",
@@ -2493,8 +2470,8 @@
       "id": "tx-20260715-002",
       "date": "2026-07-15",
       "type": "expense",
-      "source": "공과금",
-      "category": "기타 용돈",
+      "source": "용돈",
+      "category": "의류/쇼핑",
       "paymentMethod": "기타",
       "amount": 14794,
       "memo": "",
@@ -2506,10 +2483,10 @@
       "type": "expense",
       "source": "공과금",
       "category": "구독서비스",
-      "paymentMethod": "계좌이체",
+      "paymentMethod": "복지카드",
       "amount": 33479,
-      "memo": "Claude 구독",
-      "description": "ANTHROPIC* CLA"
+      "memo": "",
+      "description": "ANTHROPIC* CLA (Claude 구독)"
     },
     {
       "id": "tx-20260715-004",
@@ -2537,23 +2514,23 @@
       "id": "tx-20260716-001",
       "date": "2026-07-16",
       "type": "expense",
-      "source": "공과금",
-      "category": "기타 용돈",
+      "source": "용돈",
+      "category": "취미활동",
       "paymentMethod": "기타",
       "amount": 5500,
-      "memo": "반려동물, 부분취소 최종액",
-      "description": "끌레르펫"
+      "memo": "",
+      "description": "끌레르펫 (반려동물, 부분취소 최종액)"
     },
     {
       "id": "tx-20260716-002",
       "date": "2026-07-16",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "기타 용돈",
       "paymentMethod": "기타",
       "amount": 702,
-      "memo": "해외결제",
-      "description": "ALIPAY CONNECT PTE. LTD"
+      "memo": "",
+      "description": "ALIPAY CONNECT PTE. LTD (해외결제)"
     },
     {
       "id": "tx-20260718-001",
@@ -2570,7 +2547,7 @@
       "id": "tx-20260718-002",
       "date": "2026-07-18",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "간식/편의점",
       "paymentMethod": "삼성카드",
       "amount": 1700,
@@ -2603,7 +2580,7 @@
       "id": "tx-20260719-001",
       "date": "2026-07-19",
       "type": "expense",
-      "source": "공과금",
+      "source": "용돈",
       "category": "생활용품",
       "paymentMethod": "기타",
       "amount": 1800,
@@ -2710,17 +2687,6 @@
       "description": "(재)충남연구원 - 출장비"
     },
     {
-      "id": "tx-20260723-004",
-      "date": "2026-07-23",
-      "type": "expense",
-      "source": "저축",
-      "category": "기타 저축",
-      "paymentMethod": "계좌이체",
-      "amount": 58080,
-      "memo": "",
-      "description": "신한 → 저축 (출장료)"
-    },
-    {
       "id": "tx-20260724-001",
       "date": "2026-07-24",
       "type": "expense",
@@ -2769,8 +2735,8 @@
       "id": "tx-20260727-001",
       "date": "2026-07-27",
       "type": "expense",
-      "source": "공과금",
-      "category": "친구/지인",
+      "source": "저축",
+      "category": "청년미래적금",
       "paymentMethod": "계좌이체",
       "amount": 500000,
       "memo": "",
@@ -2874,17 +2840,6 @@
       "amount": 7800,
       "memo": "금액이 KOMOJU와 우연히 동일 - 확인 필요",
       "description": "네이버파이낸셜 주식"
-    },
-    {
-      "id": "tx-20260731-008",
-      "date": "2026-07-31",
-      "type": "income",
-      "source": "급여",
-      "category": "급여",
-      "paymentMethod": "계좌이체",
-      "amount": 3174840,
-      "memo": "7/31에 입금된 8월분 급여(선지급)",
-      "description": "8월 월급"
     },
     {
       "id": "tx-20260801-001",
@@ -3024,7 +2979,7 @@
       "id": "tx-20260805-003",
       "date": "2026-08-05",
       "type": "expense",
-      "source": "용돈",
+      "source": "공과금",
       "category": "취미활동",
       "paymentMethod": "기타",
       "amount": 35000,
@@ -3081,10 +3036,10 @@
       "type": "expense",
       "source": "공과금",
       "category": "생활용품",
-      "paymentMethod": "기타",
+      "paymentMethod": "네이버페이",
       "amount": 147000,
       "memo": "",
-      "description": "소다 (잡화)"
+      "description": "소다 (구두)"
     },
     {
       "id": "tx-20260808-002",
@@ -3092,7 +3047,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "구내식당",
-      "paymentMethod": "기타",
+      "paymentMethod": "네이버페이",
       "amount": 23939,
       "memo": "",
       "description": "롯데홈쇼핑"
@@ -3127,7 +3082,7 @@
       "type": "expense",
       "source": "공과금",
       "category": "구내식당",
-      "paymentMethod": "기타",
+      "paymentMethod": "네이버페이",
       "amount": 42493,
       "memo": "",
       "description": "현대HMall"
