@@ -2,11 +2,28 @@ import { formatDate } from '../utils';
 
 // 정산 대기 중인 항목을 월 구분 없이 한 번에 모아 보여주는 모달.
 // SettlementAlert 배너를 클릭하면 열린다.
-export default function SettlementListModal({ items, total, onClose, onSettle }) {
+export default function SettlementListModal({ items, total, onClose, onSettle, onSettleAll }) {
   return (
     <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" style={{ width: 'min(560px, 95vw)' }}>
-        <div className="modal-title">🔔 정산 대기 {items.length}건 · 총 {total.toLocaleString()}원</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 4 }}>
+          <div className="modal-title" style={{ marginBottom: 0 }}>🔔 정산 대기 {items.length}건 · 총 {total.toLocaleString()}원</div>
+          {items.length > 0 && (
+            <button
+              onClick={() => {
+                if (window.confirm(`${items.length}건을 모두 정산완료 처리할까요?`)) {
+                  onSettleAll(items.map((t) => t.id));
+                }
+              }}
+              style={{
+                border: '1px solid #CDEBDD', background: '#EAF6F1', color: '#3DB97A',
+                borderRadius: 8, fontSize: 12, fontWeight: 700, padding: '6px 10px', cursor: 'pointer', whiteSpace: 'nowrap',
+              }}
+            >
+              ✅ 전체 정산완료
+            </button>
+          )}
+        </div>
         <div style={{ maxHeight: '60vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
           {items.length === 0 && (
             <div style={{ textAlign: 'center', color: '#9CA3AF', padding: '24px 0', fontSize: 13 }}>정산 대기 항목이 없어요 🎉</div>

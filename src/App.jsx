@@ -370,6 +370,7 @@ export default function App() {
           total={settlementAlerts.total}
           onClose={() => setShowSettlementList(false)}
           onSettle={(id) => settleTransactions([id])}
+          onSettleAll={settleTransactions}
         />
       )}
       {quickAddDate && (
@@ -391,7 +392,7 @@ export default function App() {
           month={month}
           stats={stats}
         />
-        <div className="gap-16" style={{ gap: 12 }}>
+        <div className="gap-16" style={{ gap: 12, height: '100%' }}>
           {/* 카드 실적 1칸 + 거래건수 1칸 (신한카드 해지로 제거) */}
           <div className="grid-2" style={{ gap: 10 }}>
             {['삼성카드'].map((cardName) => {
@@ -422,8 +423,8 @@ export default function App() {
             </div>
           </div>
 
-          {/* 재원별 지출 현황 */}
-          <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px' }}>
+          {/* 재원별 지출 현황: 왼쪽 용돈현황 카드와 아래 높이가 맞도록 남은 공간을 채움 */}
+          <div className="stat-card" style={{ textAlign: 'left', padding: '14px 18px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 8 }}>재원별 지출 현황</div>
             {[
               { label: '공과금', value: stats.공과금지출, color: '#8261A8' },
