@@ -362,7 +362,7 @@ export default function App() {
 
       <div className="grid-2">
         <SettlementAlert allTransactions={transactions} onOpenAll={() => setShowSettlementList(true)} />
-        <MiniCalendar onDateClick={(d) => setQuickAddDate(d)} />
+        <MiniCalendar year={year} month={month} onMonthChange={(y, m) => { setYear(y); setMonth(m); }} onDateClick={(d) => setQuickAddDate(d)} />
       </div>
       {showSettlementList && (
         <SettlementListModal

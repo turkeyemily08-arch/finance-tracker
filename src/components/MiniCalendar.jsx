@@ -1,13 +1,12 @@
-import { useState } from 'react';
-
 const WD = ['일', '월', '화', '수', '목', '금', '토'];
 const pad = (n) => String(n).padStart(2, '0');
 
 // 날짜를 클릭하면 그 날짜로 새 거래 추가 모달이 열리는 캘린더.
-export default function MiniCalendar({ onDateClick }) {
+// year/month는 App.jsx와 공유하는 상태 — 여기서 월을 바꾸면 아래 거래내역도 같이 그 달로 이동함.
+export default function MiniCalendar({ year, month, onMonthChange, onDateClick }) {
   const today = new Date();
-  const [viewYear, setViewYear] = useState(today.getFullYear());
-  const [viewMonth, setViewMonth] = useState(today.getMonth() + 1); // 1~12
+  const viewYear = year;
+  const viewMonth = month;
 
   const firstDow = new Date(viewYear, viewMonth - 1, 1).getDay();
   const daysInMonth = new Date(viewYear, viewMonth, 0).getDate();
@@ -16,8 +15,8 @@ export default function MiniCalendar({ onDateClick }) {
   const isToday = (d) => d && viewYear === today.getFullYear() && viewMonth === today.getMonth() + 1 && d === today.getDate();
   const dow = (d) => new Date(viewYear, viewMonth - 1, d).getDay();
 
-  const prevMonth = () => { if (viewMonth === 1) { setViewYear((y) => y - 1); setViewMonth(12); } else setViewMonth((m) => m - 1); };
-  const nextMonth = () => { if (viewMonth === 12) { setViewYear((y) => y + 1); setViewMonth(1); } else setViewMonth((m) => m + 1); };
+  const prevMonth = () => { if (viewMonth === 1) onMonthChange(viewYear - 1, 12); else onMonthChange(viewYear, viewMonth - 1); };
+  const nextMonth = () => { if (viewMonth === 12) onMonthChange(viewYear + 1, 1); else onMonthChange(viewYear, viewMonth + 1); };
 
   const navBtn = { border: 'none', background: '#F1EFFB', borderRadius: 8, width: 26, height: 26, cursor: 'pointer', fontSize: 13, color: '#6E4F96' };
 
