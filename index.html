@@ -31,7 +31,16 @@
         });
       }
 
-      // ② 버전 체크 (SW 미지원 환경용 백업)
+      // ② bfcache(뒤로/앞으로가기 캐시) 복원 감지 — 모바일에서 앱 전환 후 돌아오거나
+      // 뒤로가기를 하면 브라우저가 페이지를 새로 불러오지 않고 얼려뒀던 화면을 그대로
+      // 복원하는데, 이때는 이 <script> 자체가 재실행되지 않아 버전 체크(③)도 건너뛰고
+      // 그 사이 새로 배포된 버전이 있어도 예전 화면이 계속 보임. persisted===true면
+      // 무조건 새로고침해서 최신 HTML/JS/데이터를 다시 받도록 강제한다.
+      window.addEventListener('pageshow', function (event) {
+        if (event.persisted) location.reload();
+      });
+
+      // ③ 버전 체크 (SW 미지원 환경용 백업)
       (function () {
         if (/[?&]v=/.test(location.search)) return;
         fetch('data/version.json?t=' + Date.now(), { cache: 'no-store' })
