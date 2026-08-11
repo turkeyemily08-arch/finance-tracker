@@ -2929,17 +2929,6 @@
       "description": "이민구 (송금)"
     },
     {
-      "id": "tx-20260802-002",
-      "date": "2026-08-02",
-      "type": "expense",
-      "source": "저축",
-      "category": "청년미래적금",
-      "paymentMethod": "계좌이체",
-      "amount": 200000,
-      "memo": "",
-      "description": "한규리 (송금 - 본인 명의라면 자산이동일 수 있어 확인 필요)"
-    },
-    {
       "id": "tx-20260802-003",
       "date": "2026-08-02",
       "type": "expense",
